@@ -58,21 +58,21 @@ export default function KeywordCombiner() {
   const updateList = (i: number, val: string) => setLists(prev => prev.map((l, idx) => idx === i ? val : l));
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Keyword Combiner</h1>
-          <p className="text-muted-foreground">Combine keyword lists into all possible combinations</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Keyword Combiner</h1>
+          <p className="text-sm text-muted-foreground">Combine keyword lists into combinations</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => setLists(['', '', ''])}>
-          <RotateCcw className="h-4 w-4 mr-1" /> Reset
+        <Button variant="outline" size="sm" onClick={() => setLists(['', '', ''])} className="h-8 text-xs self-start sm:self-auto">
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
         </Button>
       </div>
 
       {/* Match Types */}
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-3 sm:gap-4">
         {(['broad', 'phrase', 'exact'] as MatchType[]).map(type => (
-          <label key={type} className="flex items-center gap-2 cursor-pointer">
+          <label key={type} className="flex items-center gap-2 cursor-pointer text-sm">
             <Checkbox checked={matchTypes.includes(type)} onCheckedChange={() => toggleMatchType(type)} />
             <span className="capitalize">{type}</span>
           </label>
@@ -81,43 +81,44 @@ export default function KeywordCombiner() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Input Lists */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {lists.map((list, i) => (
             <Card key={i}>
-              <CardHeader className="py-3 flex-row items-center justify-between">
-                <CardTitle className="text-sm">List {i + 1}</CardTitle>
+              <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between">
+                <CardTitle className="text-xs sm:text-sm">List {i + 1}</CardTitle>
                 {lists.length > 1 && (
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeList(i)}>
                     <Trash2 className="h-3 w-3" />
                   </Button>
                 )}
               </CardHeader>
-              <CardContent className="pt-0">
+              <CardContent className="p-3 sm:p-4 pt-0">
                 <Textarea
                   placeholder="Enter keywords, one per line"
                   value={list}
                   onChange={(e) => updateList(i, e.target.value)}
-                  rows={5}
+                  rows={4}
+                  className="text-sm"
                 />
               </CardContent>
             </Card>
           ))}
-          <Button variant="outline" onClick={addList}>
-            <Plus className="h-4 w-4 mr-1" /> Add List
+          <Button variant="outline" size="sm" onClick={addList} className="text-xs">
+            <Plus className="h-3.5 w-3.5 mr-1" /> Add List
           </Button>
         </div>
 
         {/* Results */}
         <Card className="border-2 border-primary/20">
-          <CardHeader className="py-3 flex-row items-center justify-between">
-            <CardTitle className="text-sm">Results ({combinations.length})</CardTitle>
+          <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between gap-2">
+            <CardTitle className="text-xs sm:text-sm">Results ({combinations.length})</CardTitle>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => copy(combinations.join('\n'))}>
+              <Button variant="outline" size="sm" onClick={() => copy(combinations.join('\n'))} className="h-7 text-xs">
                 <Copy className="h-3 w-3 mr-1" /> Copy
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">Export</Button>
+                  <Button variant="outline" size="sm" className="h-7 text-xs">Export</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => exportTxt(combinations, 'keywords')}>TXT</DropdownMenuItem>
@@ -126,8 +127,8 @@ export default function KeywordCombiner() {
               </DropdownMenu>
             </div>
           </CardHeader>
-          <CardContent>
-            <Textarea value={combinations.join('\n')} readOnly rows={15} className="font-mono text-sm" />
+          <CardContent className="p-3 sm:p-4 pt-0">
+            <Textarea value={combinations.join('\n')} readOnly rows={12} className="font-mono text-xs sm:text-sm" />
           </CardContent>
         </Card>
       </div>

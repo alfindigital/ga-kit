@@ -67,23 +67,23 @@ export default function YTFinder() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">YT Channel Finder</h1>
-          <p className="text-muted-foreground">Extract channel info from YouTube video URLs</p>
+          <h1 className="text-xl sm:text-2xl font-bold">YT Channel Finder</h1>
+          <p className="text-sm text-muted-foreground">Extract channel info from YouTube URLs</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => { setUrls(''); setResults([]); }}>
-          <RotateCcw className="h-4 w-4 mr-1" /> Reset
+        <Button variant="outline" size="sm" onClick={() => { setUrls(''); setResults([]); }} className="h-8 text-xs self-start sm:self-auto">
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
         </Button>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader className="py-3"><CardTitle className="text-sm">YouTube URLs</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            <Textarea placeholder="Paste YouTube URLs here, one per line..." value={urls} onChange={(e) => setUrls(e.target.value)} rows={8} />
-            <Button onClick={fetchChannelData} disabled={loading} className="w-full bg-destructive hover:bg-destructive/90">
+          <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">YouTube URLs</CardTitle></CardHeader>
+          <CardContent className="p-3 pt-0 space-y-3">
+            <Textarea placeholder="Paste YouTube URLs here, one per line..." value={urls} onChange={(e) => setUrls(e.target.value)} rows={6} className="text-sm" />
+            <Button onClick={fetchChannelData} disabled={loading} className="w-full bg-destructive hover:bg-destructive/90 text-sm">
               <Youtube className="h-4 w-4 mr-2" />
               {loading ? 'Fetching...' : 'Get Channel Data'}
             </Button>
@@ -91,14 +91,14 @@ export default function YTFinder() {
         </Card>
 
         <Card className="border-2 border-primary/20">
-          <CardHeader className="py-3 flex-row items-center justify-between">
-            <CardTitle className="text-sm">Results ({results.length})</CardTitle>
+          <CardHeader className="p-3 flex-row items-center justify-between gap-2">
+            <CardTitle className="text-xs sm:text-sm">Results ({results.length})</CardTitle>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => copy(results.map(r => r.channelUrl).join('\n'))}>
-                <Copy className="h-3 w-3 mr-1" /> Copy URLs
+              <Button variant="outline" size="sm" onClick={() => copy(results.map(r => r.channelUrl).join('\n'))} className="h-7 text-xs">
+                <Copy className="h-3 w-3 mr-1" /> Copy
               </Button>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild><Button variant="outline" size="sm">Export</Button></DropdownMenuTrigger>
+                <DropdownMenuTrigger asChild><Button variant="outline" size="sm" className="h-7 text-xs">Export</Button></DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => exportCsv([['Title', 'Channel', 'Channel URL'], ...results.map(r => [r.title, r.channelName, r.channelUrl])], 'youtube-channels')}>CSV</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => exportTxt(results.map(r => `${r.channelName}: ${r.channelUrl}`), 'youtube-channels')}>TXT</DropdownMenuItem>
@@ -106,24 +106,27 @@ export default function YTFinder() {
               </DropdownMenu>
             </div>
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="p-3 pt-0">
             {results.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">Results will appear here</p>
+              <p className="text-muted-foreground text-center py-6 text-sm">Results will appear here</p>
             ) : (
-              <div className="max-h-[400px] overflow-auto">
+              <div className="max-h-[300px] sm:max-h-[400px] overflow-auto -mx-3 px-3">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Video Title</TableHead>
-                      <TableHead>Channel</TableHead>
+                      <TableHead className="text-xs">Title</TableHead>
+                      <TableHead className="text-xs hidden sm:table-cell">Channel</TableHead>
                       <TableHead className="w-10"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {results.map((r, i) => (
                       <TableRow key={i}>
-                        <TableCell className="font-medium truncate max-w-[200px]">{r.title}</TableCell>
-                        <TableCell>{r.channelName}</TableCell>
+                        <TableCell className="font-medium text-xs sm:text-sm">
+                          <div className="truncate max-w-[120px] sm:max-w-[200px]">{r.title}</div>
+                          <div className="text-xs text-muted-foreground sm:hidden truncate">{r.channelName}</div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell text-sm">{r.channelName}</TableCell>
                         <TableCell>
                           <a href={r.channelUrl} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4 text-muted-foreground hover:text-foreground" />
