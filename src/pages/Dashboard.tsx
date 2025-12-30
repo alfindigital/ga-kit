@@ -72,57 +72,57 @@ const tools = [
 
 export default function Dashboard() {
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6 sm:space-y-8">
       {/* Hero Section */}
-      <section className="text-center py-8 lg:py-12">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <Sparkles className="h-6 w-6 text-primary animate-pulse-gentle" />
-          <h1 className="text-3xl lg:text-4xl font-bold">
+      <section className="text-center py-6 sm:py-8 lg:py-12">
+        <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+          <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary animate-pulse-gentle" />
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
             GA <span className="text-primary italic">Toolkit</span>
           </h1>
-          <Sparkles className="h-6 w-6 text-primary animate-pulse-gentle" />
+          <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary animate-pulse-gentle" />
         </div>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+        <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
           Your complete toolkit for Google Ads campaign management. 
           Build UTMs, combine keywords, and generate QR codes.
         </p>
       </section>
 
       {/* Tools Grid */}
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
         {tools.map((tool, index) => (
           <Card 
             key={tool.id} 
             className={cn(
               "tool-card group relative overflow-hidden",
-              "animate-fade-in"
+              "opacity-0 animate-fade-in"
             )}
-            style={{ animationDelay: `${index * 50}ms` }}
+            style={{ animationDelay: `${index * 75}ms` }}
           >
-            <CardHeader className="pb-3">
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
               <div className="flex items-start justify-between">
-                <div className={cn("p-2 rounded-lg w-fit", tool.color)}>
-                  <tool.icon className="h-5 w-5" />
+                <div className={cn("p-1.5 sm:p-2 rounded-lg w-fit", tool.color)}>
+                  <tool.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
               </div>
-              <CardTitle className="text-lg">{tool.title}</CardTitle>
-              <CardDescription className="text-sm">
+              <CardTitle className="text-sm sm:text-base lg:text-lg">{tool.title}</CardTitle>
+              <CardDescription className="text-xs sm:text-sm line-clamp-2">
                 {tool.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-0">
-              <ul className="text-xs text-muted-foreground space-y-1 mb-4">
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <ul className="hidden sm:block text-xs text-muted-foreground space-y-1 mb-3 sm:mb-4">
                 {tool.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-1">
-                    <span className="h-1 w-1 rounded-full bg-primary" />
+                  <li key={feature} className="flex items-center gap-1.5">
+                    <span className="h-1 w-1 rounded-full bg-primary flex-shrink-0" />
                     {feature}
                   </li>
                 ))}
               </ul>
-              <Button asChild className="w-full group-hover:bg-primary/90">
-                <Link to={tool.path} className="flex items-center gap-2">
+              <Button asChild size="sm" className="w-full text-xs sm:text-sm group-hover:bg-primary/90 active:scale-[0.98] transition-all">
+                <Link to={tool.path} className="flex items-center justify-center gap-1.5 sm:gap-2">
                   Launch
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </CardContent>

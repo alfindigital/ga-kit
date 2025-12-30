@@ -44,14 +44,14 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/80">
+      <div className="container px-3 sm:px-4 lg:px-6 flex h-12 sm:h-14 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-primary-foreground text-sm font-bold">GA</span>
+        <Link to="/" className="flex items-center gap-2 font-bold text-base sm:text-lg active:scale-95 transition-transform">
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary shadow-md">
+            <span className="text-primary-foreground text-xs sm:text-sm font-bold">GA</span>
           </div>
-          <span className="hidden sm:inline">
+          <span className="hidden xs:inline">
             GA <span className="text-primary italic">Toolkit</span>
           </span>
         </Link>
@@ -63,10 +63,10 @@ export function Header() {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                "flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
                 location.pathname === item.path
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95"
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -132,19 +132,20 @@ export function Header() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-background animate-fade-in">
-          <nav className="container py-3 space-y-1">
-            {navItems.map((item) => (
+        <div className="lg:hidden border-t border-border bg-background/98 backdrop-blur-lg animate-fade-in">
+          <nav className="container px-3 sm:px-4 py-2 space-y-1">
+            {navItems.map((item, index) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                  "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 animate-fade-in active:scale-[0.98]",
                   location.pathname === item.path
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-primary text-primary-foreground shadow-md"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
+                style={{ animationDelay: `${index * 30}ms` }}
               >
                 <item.icon className="h-4 w-4" />
                 <span>{item.label}</span>
