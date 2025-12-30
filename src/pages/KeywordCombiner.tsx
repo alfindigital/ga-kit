@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, Plus, Trash2, RotateCcw } from 'lucide-react';
+import { Copy, Plus, Trash2, RotateCcw, Sparkles, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,8 @@ import { useClipboard } from '@/hooks/useClipboard';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { KeywordCombinerSkeleton } from '@/components/skeletons';
+import { EmptyState } from '@/components/ui/empty-state';
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +33,11 @@ export default function KeywordCombiner() {
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
   };
+
+  // Check if any list has content
+  const hasAnyContent = lists.some(l => l.trim().length > 0);
+  const filledListCount = lists.filter(l => l.split('\n').filter(k => k.trim()).length > 0).length;
+  const hasMultipleLists = filledListCount >= 2;
 
   const combinations = (() => {
     const parsed = lists.map(l => l.split('\n').map(k => k.trim()).filter(Boolean));
@@ -62,6 +69,11 @@ export default function KeywordCombiner() {
   const removeList = (i: number) => setLists(prev => prev.filter((_, idx) => idx !== i));
   const updateList = (i: number, val: string) => setLists(prev => prev.map((l, idx) => idx === i ? val : l));
 
+  const getListStatus = (listContent: string) => {
+    const lines = listContent.split('\n').filter(l => l.trim()).length;
+    return lines;
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -74,40 +86,64 @@ export default function KeywordCombiner() {
         </Button>
       </div>
 
-      {/* Match Types */}
-      <div className="flex flex-wrap gap-3 sm:gap-4">
+      {/* Match Types with validation indicator */}
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         {(['broad', 'phrase', 'exact'] as MatchType[]).map(type => (
           <label key={type} className="flex items-center gap-2 cursor-pointer text-sm">
             <Checkbox checked={matchTypes.includes(type)} onCheckedChange={() => toggleMatchType(type)} />
             <span className="capitalize">{type}</span>
           </label>
         ))}
+        {matchTypes.length === 0 && (
+          <span className="text-xs text-destructive flex items-center gap-1">
+            <AlertTriangle className="h-3 w-3" />
+            Select at least one match type
+          </span>
+        )}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Input Lists */}
         <div className="space-y-3">
-          {lists.map((list, i) => (
-            <Card key={i}>
-              <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm">List {i + 1}</CardTitle>
-                {lists.length > 1 && (
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeList(i)}>
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                )}
-              </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
-                <Textarea
-                  placeholder="Enter keywords, one per line"
-                  value={list}
-                  onChange={(e) => updateList(i, e.target.value)}
-                  rows={4}
-                  className="text-sm"
-                />
-              </CardContent>
-            </Card>
-          ))}
+          {lists.map((list, i) => {
+            const lineCount = getListStatus(list);
+            const isEmpty = lineCount === 0;
+            
+            return (
+              <Card key={i} className={cn(
+                "transition-colors",
+                isEmpty && hasAnyContent && "border-dashed border-muted-foreground/30"
+              )}>
+                <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between">
+                  <CardTitle className="text-xs sm:text-sm flex items-center gap-2">
+                    List {i + 1}
+                    {lineCount > 0 && (
+                      <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                        {lineCount} keywords
+                      </span>
+                    )}
+                  </CardTitle>
+                  {lists.length > 1 && (
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeList(i)}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  )}
+                </CardHeader>
+                <CardContent className="p-3 sm:p-4 pt-0">
+                  <Textarea
+                    placeholder="Enter keywords, one per line"
+                    value={list}
+                    onChange={(e) => updateList(i, e.target.value)}
+                    rows={4}
+                    className={cn(
+                      "text-sm transition-colors",
+                      isEmpty && hasAnyContent && "border-dashed"
+                    )}
+                  />
+                </CardContent>
+              </Card>
+            );
+          })}
           <Button variant="outline" size="sm" onClick={addList} className="text-xs">
             <Plus className="h-3.5 w-3.5 mr-1" /> Add List
           </Button>
@@ -118,12 +154,20 @@ export default function KeywordCombiner() {
           <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between gap-2">
             <CardTitle className="text-xs sm:text-sm">Results ({combinations.length})</CardTitle>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => copy(combinations.join('\n'))} className="h-7 text-xs">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => copy(combinations.join('\n'))} 
+                className="h-7 text-xs"
+                disabled={combinations.length === 0}
+              >
                 <Copy className="h-3 w-3 mr-1" /> Copy
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 text-xs">Export</Button>
+                  <Button variant="outline" size="sm" className="h-7 text-xs" disabled={combinations.length === 0}>
+                    Export
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => exportTxt(combinations, 'keywords')}>TXT</DropdownMenuItem>
@@ -133,7 +177,24 @@ export default function KeywordCombiner() {
             </div>
           </CardHeader>
           <CardContent className="p-3 sm:p-4 pt-0">
-            <Textarea value={combinations.join('\n')} readOnly rows={12} className="font-mono text-xs sm:text-sm" />
+            {combinations.length === 0 ? (
+              <EmptyState
+                icon={Sparkles}
+                title={!hasAnyContent ? "Enter keywords to start" : matchTypes.length === 0 ? "Select a match type" : !hasMultipleLists ? "Add keywords to multiple lists" : "No combinations generated"}
+                description={
+                  !hasAnyContent 
+                    ? "Add keywords to your lists and they will be combined automatically"
+                    : matchTypes.length === 0
+                    ? "Choose at least one match type above to generate combinations"
+                    : !hasMultipleLists
+                    ? "Fill at least two lists to create keyword combinations"
+                    : "Check your input and try again"
+                }
+                className="py-8"
+              />
+            ) : (
+              <Textarea value={combinations.join('\n')} readOnly rows={12} className="font-mono text-xs sm:text-sm" />
+            )}
           </CardContent>
         </Card>
       </div>

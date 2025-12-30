@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check } from 'lucide-react';
+import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,11 @@ import { useClipboard } from '@/hooks/useClipboard';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useValidation, validators } from '@/hooks/useValidation';
 import { UTMBuilderSkeleton } from '@/components/skeletons';
+import { EmptyState } from '@/components/ui/empty-state';
+import { InputError } from '@/components/ui/input-error';
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -90,9 +94,27 @@ export default function UTMBuilder() {
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
 
+  const { validate, touch, getFieldState, clearErrors } = useValidation({
+    url: [validators.url('Please enter a valid URL')],
+  });
+
+  const urlState = getFieldState('url');
+
+  const handleUrlChange = useCallback((value: string) => {
+    setParams(prev => ({ ...prev, url: value }));
+    if (urlState.isTouched) {
+      validate('url', value);
+    }
+  }, [validate, urlState.isTouched]);
+
+  const handleUrlBlur = useCallback(() => {
+    touch('url');
+    validate('url', params.url);
+  }, [touch, validate, params.url]);
+
   if (isLoading) return <UTMBuilderSkeleton />;
 
-  const generatedUrl = useMemo(() => {
+  const generatedUrl = (() => {
     if (!params.url) return '';
     
     let baseUrl = params.url.trim();
@@ -132,7 +154,7 @@ export default function UTMBuilder() {
     } catch {
       return '';
     }
-  }, [params, selectedValueTrack]);
+  })();
 
   const handleCopy = () => {
     if (generatedUrl) {
@@ -169,6 +191,7 @@ export default function UTMBuilder() {
   const loadPreset = (preset: Preset) => {
     setParams(preset.params);
     setSelectedValueTrack(preset.valueTrack);
+    clearErrors();
     toast({ title: 'Loaded', description: `Preset "${preset.name}" loaded` });
   };
 
@@ -202,6 +225,7 @@ export default function UTMBuilder() {
   const handleReset = () => {
     setParams(DEFAULT_PARAMS);
     setSelectedValueTrack([]);
+    clearErrors();
   };
 
   const toggleValueTrack = (id: string) => {
@@ -286,7 +310,11 @@ export default function UTMBuilder() {
               </DialogHeader>
               <div className="space-y-2">
                 {history.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-4">No history yet</p>
+                  <EmptyState
+                    icon={History}
+                    title="No history yet"
+                    description="Generated URLs will appear here for quick access"
+                  />
                 ) : (
                   history.map((item) => (
                     <div key={item.id} className="flex items-center gap-2 p-2 bg-muted rounded-md">
@@ -314,21 +342,34 @@ export default function UTMBuilder() {
           {/* Target URL */}
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <CardTitle className="text-sm">Target URL</CardTitle>
+              <CardTitle className="text-sm flex items-center gap-2">
+                Target URL
+                <span className="text-destructive">*</span>
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0">
               <div className="flex gap-2">
-                <Input
-                  placeholder="https://example.com/page"
-                  value={params.url}
-                  onChange={(e) => setParams(prev => ({ ...prev, url: e.target.value }))}
-                  className="flex-1 text-sm"
-                />
+                <div className="flex-1">
+                  <Input
+                    placeholder="https://example.com/page"
+                    value={params.url}
+                    onChange={(e) => handleUrlChange(e.target.value)}
+                    onBlur={handleUrlBlur}
+                    className={cn(
+                      "text-sm",
+                      urlState.hasError && "border-destructive focus-visible:ring-destructive"
+                    )}
+                  />
+                  <InputError message={urlState.error} />
+                </div>
                 <Button
                   variant="outline"
                   size="icon"
                   className="h-9 w-9 flex-shrink-0"
-                  onClick={() => setParams(prev => ({ ...prev, url: '' }))}
+                  onClick={() => {
+                    setParams(prev => ({ ...prev, url: '' }));
+                    clearErrors();
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -440,27 +481,46 @@ export default function UTMBuilder() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
-              <div className="p-3 bg-muted rounded-lg min-h-[80px] break-all text-xs sm:text-sm font-mono">
-                {generatedUrl || <span className="text-muted-foreground">Enter a URL to see preview</span>}
-              </div>
-              
-              <Button 
-                onClick={handleCopy} 
-                disabled={!generatedUrl}
-                className="w-full text-sm"
-              >
-                {copied ? (
-                  <>
-                    <Check className="h-4 w-4 mr-2" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy URL
-                  </>
-                )}
-              </Button>
+              {!params.url ? (
+                <EmptyState
+                  icon={Link2}
+                  title="Enter a URL to start"
+                  description="Type or paste your target URL above to generate UTM parameters"
+                  className="py-6"
+                />
+              ) : urlState.hasError ? (
+                <EmptyState
+                  icon={AlertCircle}
+                  title="Invalid URL"
+                  description="Please correct the URL format to see the preview"
+                  variant="error"
+                  className="py-6"
+                />
+              ) : (
+                <>
+                  <div className="p-3 bg-muted rounded-lg min-h-[80px] break-all text-xs sm:text-sm font-mono">
+                    {generatedUrl || <span className="text-muted-foreground">Processing...</span>}
+                  </div>
+                  
+                  <Button 
+                    onClick={handleCopy} 
+                    disabled={!generatedUrl}
+                    className="w-full text-sm"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4 mr-2" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy URL
+                      </>
+                    )}
+                  </Button>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
