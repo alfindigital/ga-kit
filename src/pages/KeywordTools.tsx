@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, RotateCcw } from 'lucide-react';
+import { Copy, RotateCcw, FileText, ArrowRightLeft, CaseSensitive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { ToolPageSkeleton } from '@/components/skeletons';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function KeywordTools() {
   const { copy } = useClipboard();
@@ -19,6 +20,8 @@ export default function KeywordTools() {
   // Remove Duplicates
   const [dupeInput, setDupeInput] = useState('');
   const dupeResult = [...new Set(dupeInput.split('\n').map(k => k.trim().toLowerCase()).filter(Boolean))];
+  const dupeInputCount = dupeInput.split('\n').filter(l => l.trim()).length;
+  const duplicatesRemoved = dupeInputCount - dupeResult.length;
 
   // Case Conversion
   const [caseInput, setCaseInput] = useState('');
@@ -46,6 +49,7 @@ export default function KeywordTools() {
   const replaceResult = findText ? 
     (caseSensitive ? replaceInput.split(findText).join(replaceText) : replaceInput.replace(new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), replaceText)) 
     : replaceInput;
+  const replaceCount = findText ? (replaceInput.split(caseSensitive ? findText : new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')).length - 1) : 0;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -61,26 +65,68 @@ export default function KeywordTools() {
           <TabsTrigger value="replace" className="text-xs sm:text-sm py-2">Replace</TabsTrigger>
         </TabsList>
 
+        {/* Duplicates Tab */}
         <TabsContent value="duplicates" className="mt-4">
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">Input ({dupeInput.split('\n').filter(Boolean).length} lines)</CardTitle></CardHeader>
+              <CardHeader className="p-3">
+                <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
+                  Input
+                  {dupeInputCount > 0 && (
+                    <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                      {dupeInputCount} lines
+                    </span>
+                  )}
+                </CardTitle>
+              </CardHeader>
               <CardContent className="p-3 pt-0">
-                <Textarea placeholder="Paste keywords here..." value={dupeInput} onChange={(e) => setDupeInput(e.target.value)} rows={8} className="text-sm" />
+                <Textarea placeholder="Paste keywords here, one per line..." value={dupeInput} onChange={(e) => setDupeInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
             </Card>
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm">Result ({dupeResult.length} unique)</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => copy(dupeResult.join('\n'))} className="h-7 text-xs"><Copy className="h-3 w-3 mr-1" /> Copy</Button>
+                <CardTitle className="text-xs sm:text-sm flex items-center gap-2">
+                  Result
+                  {dupeResult.length > 0 && (
+                    <>
+                      <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                        {dupeResult.length} unique
+                      </span>
+                      {duplicatesRemoved > 0 && (
+                        <span className="text-xs font-normal text-accent bg-accent/10 px-1.5 py-0.5 rounded">
+                          -{duplicatesRemoved} removed
+                        </span>
+                      )}
+                    </>
+                  )}
+                </CardTitle>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => copy(dupeResult.join('\n'))} 
+                  className="h-7 text-xs"
+                  disabled={dupeResult.length === 0}
+                >
+                  <Copy className="h-3 w-3 mr-1" /> Copy
+                </Button>
               </CardHeader>
               <CardContent className="p-3 pt-0">
-                <Textarea value={dupeResult.join('\n')} readOnly rows={8} className="font-mono text-xs sm:text-sm" />
+                {dupeResult.length === 0 ? (
+                  <EmptyState
+                    icon={FileText}
+                    title="Paste keywords to start"
+                    description="Enter your keywords in the input area. Duplicates will be removed automatically."
+                    className="py-6"
+                  />
+                ) : (
+                  <Textarea value={dupeResult.join('\n')} readOnly rows={8} className="font-mono text-xs sm:text-sm" />
+                )}
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
+        {/* Case Tab */}
         <TabsContent value="case" className="mt-4">
           <div className="flex flex-wrap gap-2 mb-4">
             {(['lower', 'upper', 'title', 'sentence', 'kebab', 'snake'] as const).map(mode => (
@@ -91,7 +137,9 @@ export default function KeywordTools() {
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">Input</CardTitle></CardHeader>
+              <CardHeader className="p-3">
+                <CardTitle className="text-xs sm:text-sm">Input</CardTitle>
+              </CardHeader>
               <CardContent className="p-3 pt-0">
                 <Textarea placeholder="Enter text to convert..." value={caseInput} onChange={(e) => setCaseInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
@@ -99,24 +147,66 @@ export default function KeywordTools() {
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
                 <CardTitle className="text-xs sm:text-sm">Result</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => copy(convertCase(caseInput, caseMode))} className="h-7 text-xs"><Copy className="h-3 w-3 mr-1" /> Copy</Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => copy(convertCase(caseInput, caseMode))} 
+                  className="h-7 text-xs"
+                  disabled={!caseInput.trim()}
+                >
+                  <Copy className="h-3 w-3 mr-1" /> Copy
+                </Button>
               </CardHeader>
               <CardContent className="p-3 pt-0">
-                <Textarea value={convertCase(caseInput, caseMode)} readOnly rows={8} className="font-mono text-xs sm:text-sm" />
+                {!caseInput.trim() ? (
+                  <EmptyState
+                    icon={CaseSensitive}
+                    title="Enter text to convert"
+                    description="Type or paste text and select a conversion mode above."
+                    className="py-6"
+                  />
+                ) : (
+                  <Textarea value={convertCase(caseInput, caseMode)} readOnly rows={8} className="font-mono text-xs sm:text-sm" />
+                )}
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
+        {/* Replace Tab */}
         <TabsContent value="replace" className="mt-4">
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
-            <Input placeholder="Find..." value={findText} onChange={(e) => setFindText(e.target.value)} className="flex-1 sm:max-w-[180px] text-sm" />
-            <Input placeholder="Replace with..." value={replaceText} onChange={(e) => setReplaceText(e.target.value)} className="flex-1 sm:max-w-[180px] text-sm" />
-            <label className="flex items-center gap-2 text-sm"><Checkbox checked={caseSensitive} onCheckedChange={(v) => setCaseSensitive(!!v)} /> Case sensitive</label>
+            <div className="flex-1 sm:max-w-[180px]">
+              <Input 
+                placeholder="Find..." 
+                value={findText} 
+                onChange={(e) => setFindText(e.target.value)} 
+                className="text-sm" 
+              />
+            </div>
+            <div className="flex-1 sm:max-w-[180px]">
+              <Input 
+                placeholder="Replace with..." 
+                value={replaceText} 
+                onChange={(e) => setReplaceText(e.target.value)} 
+                className="text-sm" 
+              />
+            </div>
+            <label className="flex items-center gap-2 text-sm">
+              <Checkbox checked={caseSensitive} onCheckedChange={(v) => setCaseSensitive(!!v)} /> 
+              Case sensitive
+            </label>
+            {findText && replaceInput && (
+              <span className="text-xs text-muted-foreground flex items-center">
+                {replaceCount} match{replaceCount !== 1 ? 'es' : ''} found
+              </span>
+            )}
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">Input</CardTitle></CardHeader>
+              <CardHeader className="p-3">
+                <CardTitle className="text-xs sm:text-sm">Input</CardTitle>
+              </CardHeader>
               <CardContent className="p-3 pt-0">
                 <Textarea placeholder="Enter text..." value={replaceInput} onChange={(e) => setReplaceInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
@@ -124,10 +214,27 @@ export default function KeywordTools() {
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
                 <CardTitle className="text-xs sm:text-sm">Result</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => copy(replaceResult)} className="h-7 text-xs"><Copy className="h-3 w-3 mr-1" /> Copy</Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => copy(replaceResult)} 
+                  className="h-7 text-xs"
+                  disabled={!replaceInput.trim()}
+                >
+                  <Copy className="h-3 w-3 mr-1" /> Copy
+                </Button>
               </CardHeader>
               <CardContent className="p-3 pt-0">
-                <Textarea value={replaceResult} readOnly rows={8} className="font-mono text-xs sm:text-sm" />
+                {!replaceInput.trim() ? (
+                  <EmptyState
+                    icon={ArrowRightLeft}
+                    title="Enter text to replace"
+                    description="Type or paste text, then specify what to find and replace."
+                    className="py-6"
+                  />
+                ) : (
+                  <Textarea value={replaceResult} readOnly rows={8} className="font-mono text-xs sm:text-sm" />
+                )}
               </CardContent>
             </Card>
           </div>
