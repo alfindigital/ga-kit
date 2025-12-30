@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useClipboard } from '@/hooks/useClipboard';
 import { useExport } from '@/hooks/useExport';
 import { useToast } from '@/hooks/use-toast';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { ToolPageSkeleton } from '@/components/skeletons';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface VideoData {
@@ -23,6 +25,9 @@ export default function YTFinder() {
   const { copy } = useClipboard();
   const { exportCsv, exportTxt } = useExport();
   const { toast } = useToast();
+  const isLoading = usePageLoading(400);
+
+  if (isLoading) return <ToolPageSkeleton />;
 
   const extractVideoIds = (text: string): string[] => {
     const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
