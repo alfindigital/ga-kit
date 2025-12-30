@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useClipboard } from '@/hooks/useClipboard';
 import { useToast } from '@/hooks/use-toast';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { QRGeneratorSkeleton } from '@/components/skeletons';
 
 export default function QRGenerator() {
   const [text, setText] = useState('');
@@ -19,6 +21,9 @@ export default function QRGenerator() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { copy } = useClipboard();
   const { toast } = useToast();
+  const isLoading = usePageLoading(400);
+
+  if (isLoading) return <QRGeneratorSkeleton />;
 
   useEffect(() => {
     if (!text) {

@@ -12,6 +12,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { DashboardSkeleton } from '@/components/skeletons';
 
 const tools = [
   {
@@ -71,6 +73,10 @@ const tools = [
 ];
 
 export default function Dashboard() {
+  const isLoading = usePageLoading(400);
+
+  if (isLoading) return <DashboardSkeleton />;
+
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Hero Section */}

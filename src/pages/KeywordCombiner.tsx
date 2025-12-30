@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
 import { useExport } from '@/hooks/useExport';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { KeywordCombinerSkeleton } from '@/components/skeletons';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +22,9 @@ export default function KeywordCombiner() {
   const [matchTypes, setMatchTypes] = useState<MatchType[]>(['broad']);
   const { copy } = useClipboard();
   const { exportCsv, exportTxt } = useExport();
+  const isLoading = usePageLoading(400);
+
+  if (isLoading) return <KeywordCombinerSkeleton />;
 
   const toggleMatchType = (type: MatchType) => {
     setMatchTypes(prev => 

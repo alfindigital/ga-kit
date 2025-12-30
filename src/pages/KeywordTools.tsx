@@ -7,9 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { ToolPageSkeleton } from '@/components/skeletons';
 
 export default function KeywordTools() {
   const { copy } = useClipboard();
+  const isLoading = usePageLoading(400);
+
+  if (isLoading) return <ToolPageSkeleton />;
 
   // Remove Duplicates
   const [dupeInput, setDupeInput] = useState('');

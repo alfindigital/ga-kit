@@ -8,6 +8,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/use-toast';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { UTMBuilderSkeleton } from '@/components/skeletons';
 import {
   Dialog,
   DialogContent,
@@ -86,6 +88,9 @@ export default function UTMBuilder() {
   
   const { copy, copied } = useClipboard();
   const { toast } = useToast();
+  const isLoading = usePageLoading(400);
+
+  if (isLoading) return <UTMBuilderSkeleton />;
 
   const generatedUrl = useMemo(() => {
     if (!params.url) return '';

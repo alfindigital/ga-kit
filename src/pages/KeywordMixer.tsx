@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
 import { useExport } from '@/hooks/useExport';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { ToolPageSkeleton } from '@/components/skeletons';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 type MatchType = 'broad' | 'phrase' | 'exact';
@@ -17,6 +19,9 @@ export default function KeywordMixer() {
   const [matchTypes, setMatchTypes] = useState<MatchType[]>(['broad']);
   const { copy } = useClipboard();
   const { exportCsv, exportTxt } = useExport();
+  const isLoading = usePageLoading(400);
+
+  if (isLoading) return <ToolPageSkeleton />;
 
   const toggleMatchType = (type: MatchType) => {
     setMatchTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
