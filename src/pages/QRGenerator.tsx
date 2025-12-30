@@ -117,33 +117,33 @@ export default function QRGenerator() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">QR Generator</h1>
-          <p className="text-muted-foreground">Generate QR codes with custom colors and logo</p>
+          <h1 className="text-xl sm:text-2xl font-bold">QR Generator</h1>
+          <p className="text-sm text-muted-foreground">Generate QR codes with custom colors</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => { setText(''); setLogo(null); }}>
-          <RotateCcw className="h-4 w-4 mr-1" /> Reset
+        <Button variant="outline" size="sm" onClick={() => { setText(''); setLogo(null); }} className="h-8 text-xs self-start sm:self-auto">
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
         </Button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4">
           <Card>
-            <CardHeader className="py-3"><CardTitle className="text-sm">Content</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
+            <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">Content</CardTitle></CardHeader>
+            <CardContent className="p-3 pt-0 space-y-4">
               <div>
-                <Label>Text or URL</Label>
-                <Input placeholder="https://example.com" value={text} onChange={(e) => setText(e.target.value)} />
+                <Label className="text-xs sm:text-sm">Text or URL</Label>
+                <Input placeholder="https://example.com" value={text} onChange={(e) => setText(e.target.value)} className="text-sm" />
                 <p className="text-xs text-muted-foreground mt-1">{text.length} characters</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label>Size</Label>
+                  <Label className="text-xs sm:text-sm">Size</Label>
                   <Select value={size} onValueChange={setSize}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="128">128px</SelectItem>
                       <SelectItem value="256">256px</SelectItem>
@@ -153,9 +153,9 @@ export default function QRGenerator() {
                   </Select>
                 </div>
                 <div>
-                  <Label>Margin</Label>
+                  <Label className="text-xs sm:text-sm">Margin</Label>
                   <Select value={margin} onValueChange={setMargin}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="0">None</SelectItem>
                       <SelectItem value="1">Small</SelectItem>
@@ -166,29 +166,29 @@ export default function QRGenerator() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label>QR Color</Label>
+                  <Label className="text-xs sm:text-sm">QR Color</Label>
                   <div className="flex gap-2">
-                    <Input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-12 h-10 p-1" />
-                    <Input value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="flex-1" />
+                    <Input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-10 h-9 p-1 flex-shrink-0" />
+                    <Input value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="flex-1 text-sm" />
                   </div>
                 </div>
                 <div>
-                  <Label>Background</Label>
+                  <Label className="text-xs sm:text-sm">Background</Label>
                   <div className="flex gap-2">
-                    <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-12 h-10 p-1" />
-                    <Input value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="flex-1" />
+                    <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-10 h-9 p-1 flex-shrink-0" />
+                    <Input value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="flex-1 text-sm" />
                   </div>
                 </div>
               </div>
 
               <div>
-                <Label>Logo (optional)</Label>
+                <Label className="text-xs sm:text-sm">Logo (optional)</Label>
                 <div className="flex gap-2">
-                  <Input type="file" accept="image/*" onChange={handleLogoUpload} className="flex-1" />
+                  <Input type="file" accept="image/*" onChange={handleLogoUpload} className="flex-1 text-sm" />
                   {logo && (
-                    <Button variant="ghost" size="icon" onClick={() => setLogo(null)}>
+                    <Button variant="ghost" size="icon" onClick={() => setLogo(null)} className="h-9 w-9 flex-shrink-0">
                       <X className="h-4 w-4" />
                     </Button>
                   )}
@@ -199,26 +199,26 @@ export default function QRGenerator() {
         </div>
 
         <Card className="border-2 border-primary/20">
-          <CardHeader className="py-3"><CardTitle className="text-sm">Preview</CardTitle></CardHeader>
-          <CardContent className="flex flex-col items-center gap-4">
+          <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">Preview</CardTitle></CardHeader>
+          <CardContent className="p-3 pt-0 flex flex-col items-center gap-4">
             <canvas ref={canvasRef} className="hidden" />
             
-            <div className="w-64 h-64 bg-muted rounded-lg flex items-center justify-center">
+            <div className="w-48 h-48 sm:w-64 sm:h-64 bg-muted rounded-lg flex items-center justify-center">
               {qrDataUrl ? (
                 <img src={qrDataUrl} alt="QR Code" className="max-w-full max-h-full" />
               ) : (
-                <p className="text-muted-foreground text-sm">Enter text to generate QR</p>
+                <p className="text-muted-foreground text-xs sm:text-sm text-center px-4">Enter text to generate QR</p>
               )}
             </div>
 
             <div className="flex gap-2 w-full">
-              <Button onClick={downloadPNG} disabled={!qrDataUrl} className="flex-1">
-                <Download className="h-4 w-4 mr-1" /> PNG
+              <Button onClick={downloadPNG} disabled={!qrDataUrl} className="flex-1 text-xs sm:text-sm">
+                <Download className="h-3.5 w-3.5 mr-1" /> PNG
               </Button>
-              <Button onClick={downloadSVG} disabled={!text} variant="outline" className="flex-1">
-                <Download className="h-4 w-4 mr-1" /> SVG
+              <Button onClick={downloadSVG} disabled={!text} variant="outline" className="flex-1 text-xs sm:text-sm">
+                <Download className="h-3.5 w-3.5 mr-1" /> SVG
               </Button>
-              <Button onClick={() => copy(qrDataUrl, 'Data URL copied')} disabled={!qrDataUrl} variant="outline">
+              <Button onClick={() => copy(qrDataUrl, 'Data URL copied')} disabled={!qrDataUrl} variant="outline" size="icon" className="h-9 w-9 flex-shrink-0">
                 <Copy className="h-4 w-4" />
               </Button>
             </div>

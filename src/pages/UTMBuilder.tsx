@@ -206,23 +206,24 @@ export default function UTMBuilder() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">UTM Builder</h1>
-          <p className="text-muted-foreground">Build campaign URLs with UTM parameters and Google Ads ValueTrack</p>
+          <h1 className="text-xl sm:text-2xl font-bold">UTM Builder</h1>
+          <p className="text-sm text-muted-foreground">Build campaign URLs with UTM parameters</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleReset}>
-            <RotateCcw className="h-4 w-4 mr-1" />
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
+            <RotateCcw className="h-3.5 w-3.5 mr-1" />
             Reset
           </Button>
           
           {/* Presets Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Save className="h-4 w-4 mr-1" />
+              <Button variant="outline" size="sm" className="h-8 text-xs">
+                <Save className="h-3.5 w-3.5 mr-1" />
                 Presets
               </Button>
             </DropdownMenuTrigger>
@@ -269,12 +270,12 @@ export default function UTMBuilder() {
           {/* History Dialog */}
           <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <History className="h-4 w-4 mr-1" />
+              <Button variant="outline" size="sm" className="h-8 text-xs">
+                <History className="h-3.5 w-3.5 mr-1" />
                 History
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[70vh] overflow-y-auto">
+            <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[70vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>URL History</DialogTitle>
               </DialogHeader>
@@ -284,11 +285,11 @@ export default function UTMBuilder() {
                 ) : (
                   history.map((item) => (
                     <div key={item.id} className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                      <span className="flex-1 text-sm truncate">{item.url}</span>
+                      <span className="flex-1 text-xs sm:text-sm truncate">{item.url}</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 flex-shrink-0"
                         onClick={() => copy(item.url)}
                       >
                         <Copy className="h-3 w-3" />
@@ -302,25 +303,26 @@ export default function UTMBuilder() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-5">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-5">
         {/* Input Section - 60% */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-4">
           {/* Target URL */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Target URL</CardTitle>
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardTitle className="text-sm">Target URL</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4 pt-0">
               <div className="flex gap-2">
                 <Input
                   placeholder="https://example.com/page"
                   value={params.url}
                   onChange={(e) => setParams(prev => ({ ...prev, url: e.target.value }))}
-                  className="flex-1"
+                  className="flex-1 text-sm"
                 />
                 <Button
                   variant="outline"
                   size="icon"
+                  className="h-9 w-9 flex-shrink-0"
                   onClick={() => setParams(prev => ({ ...prev, url: '' }))}
                 >
                   <X className="h-4 w-4" />
@@ -331,64 +333,68 @@ export default function UTMBuilder() {
 
           {/* UTM Parameters */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">UTM Parameters</CardTitle>
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardTitle className="text-sm">UTM Parameters</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
               {[
-                { key: 'source', label: 'Source', placeholder: 'google, facebook, newsletter' },
-                { key: 'medium', label: 'Medium', placeholder: 'cpc, email, social' },
-                { key: 'campaign', label: 'Campaign', placeholder: 'summer_sale, product_launch' },
-                { key: 'term', label: 'Term', placeholder: 'running+shoes, keyword' },
-                { key: 'content', label: 'Content', placeholder: 'logolink, textlink' },
+                { key: 'source', label: 'Source', placeholder: 'google, facebook' },
+                { key: 'medium', label: 'Medium', placeholder: 'cpc, email' },
+                { key: 'campaign', label: 'Campaign', placeholder: 'summer_sale' },
+                { key: 'term', label: 'Term', placeholder: 'keyword' },
+                { key: 'content', label: 'Content', placeholder: 'logolink' },
               ].map(({ key, label, placeholder }) => (
-                <div key={key} className="flex items-center gap-3">
-                  <Label className="w-24 text-sm font-medium">{label}</Label>
-                  <Input
-                    placeholder={placeholder}
-                    value={params[key as keyof UTMParams] as string}
-                    onChange={(e) => setParams(prev => ({ ...prev, [key]: e.target.value }))}
-                    className="flex-1"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => setParams(prev => ({ ...prev, [key]: '' }))}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
+                <div key={key} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <Label className="w-20 text-xs sm:text-sm font-medium shrink-0">{label}</Label>
+                  <div className="flex gap-2 flex-1">
+                    <Input
+                      placeholder={placeholder}
+                      value={params[key as keyof UTMParams] as string}
+                      onChange={(e) => setParams(prev => ({ ...prev, [key]: e.target.value }))}
+                      className="flex-1 text-sm"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 flex-shrink-0"
+                      onClick={() => setParams(prev => ({ ...prev, [key]: '' }))}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
               ))}
 
               {/* Custom Parameters */}
               {params.customParams.map((param, index) => (
-                <div key={index} className="flex items-center gap-3">
+                <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                   <Input
                     placeholder="Key"
                     value={param.key}
                     onChange={(e) => updateCustomParam(index, 'key', e.target.value)}
-                    className="w-24"
+                    className="w-full sm:w-24 text-sm"
                   />
-                  <Input
-                    placeholder="Value"
-                    value={param.value}
-                    onChange={(e) => updateCustomParam(index, 'value', e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => removeCustomParam(index)}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
+                  <div className="flex gap-2 flex-1">
+                    <Input
+                      placeholder="Value"
+                      value={param.value}
+                      onChange={(e) => updateCustomParam(index, 'value', e.target.value)}
+                      className="flex-1 text-sm"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 flex-shrink-0"
+                      onClick={() => removeCustomParam(index)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
               ))}
               
-              <Button variant="outline" size="sm" onClick={addCustomParam}>
-                <Plus className="h-4 w-4 mr-1" />
+              <Button variant="outline" size="sm" onClick={addCustomParam} className="text-xs">
+                <Plus className="h-3.5 w-3.5 mr-1" />
                 Add Custom Parameter
               </Button>
             </CardContent>
@@ -396,22 +402,22 @@ export default function UTMBuilder() {
 
           {/* ValueTrack Macros */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Google Ads ValueTrack</CardTitle>
-              <CardDescription>Select macros to include in your URL</CardDescription>
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardTitle className="text-sm">Google Ads ValueTrack</CardTitle>
+              <CardDescription className="text-xs">Select macros to include</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                 {VALUE_TRACK_MACROS.map((macro) => (
                   <label
                     key={macro.id}
-                    className="flex items-center gap-2 p-2 rounded-md border border-border hover:bg-muted cursor-pointer transition-colors"
+                    className="flex items-center gap-2 p-2 rounded-md border border-border hover:bg-muted cursor-pointer transition-colors text-xs sm:text-sm"
                   >
                     <Checkbox
                       checked={selectedValueTrack.includes(macro.id)}
                       onCheckedChange={() => toggleValueTrack(macro.id)}
                     />
-                    <span className="text-sm">{macro.label}</span>
+                    <span className="truncate">{macro.label}</span>
                   </label>
                 ))}
               </div>
@@ -421,22 +427,22 @@ export default function UTMBuilder() {
 
         {/* Preview Section - 40% */}
         <div className="lg:col-span-2">
-          <Card className="sticky top-20 border-2 border-primary/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
+          <Card className="lg:sticky lg:top-20 border-2 border-primary/20">
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
                 Live Preview
                 {generatedUrl && <Check className="h-4 w-4 text-accent" />}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg min-h-[100px] break-all text-sm font-mono">
+            <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
+              <div className="p-3 bg-muted rounded-lg min-h-[80px] break-all text-xs sm:text-sm font-mono">
                 {generatedUrl || <span className="text-muted-foreground">Enter a URL to see preview</span>}
               </div>
               
               <Button 
                 onClick={handleCopy} 
                 disabled={!generatedUrl}
-                className="w-full"
+                className="w-full text-sm"
               >
                 {copied ? (
                   <>
