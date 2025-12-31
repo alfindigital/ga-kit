@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle } from 'lucide-react';
+import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 
 interface UTMParams {
@@ -59,6 +60,18 @@ const VALUE_TRACK_MACROS: ValueTrackMacro[] = [
   { id: 'gclid', label: 'GCLID', macro: '{gclid}', description: 'Google Click Identifier' },
 ];
 
+// Quick presets for common platforms
+const QUICK_PRESETS = [
+  { label: 'Google Ads', source: 'google', medium: 'cpc', icon: '🔍' },
+  { label: 'Facebook Ads', source: 'facebook', medium: 'paid-social', icon: '📘' },
+  { label: 'Instagram', source: 'instagram', medium: 'social', icon: '📷' },
+  { label: 'LinkedIn', source: 'linkedin', medium: 'social', icon: '💼' },
+  { label: 'Twitter/X', source: 'twitter', medium: 'social', icon: '🐦' },
+  { label: 'Email Newsletter', source: 'newsletter', medium: 'email', icon: '📧' },
+  { label: 'TikTok Ads', source: 'tiktok', medium: 'paid-social', icon: '🎵' },
+  { label: 'YouTube Ads', source: 'youtube', medium: 'video', icon: '▶️' },
+];
+
 const DEFAULT_PARAMS: UTMParams = {
   url: '',
   source: '',
@@ -82,6 +95,14 @@ interface HistoryItem {
   timestamp: number;
 }
 
+// Helper to format UTM values: lowercase, spaces to hyphens, remove special chars
+const formatUtmValue = (value: string): string => {
+  return value
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-_]/g, '');
+};
+
 export default function UTMBuilder() {
   const [params, setParams] = useState<UTMParams>(DEFAULT_PARAMS);
   const [selectedValueTrack, setSelectedValueTrack] = useState<string[]>([]);
@@ -89,6 +110,7 @@ export default function UTMBuilder() {
   const [history, setHistory] = useLocalStorage<HistoryItem[]>('utm-history', []);
   const [presetName, setPresetName] = useState('');
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [copiedQuery, setCopiedQuery] = useState(false);
   
   const { copy, copied } = useClipboard();
   const { toast } = useToast();
@@ -111,6 +133,39 @@ export default function UTMBuilder() {
     touch('url');
     validate('url', params.url);
   }, [touch, validate, params.url]);
+
+  // Paste from clipboard
+  const handlePaste = useCallback(async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        handleUrlChange(text.trim());
+        toast({ title: 'Pasted!', description: 'URL pasted from clipboard' });
+      }
+    } catch {
+      toast({ 
+        title: 'Cannot access clipboard', 
+        description: 'Please paste manually using Ctrl+V',
+        variant: 'destructive'
+      });
+    }
+  }, [handleUrlChange, toast]);
+
+  // Handle UTM param change with auto-formatting
+  const handleUtmParamChange = useCallback((key: string, value: string) => {
+    const formattedValue = formatUtmValue(value);
+    setParams(prev => ({ ...prev, [key]: formattedValue }));
+  }, []);
+
+  // Apply quick preset
+  const applyQuickPreset = useCallback((preset: typeof QUICK_PRESETS[0]) => {
+    setParams(prev => ({
+      ...prev,
+      source: preset.source,
+      medium: preset.medium,
+    }));
+    toast({ title: 'Applied!', description: `${preset.label} preset applied` });
+  }, [toast]);
 
   if (isLoading) return <UTMBuilderSkeleton />;
 
@@ -156,6 +211,17 @@ export default function UTMBuilder() {
     }
   })();
 
+  // Extract query string only
+  const queryStringOnly = useMemo(() => {
+    if (!generatedUrl) return '';
+    try {
+      const url = new URL(generatedUrl);
+      return url.search;
+    } catch {
+      return '';
+    }
+  }, [generatedUrl]);
+
   const handleCopy = () => {
     if (generatedUrl) {
       copy(generatedUrl, 'URL copied to clipboard');
@@ -167,6 +233,19 @@ export default function UTMBuilder() {
         timestamp: Date.now(),
       };
       setHistory(prev => [newItem, ...prev.slice(0, 49)]);
+    }
+  };
+
+  const handleCopyQuery = async () => {
+    if (queryStringOnly) {
+      try {
+        await navigator.clipboard.writeText(queryStringOnly);
+        setCopiedQuery(true);
+        setTimeout(() => setCopiedQuery(false), 2000);
+        toast({ title: 'Copied!', description: 'Query string copied to clipboard' });
+      } catch {
+        toast({ title: 'Failed to copy', variant: 'destructive' });
+      }
     }
   };
 
@@ -247,6 +326,32 @@ export default function UTMBuilder() {
             <RotateCcw className="h-3.5 w-3.5 mr-1" />
             Reset
           </Button>
+          
+          {/* Quick Presets Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8 text-xs">
+                <Zap className="h-3.5 w-3.5 mr-1" />
+                Quick Fill
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Popular Platforms
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {QUICK_PRESETS.map((preset) => (
+                <DropdownMenuItem 
+                  key={preset.label} 
+                  onClick={() => applyQuickPreset(preset)}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">{preset.icon}</span>
+                  <span>{preset.label}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {/* Presets Dropdown */}
           <DropdownMenu>
@@ -366,10 +471,20 @@ export default function UTMBuilder() {
                   variant="outline"
                   size="icon"
                   className="h-9 w-9 flex-shrink-0"
+                  onClick={handlePaste}
+                  title="Paste from clipboard"
+                >
+                  <ClipboardPaste className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 flex-shrink-0"
                   onClick={() => {
                     setParams(prev => ({ ...prev, url: '' }));
                     clearErrors();
                   }}
+                  title="Clear URL"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -381,6 +496,7 @@ export default function UTMBuilder() {
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
               <CardTitle className="text-sm">UTM Parameters</CardTitle>
+              <CardDescription className="text-xs">Auto-formatted: lowercase, spaces → hyphens</CardDescription>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
               {[
@@ -396,7 +512,7 @@ export default function UTMBuilder() {
                     <Input
                       placeholder={placeholder}
                       value={params[key as keyof UTMParams] as string}
-                      onChange={(e) => setParams(prev => ({ ...prev, [key]: e.target.value }))}
+                      onChange={(e) => handleUtmParamChange(key, e.target.value)}
                       className="flex-1 text-sm"
                     />
                     <Button
@@ -502,23 +618,50 @@ export default function UTMBuilder() {
                     {generatedUrl || <span className="text-muted-foreground">Processing...</span>}
                   </div>
                   
-                  <Button 
-                    onClick={handleCopy} 
-                    disabled={!generatedUrl}
-                    className="w-full text-sm"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="h-4 w-4 mr-2" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4 mr-2" />
-                        Copy URL
-                      </>
-                    )}
-                  </Button>
+                  {/* Query String Only Preview */}
+                  {queryStringOnly && (
+                    <div className="p-2 bg-muted/50 rounded-md">
+                      <p className="text-xs text-muted-foreground mb-1">Query string only:</p>
+                      <code className="text-xs break-all">{queryStringOnly}</code>
+                    </div>
+                  )}
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={handleCopy} 
+                      disabled={!generatedUrl}
+                      className="flex-1 text-sm"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="h-4 w-4 mr-2" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Copy URL
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={handleCopyQuery}
+                      disabled={!queryStringOnly}
+                      className="text-sm"
+                      title="Copy query string only"
+                    >
+                      {copiedQuery ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4 mr-1" />
+                          Query
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </>
               )}
             </CardContent>
