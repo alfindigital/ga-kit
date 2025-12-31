@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap } from 'lucide-react';
+import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -313,6 +313,54 @@ export default function UTMBuilder() {
     );
   };
 
+  // Export history to CSV
+  const handleExportHistory = () => {
+    if (history.length === 0) return;
+
+    // Parse UTM params from each URL
+    const rows = history.map((item) => {
+      let campaign = '';
+      let medium = '';
+      let source = '';
+      
+      try {
+        const url = new URL(item.url);
+        campaign = url.searchParams.get('utm_campaign') || '';
+        medium = url.searchParams.get('utm_medium') || '';
+        source = url.searchParams.get('utm_source') || '';
+      } catch {
+        // Invalid URL, leave params empty
+      }
+
+      const date = new Date(item.timestamp).toLocaleString();
+      return [date, item.url, campaign, medium, source];
+    });
+
+    // Build CSV with BOM for Excel compatibility
+    const headers = ['Date', 'URL', 'Campaign', 'Medium', 'Source'];
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    
+    // Generate filename with date
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filename = `utm-history-${dateStr}.csv`;
+    
+    // Download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+
+    toast({ title: 'Exported!', description: `${history.length} URLs exported to ${filename}` });
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
@@ -411,7 +459,20 @@ export default function UTMBuilder() {
             </DialogTrigger>
             <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[70vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>URL History</DialogTitle>
+                <div className="flex items-center justify-between">
+                  <DialogTitle>URL History</DialogTitle>
+                  {history.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={handleExportHistory}
+                    >
+                      <Download className="h-3 w-3 mr-1" />
+                      Export CSV
+                    </Button>
+                  )}
+                </div>
               </DialogHeader>
               <div className="space-y-2">
                 {history.length === 0 ? (
