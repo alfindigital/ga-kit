@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Download, Copy, RotateCcw, X, QrCode, AlertCircle } from 'lucide-react';
+import { Download, Copy, RotateCcw, X, QrCode, AlertCircle, Beaker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -174,6 +174,12 @@ export default function QRGenerator() {
     clearErrors();
   };
 
+  // Load sample data for demo
+  const loadSampleData = () => {
+    setText('https://example.com/my-awesome-page?utm_source=qr&utm_medium=print');
+    toast({ title: 'Sample loaded!', description: 'Demo URL has been added' });
+  };
+
   const hasColorError = fgColorState.hasError || bgColorState.hasError;
 
   return (
@@ -183,9 +189,14 @@ export default function QRGenerator() {
           <h1 className="text-xl sm:text-2xl font-bold">QR Generator</h1>
           <p className="text-sm text-muted-foreground">Generate QR codes with custom colors</p>
         </div>
-        <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
+            <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
+            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
