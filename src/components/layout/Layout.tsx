@@ -5,6 +5,8 @@ import { Footer } from './Footer';
 import { BottomTabNav } from './BottomTabNav';
 import { PageTransition } from '../PageTransition';
 import { PullToRefresh } from '../PullToRefresh';
+import { KeyboardShortcutsDialog } from '../KeyboardShortcutsDialog';
+import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { toast } from '@/hooks/use-toast';
 
 interface LayoutProps {
@@ -14,6 +16,9 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Enable global keyboard shortcuts
+  useGlobalShortcuts();
 
   const handleRefresh = useCallback(async () => {
     // Simulate refresh delay
@@ -41,6 +46,7 @@ export function Layout({ children }: LayoutProps) {
       </main>
       <Footer />
       <BottomTabNav />
+      <KeyboardShortcutsDialog />
     </div>
   );
 }

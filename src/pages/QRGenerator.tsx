@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useClipboard } from '@/hooks/useClipboard';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useValidation, validators } from '@/hooks/useValidation';
@@ -179,6 +180,13 @@ export default function QRGenerator() {
     setText('https://example.com/my-awesome-page?utm_source=qr&utm_medium=print');
     toast({ title: 'Sample loaded!', description: 'Demo URL has been added' });
   };
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: 'c', shift: true, action: () => qrDataUrl && copy(qrDataUrl, 'Data URL copied'), description: 'Copy QR' },
+    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
+    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
+  ]);
 
   const hasColorError = fgColorState.hasError || bgColorState.hasError;
 
