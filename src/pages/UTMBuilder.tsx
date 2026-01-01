@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -104,6 +105,7 @@ const formatUtmValue = (value: string): string => {
 };
 
 export default function UTMBuilder() {
+  const navigate = useNavigate();
   const [params, setParams] = useState<UTMParams>(DEFAULT_PARAMS);
   const [selectedValueTrack, setSelectedValueTrack] = useState<string[]>([]);
   const [presets, setPresets] = useLocalStorage<Preset[]>('utm-presets', []);
@@ -721,6 +723,16 @@ export default function UTMBuilder() {
                           Query
                         </>
                       )}
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate(`/qr-generator?content=${encodeURIComponent(generatedUrl)}`)}
+                      disabled={!generatedUrl}
+                      className="text-sm"
+                      title="Generate QR code"
+                    >
+                      <QrCode className="h-4 w-4" />
                     </Button>
                   </div>
                 </>

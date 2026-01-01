@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Download, Copy, RotateCcw, X, QrCode, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +16,10 @@ import { InputError } from '@/components/ui/input-error';
 import { cn } from '@/lib/utils';
 
 export default function QRGenerator() {
-  const [text, setText] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialContent = searchParams.get('content') || '';
+  
+  const [text, setText] = useState(initialContent);
   const [size, setSize] = useState('256');
   const [margin, setMargin] = useState('1');
   const [fgColor, setFgColor] = useState('#000000');
@@ -26,6 +30,13 @@ export default function QRGenerator() {
   const { copy } = useClipboard();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
+  
+  // Clear URL param after reading it
+  useEffect(() => {
+    if (searchParams.has('content')) {
+      setSearchParams({}, { replace: true });
+    }
+  }, []);
 
   const { validate, touch, getFieldState, clearErrors } = useValidation({
     fgColor: [validators.hexColor('Please enter a valid hex color (e.g., #000000)')],
