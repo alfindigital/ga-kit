@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
@@ -75,6 +76,16 @@ export default function KeywordMixer() {
     toast({ title: 'Sample loaded!', description: 'Demo keywords have been added' });
   };
 
+  // Reset function
+  const handleReset = () => { setBase(''); setPrefixes(''); setSuffixes(''); };
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: 'c', shift: true, action: () => results.length > 0 && copy(results.join('\n')), description: 'Copy results' },
+    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
+    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
+  ]);
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -86,7 +97,7 @@ export default function KeywordMixer() {
           <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
             <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
           </Button>
-          <Button variant="outline" size="sm" onClick={() => { setBase(''); setPrefixes(''); setSuffixes(''); }} className="h-8 text-xs self-start sm:self-auto">
+          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
             <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
           </Button>
         </div>

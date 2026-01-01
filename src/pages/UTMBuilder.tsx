@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
@@ -376,6 +377,13 @@ export default function UTMBuilder() {
     });
     toast({ title: 'Sample loaded!', description: 'Demo data has been added' });
   };
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: 'c', shift: true, action: handleCopy, description: 'Copy URL' },
+    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
+    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
+  ]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
