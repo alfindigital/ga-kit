@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Copy, Plus, Trash2, RotateCcw, Sparkles, AlertTriangle } from 'lucide-react';
+import { Copy, Plus, Trash2, RotateCcw, Sparkles, AlertTriangle, Beaker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
+import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { KeywordCombinerSkeleton } from '@/components/skeletons';
@@ -23,6 +24,7 @@ export default function KeywordCombiner() {
   const [lists, setLists] = useState<string[]>(['', '', '']);
   const [matchTypes, setMatchTypes] = useState<MatchType[]>(['broad']);
   const { copy } = useClipboard();
+  const { toast } = useToast();
   const { exportCsv, exportTxt } = useExport();
   const isLoading = usePageLoading(400);
 
@@ -74,6 +76,16 @@ export default function KeywordCombiner() {
     return lines;
   };
 
+  // Load sample data for demo
+  const loadSampleData = () => {
+    setLists([
+      'buy\nbest\ncheap',
+      'running\nbasketball\ntennis',
+      'shoes\nsneakers'
+    ]);
+    toast({ title: 'Sample loaded!', description: 'Demo keywords have been added' });
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -81,9 +93,14 @@ export default function KeywordCombiner() {
           <h1 className="text-xl sm:text-2xl font-bold">Keyword Combiner</h1>
           <p className="text-sm text-muted-foreground">Combine keyword lists into combinations</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => setLists(['', '', ''])} className="h-8 text-xs self-start sm:self-auto">
-          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
+            <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setLists(['', '', ''])} className="h-8 text-xs self-start sm:self-auto">
+            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+          </Button>
+        </div>
       </div>
 
       {/* Match Types with validation indicator */}

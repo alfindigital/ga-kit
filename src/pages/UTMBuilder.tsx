@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download, QrCode } from 'lucide-react';
+import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download, QrCode, Beaker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -363,6 +363,20 @@ export default function UTMBuilder() {
     toast({ title: 'Exported!', description: `${history.length} URLs exported to ${filename}` });
   };
 
+  // Load sample data for demo
+  const loadSampleData = () => {
+    setParams({
+      url: 'https://example.com/landing-page',
+      source: 'google',
+      medium: 'cpc',
+      campaign: 'summer-sale-2024',
+      term: 'running-shoes',
+      content: 'hero-banner',
+      customParams: [],
+    });
+    toast({ title: 'Sample loaded!', description: 'Demo data has been added' });
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
@@ -372,6 +386,10 @@ export default function UTMBuilder() {
           <p className="text-sm text-muted-foreground">Build campaign URLs with UTM parameters</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
+            <Beaker className="h-3.5 w-3.5 mr-1" />
+            Sample
+          </Button>
           <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
             <RotateCcw className="h-3.5 w-3.5 mr-1" />
             Reset

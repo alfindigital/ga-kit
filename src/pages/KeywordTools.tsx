@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, RotateCcw, FileText, ArrowRightLeft, CaseSensitive } from 'lucide-react';
+import { Copy, RotateCcw, FileText, ArrowRightLeft, CaseSensitive, Beaker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -7,12 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
+import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { ToolPageSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 
 export default function KeywordTools() {
   const { copy } = useClipboard();
+  const { toast } = useToast();
   const isLoading = usePageLoading(400);
 
   if (isLoading) return <ToolPageSkeleton />;
@@ -51,11 +53,26 @@ export default function KeywordTools() {
     : replaceInput;
   const replaceCount = findText ? (replaceInput.split(caseSensitive ? findText : new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')).length - 1) : 0;
 
+  // Load sample data for demo
+  const loadSampleData = () => {
+    setDupeInput('running shoes\nbasketball shoes\nrunning shoes\ntennis shoes\nbasketball shoes');
+    setCaseInput('Hello World Example Text');
+    setReplaceInput('The quick brown fox jumps over the lazy dog');
+    setFindText('fox');
+    setReplaceText('cat');
+    toast({ title: 'Sample loaded!', description: 'Demo data has been added to all tabs' });
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold">Keyword Tools</h1>
-        <p className="text-sm text-muted-foreground">Remove duplicates, convert case, and bulk replace</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold">Keyword Tools</h1>
+          <p className="text-sm text-muted-foreground">Remove duplicates, convert case, and bulk replace</p>
+        </div>
+        <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
+          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+        </Button>
       </div>
 
       <Tabs defaultValue="duplicates" className="w-full">
