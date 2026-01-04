@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
@@ -6,6 +6,7 @@ import { BottomTabNav } from './BottomTabNav';
 import { PageTransition } from '../PageTransition';
 import { PullToRefresh } from '../PullToRefresh';
 import { KeyboardShortcutsDialog } from '../KeyboardShortcutsDialog';
+import { CommandPalette } from '../CommandPalette';
 import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { toast } from '@/hooks/use-toast';
 
@@ -16,6 +17,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   
   // Enable global keyboard shortcuts
   useGlobalShortcuts();
@@ -46,7 +48,8 @@ export function Layout({ children }: LayoutProps) {
       </main>
       <Footer />
       <BottomTabNav />
-      <KeyboardShortcutsDialog />
+      <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+      <CommandPalette onOpenShortcuts={() => setShortcutsOpen(true)} />
     </div>
   );
 }
