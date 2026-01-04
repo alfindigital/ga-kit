@@ -14,7 +14,8 @@ import {
   Youtube,
   QrCode,
   LayoutDashboard,
-  X
+  X,
+  Keyboard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +27,8 @@ import {
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
+import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -42,6 +45,7 @@ export function Header() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { fontSize, setFontSize } = useFontSize();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/80">
@@ -76,7 +80,24 @@ export function Header() {
         </nav>
 
         {/* Settings & Mobile Menu */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* Keyboard Shortcuts */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-9 w-9 hidden sm:flex"
+                onClick={() => setShortcutsOpen(true)}
+              >
+                <Keyboard className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Keyboard shortcuts <kbd className="ml-1 px-1 py-0.5 text-xs bg-muted rounded">?</kbd></p>
+            </TooltipContent>
+          </Tooltip>
+          
           {/* Theme Toggle */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -154,6 +175,8 @@ export function Header() {
           </nav>
         </div>
       )}
+      {/* Keyboard Shortcuts Dialog */}
+      <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </header>
   );
 }
