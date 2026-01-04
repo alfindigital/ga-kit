@@ -46,3 +46,11 @@ export function getRecentPages(): string[] {
     return [];
   }
 }
+
+export function clearRecentPages(): void {
+  try {
+    localStorage.removeItem('recent-pages');
+  } catch {
+    // Ignore errors
+  }
+}
