@@ -8,8 +8,17 @@ import {
 } from '@/components/ui/dialog';
 import { GLOBAL_SHORTCUTS, PAGE_SHORTCUTS } from '@/hooks/useKeyboardShortcuts';
 
-export function KeyboardShortcutsDialog() {
-  const [open, setOpen] = useState(false);
+interface KeyboardShortcutsDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function KeyboardShortcutsDialog({ open: controlledOpen, onOpenChange }: KeyboardShortcutsDialogProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = isControlled ? (onOpenChange || (() => {})) : setInternalOpen;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
