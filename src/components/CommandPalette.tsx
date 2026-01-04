@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CommandDialog,
@@ -23,8 +23,10 @@ import {
   RotateCcw,
   Beaker,
   Copy,
+  Clock,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { getRecentPages } from '@/hooks/useRecentPages';
 
 const navigationItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard, keywords: ['home', 'main'] },
@@ -43,7 +45,24 @@ interface CommandPaletteProps {
 export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme } = useTheme();
+
+  // Get recent pages when dialog opens
+  const recentPages = useMemo(() => {
+    if (!open) return [];
+    return getRecentPages();
+  }, [open]);
+
+  const recentItems = useMemo(() => {
+    return recentPages
+      .map(path => navigationItems.find(item => item.path === path))
+      .filter(Boolean) as typeof navigationItems;
+  }, [recentPages]);
+
+  // Filter out recent items from main navigation
+  const remainingNavItems = useMemo(() => {
+    return navigationItems.filter(item => !recentPages.includes(item.path));
+  }, [recentPages]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -68,8 +87,26 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         
+        {recentItems.length > 0 && (
+          <>
+            <CommandGroup heading="Recent">
+              {recentItems.map((item) => (
+                <CommandItem
+                  key={`recent-${item.path}`}
+                  value={`recent ${item.label} ${item.keywords.join(' ')}`}
+                  onSelect={() => runCommand(() => navigate(item.path))}
+                >
+                  <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span>{item.label}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+            <CommandSeparator />
+          </>
+        )}
+        
         <CommandGroup heading="Navigation">
-          {navigationItems.map((item) => (
+          {remainingNavItems.map((item) => (
             <CommandItem
               key={item.path}
               value={`${item.label} ${item.keywords.join(' ')}`}

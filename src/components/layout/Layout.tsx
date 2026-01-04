@@ -8,6 +8,7 @@ import { PullToRefresh } from '../PullToRefresh';
 import { KeyboardShortcutsDialog } from '../KeyboardShortcutsDialog';
 import { CommandPalette } from '../CommandPalette';
 import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useRecentPages } from '@/hooks/useRecentPages';
 import { toast } from '@/hooks/use-toast';
 
 interface LayoutProps {
@@ -21,6 +22,9 @@ export function Layout({ children }: LayoutProps) {
   
   // Enable global keyboard shortcuts
   useGlobalShortcuts();
+  
+  // Track recently visited pages
+  useRecentPages();
 
   const handleRefresh = useCallback(async () => {
     // Simulate refresh delay
