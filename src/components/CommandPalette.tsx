@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CommandDialog,
@@ -24,9 +24,11 @@ import {
   Beaker,
   Copy,
   Clock,
+  Trash2,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getRecentPages } from '@/hooks/useRecentPages';
+import { getRecentPages, clearRecentPages } from '@/hooks/useRecentPages';
+import { toast } from '@/hooks/use-toast';
 
 const navigationItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard, keywords: ['home', 'main'] },
@@ -44,14 +46,16 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
   const [open, setOpen] = useState(false);
+  const [recentKey, setRecentKey] = useState(0);
   const navigate = useNavigate();
   const { setTheme } = useTheme();
 
-  // Get recent pages when dialog opens
+  // Get recent pages when dialog opens or after clearing
   const recentPages = useMemo(() => {
     if (!open) return [];
     return getRecentPages();
-  }, [open]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, recentKey]);
 
   const recentItems = useMemo(() => {
     return recentPages
@@ -81,6 +85,16 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
     command();
   };
 
+  const handleClearRecent = useCallback(() => {
+    clearRecentPages();
+    setRecentKey(k => k + 1);
+    toast({
+      title: "Cleared",
+      description: "Recent tools history cleared",
+      duration: 2000,
+    });
+  }, []);
+
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput placeholder="Type a command or search..." />
@@ -100,6 +114,13 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
                   <span>{item.label}</span>
                 </CommandItem>
               ))}
+              <CommandItem
+                value="clear recent history"
+                onSelect={handleClearRecent}
+              >
+                <Trash2 className="mr-2 h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Clear Recent</span>
+              </CommandItem>
             </CommandGroup>
             <CommandSeparator />
           </>
