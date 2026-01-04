@@ -57,6 +57,7 @@ export function useGlobalShortcuts() {
 
 // Shortcut definitions for help display
 export const GLOBAL_SHORTCUTS = [
+  { keys: ['Ctrl', 'K'], description: 'Open command palette' },
   { keys: ['Ctrl', '1'], description: 'Dashboard' },
   { keys: ['Ctrl', '2'], description: 'UTM Builder' },
   { keys: ['Ctrl', '3'], description: 'QR Generator' },
