@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -75,8 +75,10 @@ export default function YTFinder() {
   const { exportCsv, exportTxt } = useExport();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
-  const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
+  const { history, addToHistory, updateHistoryName, removeFromHistory, clearHistory } = useSearchHistory();
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
 
   // Keyboard shortcuts: Shift+F to fetch, Shift+X to cancel
   const handleFetchShortcut = useCallback(() => {
@@ -291,29 +293,84 @@ export default function YTFinder() {
                     <div 
                       key={item.id}
                       className="group flex items-center justify-between p-2 rounded-md hover:bg-muted cursor-pointer"
-                      onClick={() => loadFromHistory(item.urls)}
+                      onClick={() => {
+                        if (editingId !== item.id) {
+                          loadFromHistory(item.urls);
+                        }
+                      }}
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <Youtube className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
-                          <span className="text-sm font-medium truncate">{item.videoCount} video{item.videoCount !== 1 ? 's' : ''}</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                          <Clock className="h-3 w-3" />
-                          <span>{formatTimeAgo(item.timestamp)}</span>
-                        </div>
+                        {editingId === item.id ? (
+                          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="text"
+                              value={editingName}
+                              onChange={(e) => setEditingName(e.target.value)}
+                              className="flex-1 text-sm px-2 py-1 rounded border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                              autoFocus
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  updateHistoryName(item.id, editingName);
+                                  setEditingId(null);
+                                } else if (e.key === 'Escape') {
+                                  setEditingId(null);
+                                }
+                              }}
+                            />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              onClick={() => {
+                                updateHistoryName(item.id, editingName);
+                                setEditingId(null);
+                              }}
+                            >
+                              <Check className="h-3 w-3 text-primary" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <Youtube className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                              <span className="text-sm font-medium truncate">{item.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                              <span>{item.videoCount} video{item.videoCount !== 1 ? 's' : ''}</span>
+                              <span>•</span>
+                              <Clock className="h-3 w-3" />
+                              <span>{formatTimeAgo(item.timestamp)}</span>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeFromHistory(item.id);
-                        }}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
+                      {editingId !== item.id && (
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingId(item.id);
+                              setEditingName(item.name);
+                            }}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFromHistory(item.id);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
