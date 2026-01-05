@@ -72,4 +72,6 @@ export const PAGE_SHORTCUTS = [
   { keys: ['Shift', 'C'], description: 'Copy result' },
   { keys: ['Shift', 'R'], description: 'Reset form' },
   { keys: ['Shift', 'S'], description: 'Load sample data' },
+  { keys: ['Shift', 'F'], description: 'Fetch data (YT Finder)' },
+  { keys: ['Shift', 'X'], description: 'Cancel request (YT Finder)' },
 ];
