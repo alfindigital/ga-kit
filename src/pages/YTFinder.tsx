@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -66,10 +67,33 @@ export default function YTFinder() {
   const [touched, setTouched] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const fetchButtonRef = useRef<HTMLButtonElement>(null);
   const { copy } = useClipboard();
   const { exportCsv, exportTxt } = useExport();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
+
+  // Keyboard shortcuts: Shift+F to fetch, Shift+X to cancel
+  const handleFetchShortcut = useCallback(() => {
+    if (!loading) {
+      fetchButtonRef.current?.click();
+    }
+  }, [loading]);
+
+  const handleCancelShortcut = useCallback(() => {
+    if (loading && abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+      setLoading(false);
+      setProgress(null);
+      toast({ title: 'Cancelled', description: 'Fetch operation was cancelled (Shift+X)' });
+    }
+  }, [loading, toast]);
+
+  useKeyboardShortcuts([
+    { key: 'f', shift: true, action: handleFetchShortcut, description: 'Fetch video data' },
+    { key: 'x', shift: true, action: handleCancelShortcut, description: 'Cancel ongoing request' },
+  ]);
 
   if (isLoading) return <ToolPageSkeleton />;
 
@@ -275,6 +299,7 @@ export default function YTFinder() {
             )}
 
             <Button 
+              ref={fetchButtonRef}
               onClick={fetchChannelData} 
               disabled={loading || (touched && !hasValidUrls)} 
               className="w-full bg-destructive hover:bg-destructive/90 text-sm"
