@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X } from 'lucide-react';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +15,9 @@ import { ToolPageSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
 import { cn } from '@/lib/utils';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface VideoData {
   videoUrl: string;
@@ -72,6 +75,8 @@ export default function YTFinder() {
   const { exportCsv, exportTxt } = useExport();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
+  const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // Keyboard shortcuts: Shift+F to fetch, Shift+X to cancel
   const handleFetchShortcut = useCallback(() => {
@@ -156,6 +161,9 @@ export default function YTFinder() {
     setError('');
     const videoIds = extractVideoIds(urls);
     
+    // Save to search history
+    addToHistory(urls, videoIds);
+    
     setLoading(true);
     setResults([]);
     setProgress({ current: 0, total: videoIds.length });
@@ -205,6 +213,25 @@ export default function YTFinder() {
     }
   };
 
+  const loadFromHistory = (historyUrls: string) => {
+    setUrls(historyUrls);
+    setTouched(false);
+    setError('');
+    setHistoryOpen(false);
+    toast({ title: 'Loaded', description: 'URLs loaded from history' });
+  };
+
+  const formatTimeAgo = (timestamp: number): string => {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return 'just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  };
+
   const handleReset = () => {
     handleCancel();
     setUrls('');
@@ -226,9 +253,77 @@ export default function YTFinder() {
           <h1 className="text-xl sm:text-2xl font-bold">YT Channel Finder</h1>
           <p className="text-sm text-muted-foreground">Extract channel info from YouTube URLs</p>
         </div>
-        <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
-        </Button>
+        <div className="flex gap-2 self-start sm:self-auto">
+          <Popover open={historyOpen} onOpenChange={setHistoryOpen}>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 text-xs"
+                disabled={history.length === 0}
+              >
+                <History className="h-3.5 w-3.5 mr-1" /> 
+                History
+                {history.length > 0 && (
+                  <span className="ml-1 text-muted-foreground">({history.length})</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0" align="end">
+              <div className="flex items-center justify-between p-3 border-b">
+                <h4 className="text-sm font-medium">Search History</h4>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 text-xs text-muted-foreground hover:text-destructive"
+                  onClick={() => {
+                    clearHistory();
+                    setHistoryOpen(false);
+                    toast({ title: 'Cleared', description: 'Search history cleared' });
+                  }}
+                >
+                  <Trash2 className="h-3 w-3 mr-1" /> Clear
+                </Button>
+              </div>
+              <ScrollArea className="max-h-[300px]">
+                <div className="p-2 space-y-1">
+                  {history.map((item) => (
+                    <div 
+                      key={item.id}
+                      className="group flex items-center justify-between p-2 rounded-md hover:bg-muted cursor-pointer"
+                      onClick={() => loadFromHistory(item.urls)}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <Youtube className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                          <span className="text-sm font-medium truncate">{item.videoCount} video{item.videoCount !== 1 ? 's' : ''}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+                          <Clock className="h-3 w-3" />
+                          <span>{formatTimeAgo(item.timestamp)}</span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 opacity-0 group-hover:opacity-100"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFromHistory(item.id);
+                        }}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            </PopoverContent>
+          </Popover>
+          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
+            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
