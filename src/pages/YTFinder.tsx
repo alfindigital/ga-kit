@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface VideoData {
   videoUrl: string;
@@ -439,14 +440,23 @@ export default function YTFinder() {
                   <span className="text-muted-foreground">
                     Fetching: {progress.current} / {progress.total}
                   </span>
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
-                    onClick={handleCancel}
-                    className="h-7 text-xs"
-                  >
-                    <X className="h-3 w-3 mr-1" /> Cancel
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          onClick={handleCancel}
+                          className="h-7 text-xs"
+                        >
+                          <X className="h-3 w-3 mr-1" /> Cancel
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Cancel fetch <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-muted rounded">Shift+X</kbd></p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
                 <Progress value={(progress.current / progress.total) * 100} className="h-2" />
               </div>
@@ -465,15 +475,24 @@ export default function YTFinder() {
               </div>
             )}
 
-            <Button 
-              ref={fetchButtonRef}
-              onClick={fetchChannelData} 
-              disabled={loading || (touched && !hasValidUrls)} 
-              className="w-full bg-destructive hover:bg-destructive/90 text-sm"
-            >
-              <Youtube className="h-4 w-4 mr-2" />
-              {loading ? 'Fetching...' : 'Get Channel Data'}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    ref={fetchButtonRef}
+                    onClick={fetchChannelData} 
+                    disabled={loading || (touched && !hasValidUrls)} 
+                    className="w-full bg-destructive hover:bg-destructive/90 text-sm"
+                  >
+                    <Youtube className="h-4 w-4 mr-2" />
+                    {loading ? 'Fetching...' : 'Get Channel Data'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Fetch video data <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-muted rounded">Shift+F</kbd></p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </CardContent>
         </Card>
 
