@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -75,7 +75,7 @@ export default function YTFinder() {
   const { exportCsv, exportTxt } = useExport();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
-  const { history, addToHistory, updateHistoryName, removeFromHistory, clearHistory } = useSearchHistory();
+  const { history, addToHistory, updateHistoryName, toggleStar, removeFromHistory, clearHistory } = useSearchHistory();
   const [historyOpen, setHistoryOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
@@ -332,6 +332,7 @@ export default function YTFinder() {
                         ) : (
                           <>
                             <div className="flex items-center gap-2">
+                              {item.starred && <Star className="h-3 w-3 fill-yellow-500 text-yellow-500 flex-shrink-0" />}
                               <Youtube className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
                               <span className="text-sm font-medium truncate">{item.name}</span>
                             </div>
@@ -346,6 +347,20 @@ export default function YTFinder() {
                       </div>
                       {editingId !== item.id && (
                         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleStar(item.id);
+                            }}
+                          >
+                            <Star className={cn(
+                              "h-3 w-3",
+                              item.starred && "fill-yellow-500 text-yellow-500"
+                            )} />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"
