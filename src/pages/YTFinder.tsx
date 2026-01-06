@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -80,6 +80,7 @@ export default function YTFinder() {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
+  const [showUniqueOnly, setShowUniqueOnly] = useState(false);
 
   // Keyboard shortcuts: Shift+F to fetch, Shift+X to cancel
   const handleFetchShortcut = useCallback(() => {
@@ -248,6 +249,14 @@ export default function YTFinder() {
   const hasValidUrls = validVideoIds.length > 0;
   const hasError = touched && !!error;
   const successResults = results.filter(r => r.status === 'success');
+  
+  // Filter to unique channels if enabled
+  const displayResults = showUniqueOnly 
+    ? successResults.filter((r, index, self) => 
+        index === self.findIndex(t => t.channelUrl === r.channelUrl)
+      )
+    : successResults;
+  const uniqueChannelCount = [...new Set(successResults.map(r => r.channelUrl))].length;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -499,7 +508,12 @@ export default function YTFinder() {
         <Card className="border-2 border-primary/20">
           <CardHeader className="p-3 flex-row items-center justify-between gap-2">
             <CardTitle className="text-xs sm:text-sm">
-              Results ({successResults.length})
+              Results ({showUniqueOnly ? displayResults.length : successResults.length})
+              {showUniqueOnly && successResults.length !== displayResults.length && (
+                <span className="ml-2 text-muted-foreground text-xs font-normal">
+                  ({successResults.length} total)
+                </span>
+              )}
               {results.some(r => r.status === 'error') && (
                 <span className="ml-2 text-destructive text-xs font-normal">
                   ({results.filter(r => r.status === 'error').length} failed)
@@ -511,12 +525,33 @@ export default function YTFinder() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
+                      variant={showUniqueOnly ? "default" : "outline"}
+                      size="sm" 
+                      onClick={() => setShowUniqueOnly(!showUniqueOnly)}
+                      className="h-7 text-xs"
+                      disabled={successResults.length === 0}
+                    >
+                      <Filter className="h-3 w-3 mr-1" /> Unique
+                      {uniqueChannelCount !== successResults.length && successResults.length > 0 && (
+                        <span className="ml-1">({uniqueChannelCount})</span>
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{showUniqueOnly ? 'Show all results' : 'Show unique channels only'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
                       variant="outline" 
                       size="sm" 
                       onClick={() => {
                         const urls = [...new Set(successResults.map(r => r.channelUrl))].join('\n');
                         copy(urls);
-                        toast({ title: 'Copied!', description: `${[...new Set(successResults.map(r => r.channelUrl))].length} unique channel URLs copied` });
+                        toast({ title: 'Copied!', description: `${uniqueChannelCount} unique channel URLs copied` });
                       }} 
                       className="h-7 text-xs"
                       disabled={successResults.length === 0}
@@ -536,14 +571,14 @@ export default function YTFinder() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => exportCsv([['Title', 'Channel', 'Channel URL'], ...successResults.map(r => [r.title, r.channelName, r.channelUrl])], 'youtube-channels')}>CSV</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportTxt(successResults.map(r => `${r.channelName}: ${r.channelUrl}`), 'youtube-channels')}>TXT</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportCsv([['Title', 'Channel', 'Channel URL'], ...displayResults.map(r => [r.title, r.channelName, r.channelUrl])], 'youtube-channels')}>CSV</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportTxt(displayResults.map(r => `${r.channelName}: ${r.channelUrl}`), 'youtube-channels')}>TXT</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
           </CardHeader>
           <CardContent className="p-3 pt-0">
-            {results.length === 0 ? (
+            {displayResults.length === 0 && results.filter(r => r.status === 'error').length === 0 ? (
               <EmptyState
                 icon={Search}
                 title={loading ? "Fetching channel data..." : "No results yet"}
@@ -562,7 +597,7 @@ export default function YTFinder() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {results.map((r, i) => (
+                    {(showUniqueOnly ? displayResults : results).map((r, i) => (
                       <TableRow 
                         key={i}
                         className={cn(r.status === 'error' && "bg-destructive/10")}
