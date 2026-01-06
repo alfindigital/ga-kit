@@ -7,6 +7,7 @@ export interface SearchHistoryItem {
   videoCount: number;
   timestamp: number;
   preview: string; // First video ID or truncated URL for display
+  starred: boolean; // Pin to top of history
 }
 
 const STORAGE_KEY = 'yt-finder-search-history';
@@ -53,6 +54,7 @@ export function useSearchHistory() {
       videoCount: videoIds.length,
       timestamp: Date.now(),
       preview,
+      starred: false,
     };
 
     setHistory(prev => {
@@ -68,6 +70,16 @@ export function useSearchHistory() {
     setHistory(prev => {
       const updated = prev.map(item => 
         item.id === id ? { ...item, name: newName.trim() || item.name } : item
+      );
+      saveHistory(updated);
+      return updated;
+    });
+  }, []);
+
+  const toggleStar = useCallback((id: string) => {
+    setHistory(prev => {
+      const updated = prev.map(item => 
+        item.id === id ? { ...item, starred: !item.starred } : item
       );
       saveHistory(updated);
       return updated;
@@ -91,10 +103,18 @@ export function useSearchHistory() {
     }
   }, []);
 
+  // Sort history: starred items first, then by timestamp
+  const sortedHistory = [...history].sort((a, b) => {
+    if (a.starred && !b.starred) return -1;
+    if (!a.starred && b.starred) return 1;
+    return b.timestamp - a.timestamp;
+  });
+
   return {
-    history,
+    history: sortedHistory,
     addToHistory,
     updateHistoryName,
+    toggleStar,
     removeFromHistory,
     clearHistory,
   };
