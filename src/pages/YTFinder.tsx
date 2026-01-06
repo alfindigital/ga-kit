@@ -507,15 +507,28 @@ export default function YTFinder() {
               )}
             </CardTitle>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => copy(successResults.map(r => r.channelUrl).join('\n'))} 
-                className="h-7 text-xs"
-                disabled={successResults.length === 0}
-              >
-                <Copy className="h-3 w-3 mr-1" /> Copy
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        const urls = [...new Set(successResults.map(r => r.channelUrl))].join('\n');
+                        copy(urls);
+                        toast({ title: 'Copied!', description: `${[...new Set(successResults.map(r => r.channelUrl))].length} unique channel URLs copied` });
+                      }} 
+                      className="h-7 text-xs"
+                      disabled={successResults.length === 0}
+                    >
+                      <Copy className="h-3 w-3 mr-1" /> Copy All URLs
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Copy all unique channel URLs to clipboard</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="h-7 text-xs" disabled={successResults.length === 0}>
