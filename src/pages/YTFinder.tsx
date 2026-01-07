@@ -250,6 +250,12 @@ export default function YTFinder() {
   const hasError = touched && !!error;
   const successResults = results.filter(r => r.status === 'success');
   
+  // Calculate video count per channel
+  const videoCountByChannel = successResults.reduce((acc, r) => {
+    acc[r.channelUrl] = (acc[r.channelUrl] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   // Filter to unique channels if enabled
   const displayResults = showUniqueOnly 
     ? successResults.filter((r, index, self) => 
@@ -593,6 +599,7 @@ export default function YTFinder() {
                       <TableHead className="text-xs w-8">#</TableHead>
                       <TableHead className="text-xs">Title</TableHead>
                       <TableHead className="text-xs hidden sm:table-cell">Channel</TableHead>
+                      {showUniqueOnly && <TableHead className="text-xs text-center w-16">Videos</TableHead>}
                       <TableHead className="w-10"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -625,6 +632,13 @@ export default function YTFinder() {
                           </div>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-sm">{r.channelName}</TableCell>
+                        {showUniqueOnly && (
+                          <TableCell className="text-center">
+                            <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 text-xs font-medium bg-primary/10 text-primary rounded-full">
+                              {videoCountByChannel[r.channelUrl] || 0}
+                            </span>
+                          </TableCell>
+                        )}
                         <TableCell>
                           {r.status === 'success' && r.channelUrl && (
                             <a href={r.channelUrl} target="_blank" rel="noopener noreferrer">
