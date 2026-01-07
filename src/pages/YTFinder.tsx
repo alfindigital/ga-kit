@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -76,7 +76,8 @@ export default function YTFinder() {
   const { exportCsv, exportTxt } = useExport();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
-  const { history, addToHistory, updateHistoryName, toggleStar, removeFromHistory, clearHistory } = useSearchHistory();
+  const { history, addToHistory, updateHistoryName, toggleStar, removeFromHistory, clearHistory, exportHistory, importHistory } = useSearchHistory();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
@@ -326,18 +327,75 @@ export default function YTFinder() {
             <PopoverContent className="w-80 p-0" align="end">
               <div className="flex items-center justify-between p-3 border-b">
                 <h4 className="text-sm font-medium">Search History</h4>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-7 text-xs text-muted-foreground hover:text-destructive"
-                  onClick={() => {
-                    clearHistory();
-                    setHistoryOpen(false);
-                    toast({ title: 'Cleared', description: 'Search history cleared' });
-                  }}
-                >
-                  <Trash2 className="h-3 w-3 mr-1" /> Clear
-                </Button>
+                <div className="flex items-center gap-1">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".json"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          const result = await importHistory(file);
+                          toast({ 
+                            title: 'Imported!', 
+                            description: `Added ${result.added} searches${result.duplicates > 0 ? `, ${result.duplicates} duplicates skipped` : ''}` 
+                          });
+                        } catch {
+                          toast({ title: 'Import failed', description: 'Invalid file format', variant: 'destructive' });
+                        }
+                        e.target.value = '';
+                      }
+                    }}
+                  />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          <Upload className="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Import history</p></TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => {
+                            exportHistory();
+                            toast({ title: 'Exported!', description: 'History saved to file' });
+                          }}
+                          disabled={history.length === 0}
+                        >
+                          <Download className="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Export history</p></TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-7 text-xs text-muted-foreground hover:text-destructive"
+                    onClick={() => {
+                      clearHistory();
+                      setHistoryOpen(false);
+                      toast({ title: 'Cleared', description: 'Search history cleared' });
+                    }}
+                  >
+                    <Trash2 className="h-3 w-3 mr-1" /> Clear
+                  </Button>
+                </div>
               </div>
               <ScrollArea className="max-h-[300px]">
                 <div className="p-2 space-y-1">

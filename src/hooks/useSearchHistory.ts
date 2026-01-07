@@ -103,6 +103,56 @@ export function useSearchHistory() {
     }
   }, []);
 
+  const exportHistory = useCallback(() => {
+    const data = JSON.stringify(history, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `yt-finder-history-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [history]);
+
+  const importHistory = useCallback((file: File): Promise<{ added: number; duplicates: number }> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target?.result as string) as SearchHistoryItem[];
+          if (!Array.isArray(imported)) {
+            reject(new Error('Invalid file format'));
+            return;
+          }
+          
+          setHistory(prev => {
+            const existingUrls = new Set(prev.map(item => item.urls.trim()));
+            const newItems = imported.filter(item => 
+              item.urls && item.id && !existingUrls.has(item.urls.trim())
+            ).map(item => ({
+              ...item,
+              id: crypto.randomUUID(), // Generate new IDs to avoid conflicts
+              timestamp: item.timestamp || Date.now(),
+            }));
+            
+            const duplicates = imported.length - newItems.length;
+            const updated = [...prev, ...newItems].slice(0, MAX_HISTORY_ITEMS * 2); // Allow more for imports
+            saveHistory(updated);
+            
+            resolve({ added: newItems.length, duplicates });
+            return updated;
+          });
+        } catch {
+          reject(new Error('Failed to parse file'));
+        }
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsText(file);
+    });
+  }, []);
+
   // Sort history: starred items first, then by timestamp
   const sortedHistory = [...history].sort((a, b) => {
     if (a.starred && !b.starred) return -1;
@@ -117,5 +167,7 @@ export function useSearchHistory() {
     toggleStar,
     removeFromHistory,
     clearHistory,
+    exportHistory,
+    importHistory,
   };
 }
