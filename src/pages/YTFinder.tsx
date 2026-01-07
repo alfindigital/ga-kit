@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -81,6 +81,7 @@ export default function YTFinder() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const [showUniqueOnly, setShowUniqueOnly] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{ key: 'title' | 'channelName' | 'videoCount'; direction: 'asc' | 'desc' } | null>(null);
 
   // Keyboard shortcuts: Shift+F to fetch, Shift+X to cancel
   const handleFetchShortcut = useCallback(() => {
@@ -257,12 +258,47 @@ export default function YTFinder() {
   }, {} as Record<string, number>);
 
   // Filter to unique channels if enabled
-  const displayResults = showUniqueOnly 
-    ? successResults.filter((r, index, self) => 
-        index === self.findIndex(t => t.channelUrl === r.channelUrl)
-      )
-    : successResults;
-  const uniqueChannelCount = [...new Set(successResults.map(r => r.channelUrl))].length;
+  const uniqueResults = successResults.filter((r, index, self) => 
+    index === self.findIndex(t => t.channelUrl === r.channelUrl)
+  );
+  
+  // Sort results
+  const sortResults = (results: VideoData[]) => {
+    if (!sortConfig) return results;
+    
+    return [...results].sort((a, b) => {
+      let comparison = 0;
+      
+      if (sortConfig.key === 'title') {
+        comparison = a.title.localeCompare(b.title);
+      } else if (sortConfig.key === 'channelName') {
+        comparison = a.channelName.localeCompare(b.channelName);
+      } else if (sortConfig.key === 'videoCount') {
+        comparison = (videoCountByChannel[a.channelUrl] || 0) - (videoCountByChannel[b.channelUrl] || 0);
+      }
+      
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
+    });
+  };
+
+  const displayResults = sortResults(showUniqueOnly ? uniqueResults : successResults);
+  const uniqueChannelCount = uniqueResults.length;
+  
+  const handleSort = (key: 'title' | 'channelName' | 'videoCount') => {
+    setSortConfig(current => {
+      if (current?.key === key) {
+        if (current.direction === 'asc') return { key, direction: 'desc' };
+        if (current.direction === 'desc') return null;
+      }
+      return { key, direction: 'asc' };
+    });
+  };
+  
+  const getSortIcon = (key: 'title' | 'channelName' | 'videoCount') => {
+    if (sortConfig?.key !== key) return <ArrowUpDown className="h-3 w-3 ml-1 opacity-50" />;
+    if (sortConfig.direction === 'asc') return <ArrowUp className="h-3 w-3 ml-1" />;
+    return <ArrowDown className="h-3 w-3 ml-1" />;
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -597,14 +633,37 @@ export default function YTFinder() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="text-xs w-8">#</TableHead>
-                      <TableHead className="text-xs">Title</TableHead>
-                      <TableHead className="text-xs hidden sm:table-cell">Channel</TableHead>
-                      {showUniqueOnly && <TableHead className="text-xs text-center w-16">Videos</TableHead>}
+                      <TableHead 
+                        className="text-xs cursor-pointer hover:text-foreground select-none"
+                        onClick={() => handleSort('title')}
+                      >
+                        <span className="flex items-center">
+                          Title {getSortIcon('title')}
+                        </span>
+                      </TableHead>
+                      <TableHead 
+                        className="text-xs hidden sm:table-cell cursor-pointer hover:text-foreground select-none"
+                        onClick={() => handleSort('channelName')}
+                      >
+                        <span className="flex items-center">
+                          Channel {getSortIcon('channelName')}
+                        </span>
+                      </TableHead>
+                      {showUniqueOnly && (
+                        <TableHead 
+                          className="text-xs text-center w-16 cursor-pointer hover:text-foreground select-none"
+                          onClick={() => handleSort('videoCount')}
+                        >
+                          <span className="flex items-center justify-center">
+                            Videos {getSortIcon('videoCount')}
+                          </span>
+                        </TableHead>
+                      )}
                       <TableHead className="w-10"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(showUniqueOnly ? displayResults : results).map((r, i) => (
+                    {(showUniqueOnly ? displayResults : [...displayResults, ...results.filter(r => r.status === 'error')]).map((r, i) => (
                       <TableRow 
                         key={i}
                         className={cn(r.status === 'error' && "bg-destructive/10")}
