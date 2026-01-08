@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -367,6 +367,28 @@ export default function YTFinder() {
           <p className="text-sm text-muted-foreground">Extract channel info from YouTube URLs</p>
         </div>
         <div className="flex gap-2 self-start sm:self-auto">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Keyboard className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-xs">
+                <div className="space-y-1.5 text-xs">
+                  <p className="font-medium mb-2">Keyboard Shortcuts</p>
+                  <div className="flex justify-between gap-4">
+                    <span className="text-muted-foreground">Fetch video data</span>
+                    <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+F</kbd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <span className="text-muted-foreground">Cancel request</span>
+                    <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+X</kbd>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Popover open={historyOpen} onOpenChange={setHistoryOpen}>
             <PopoverTrigger asChild>
               <Button 
