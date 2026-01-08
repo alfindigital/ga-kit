@@ -83,6 +83,49 @@ export default function YTFinder() {
   const [editingName, setEditingName] = useState('');
   const [showUniqueOnly, setShowUniqueOnly] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: 'title' | 'channelName' | 'videoCount'; direction: 'asc' | 'desc' } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Drag and drop handlers for importing history
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.types.includes('Files')) {
+      setIsDragging(true);
+    }
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set dragging to false if leaving the container entirely
+    if (e.currentTarget === e.target || !e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragging(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const jsonFile = files.find(f => f.name.endsWith('.json'));
+
+    if (!jsonFile) {
+      toast({ title: 'Invalid file', description: 'Please drop a JSON history file', variant: 'destructive' });
+      return;
+    }
+
+    try {
+      const result = await importHistory(jsonFile);
+      toast({ 
+        title: 'Imported!', 
+        description: `Added ${result.added} searches${result.duplicates > 0 ? `, ${result.duplicates} duplicates skipped` : ''}` 
+      });
+    } catch {
+      toast({ title: 'Import failed', description: 'Invalid file format', variant: 'destructive' });
+    }
+  }, [importHistory, toast]);
 
   // Keyboard shortcuts: Shift+F to fetch, Shift+X to cancel
   const handleFetchShortcut = useCallback(() => {
@@ -302,7 +345,22 @@ export default function YTFinder() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div 
+      className="space-y-4 sm:space-y-6 relative"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* Drag overlay */}
+      {isDragging && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm border-2 border-dashed border-primary rounded-lg">
+          <div className="text-center">
+            <Upload className="h-12 w-12 mx-auto mb-3 text-primary animate-bounce" />
+            <p className="text-lg font-medium">Drop JSON file to import history</p>
+            <p className="text-sm text-muted-foreground">Release to import your search history</p>
+          </div>
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">YT Channel Finder</h1>
