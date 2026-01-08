@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard, BarChart3, Users, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -328,6 +328,14 @@ export default function YTFinder() {
   const displayResults = sortResults(showUniqueOnly ? uniqueResults : successResults);
   const uniqueChannelCount = uniqueResults.length;
   
+  // Analytics: find most frequent channel
+  const mostFrequentChannel = successResults.length > 0 
+    ? Object.entries(videoCountByChannel).reduce((a, b) => a[1] > b[1] ? a : b)
+    : null;
+  const topChannelData = mostFrequentChannel 
+    ? successResults.find(r => r.channelUrl === mostFrequentChannel[0])
+    : null;
+  
   const handleSort = (key: 'title' | 'channelName' | 'videoCount') => {
     setSortConfig(current => {
       if (current?.key === key) {
@@ -587,6 +595,61 @@ export default function YTFinder() {
           </Button>
         </div>
       </div>
+
+      {/* Channel Analytics Summary */}
+      {successResults.length > 0 && (
+        <Card className="bg-muted/30">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <BarChart3 className="h-4 w-4 text-primary" />
+              <h3 className="text-sm font-medium">Channel Analytics</h3>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-3 bg-background rounded-lg border">
+                <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
+                  <Youtube className="h-3.5 w-3.5" />
+                  <span className="text-xs">Total Videos</span>
+                </div>
+                <p className="text-2xl font-bold">{successResults.length}</p>
+              </div>
+              <div className="text-center p-3 bg-background rounded-lg border">
+                <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
+                  <Users className="h-3.5 w-3.5" />
+                  <span className="text-xs">Unique Channels</span>
+                </div>
+                <p className="text-2xl font-bold">{uniqueChannelCount}</p>
+              </div>
+              <div className="text-center p-3 bg-background rounded-lg border">
+                <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
+                  <TrendingUp className="h-3.5 w-3.5" />
+                  <span className="text-xs">Top Channel</span>
+                </div>
+                {topChannelData ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a 
+                          href={topChannelData.channelUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm font-semibold text-primary hover:underline truncate block"
+                        >
+                          {topChannelData.channelName}
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{mostFrequentChannel![1]} video{mostFrequentChannel![1] > 1 ? 's' : ''}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <p className="text-sm text-muted-foreground">-</p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
