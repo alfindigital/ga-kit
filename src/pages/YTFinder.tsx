@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard, BarChart3, Users, TrendingUp } from 'lucide-react';
@@ -19,6 +19,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 
 interface VideoData {
   videoUrl: string;
@@ -335,6 +336,34 @@ export default function YTFinder() {
   const topChannelData = mostFrequentChannel 
     ? successResults.find(r => r.channelUrl === mostFrequentChannel[0])
     : null;
+
+  // Pie chart data - top 5 channels + "Others"
+  const pieChartData = useMemo(() => {
+    if (successResults.length === 0) return [];
+    
+    const sortedChannels = Object.entries(videoCountByChannel)
+      .map(([url, count]) => ({
+        name: successResults.find(r => r.channelUrl === url)?.channelName || 'Unknown',
+        value: count,
+        url
+      }))
+      .sort((a, b) => b.value - a.value);
+    
+    if (sortedChannels.length <= 6) return sortedChannels;
+    
+    const top5 = sortedChannels.slice(0, 5);
+    const othersCount = sortedChannels.slice(5).reduce((sum, c) => sum + c.value, 0);
+    return [...top5, { name: 'Others', value: othersCount, url: '' }];
+  }, [successResults, videoCountByChannel]);
+
+  const CHART_COLORS = [
+    'hsl(var(--primary))',
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+    'hsl(var(--chart-5))',
+    'hsl(var(--muted-foreground))'
+  ];
   
   const handleSort = (key: 'title' | 'channelName' | 'videoCount') => {
     setSortConfig(current => {
@@ -604,48 +633,97 @@ export default function YTFinder() {
               <BarChart3 className="h-4 w-4 text-primary" />
               <h3 className="text-sm font-medium">Channel Analytics</h3>
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 bg-background rounded-lg border">
-                <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
-                  <Youtube className="h-3.5 w-3.5" />
-                  <span className="text-xs">Total Videos</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center p-3 bg-background rounded-lg border">
+                  <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
+                    <Youtube className="h-3.5 w-3.5" />
+                    <span className="text-xs">Total Videos</span>
+                  </div>
+                  <p className="text-2xl font-bold">{successResults.length}</p>
                 </div>
-                <p className="text-2xl font-bold">{successResults.length}</p>
+                <div className="text-center p-3 bg-background rounded-lg border">
+                  <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
+                    <Users className="h-3.5 w-3.5" />
+                    <span className="text-xs">Unique Channels</span>
+                  </div>
+                  <p className="text-2xl font-bold">{uniqueChannelCount}</p>
+                </div>
+                <div className="text-center p-3 bg-background rounded-lg border">
+                  <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
+                    <TrendingUp className="h-3.5 w-3.5" />
+                    <span className="text-xs">Top Channel</span>
+                  </div>
+                  {topChannelData ? (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <a 
+                            href={topChannelData.channelUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm font-semibold text-primary hover:underline truncate block"
+                          >
+                            {topChannelData.channelName}
+                          </a>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{mostFrequentChannel![1]} video{mostFrequentChannel![1] > 1 ? 's' : ''}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">-</p>
+                  )}
+                </div>
               </div>
-              <div className="text-center p-3 bg-background rounded-lg border">
-                <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
-                  <Users className="h-3.5 w-3.5" />
-                  <span className="text-xs">Unique Channels</span>
-                </div>
-                <p className="text-2xl font-bold">{uniqueChannelCount}</p>
-              </div>
-              <div className="text-center p-3 bg-background rounded-lg border">
-                <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
-                  <TrendingUp className="h-3.5 w-3.5" />
-                  <span className="text-xs">Top Channel</span>
-                </div>
-                {topChannelData ? (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={topChannelData.channelUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-sm font-semibold text-primary hover:underline truncate block"
+              
+              {/* Pie Chart */}
+              {pieChartData.length > 1 && (
+                <div className="flex items-center gap-4">
+                  <div className="w-32 h-32">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pieChartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={25}
+                          outerRadius={50}
+                          paddingAngle={2}
+                          dataKey="value"
                         >
-                          {topChannelData.channelName}
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{mostFrequentChannel![1]} video{mostFrequentChannel![1] > 1 ? 's' : ''}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ) : (
-                  <p className="text-sm text-muted-foreground">-</p>
-                )}
-              </div>
+                          {pieChartData.map((_, index) => (
+                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip 
+                          formatter={(value: number, name: string) => [`${value} video${value > 1 ? 's' : ''}`, name]}
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--popover))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '6px',
+                            fontSize: '12px'
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex-1 space-y-1.5 max-h-32 overflow-y-auto">
+                    {pieChartData.map((entry, index) => (
+                      <div key={entry.name} className="flex items-center gap-2 text-xs">
+                        <div 
+                          className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
+                          style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
+                        />
+                        <span className="truncate flex-1">{entry.name}</span>
+                        <span className="text-muted-foreground">{entry.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
