@@ -51,7 +51,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/80">
       <div className="container px-3 sm:px-4 lg:px-6 flex h-12 sm:h-14 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-bold text-base sm:text-lg active:scale-95 transition-transform">
+        <Link to="/" className="flex items-center gap-2 font-bold text-base sm:text-lg active:scale-95 transition-transform" data-tour="command-palette">
           <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary shadow-md">
             <span className="text-primary-foreground text-xs sm:text-sm font-bold">GA</span>
           </div>
@@ -61,7 +61,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav data-tour="navigation" className="hidden lg:flex items-center gap-1">
           {navItems.map((item) => (
             <Link
               key={item.path}
@@ -89,6 +89,7 @@ export function Header() {
                 size="icon" 
                 className="h-9 w-9 hidden sm:flex"
                 onClick={() => setShortcutsOpen(true)}
+                data-tour="keyboard-shortcuts"
               >
                 <Keyboard className="h-4 w-4" />
               </Button>
@@ -101,7 +102,7 @@ export function Header() {
           {/* Theme Toggle */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
+              <Button variant="ghost" size="icon" className="h-9 w-9" data-tour="theme-toggle">
                 {resolvedTheme === 'dark' ? (
                   <Moon className="h-4 w-4" />
                 ) : (
