@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useFontSize } from '@/contexts/FontSizeContext';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { 
   Sun, 
   Moon, 
@@ -15,7 +16,8 @@ import {
   QrCode,
   LayoutDashboard,
   X,
-  Keyboard
+  Keyboard,
+  RotateCcw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -44,8 +46,16 @@ export function Header() {
   const location = useLocation();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { fontSize, setFontSize } = useFontSize();
+  const [, setHasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  const handleRestartTour = () => {
+    setHasSeenTour(false);
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/80">
@@ -136,6 +146,11 @@ export function Header() {
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setFontSize('lg')}>
                 <span className="text-base mr-2">A</span> Large
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleRestartTour}>
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Restart Tour
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
