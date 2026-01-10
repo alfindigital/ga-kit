@@ -7,6 +7,7 @@ import { PageTransition } from '../PageTransition';
 import { PullToRefresh } from '../PullToRefresh';
 import { KeyboardShortcutsDialog } from '../KeyboardShortcutsDialog';
 import { CommandPalette } from '../CommandPalette';
+import { OnboardingTour } from '../OnboardingTour';
 import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useRecentPages } from '@/hooks/useRecentPages';
 import { toast } from '@/hooks/use-toast';
@@ -54,6 +55,7 @@ export function Layout({ children }: LayoutProps) {
       <BottomTabNav />
       <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       <CommandPalette onOpenShortcuts={() => setShortcutsOpen(true)} />
+      <OnboardingTour />
     </div>
   );
 }

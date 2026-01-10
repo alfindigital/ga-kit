@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { DashboardSkeleton } from '@/components/skeletons';
+import { WelcomeBanner } from '@/components/OnboardingTour';
 
 const tools = [
   {
@@ -79,6 +80,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      {/* Welcome Banner */}
+      <WelcomeBanner />
+
       {/* Hero Section */}
       <section className="text-center py-6 sm:py-8 lg:py-12">
         <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
@@ -95,7 +99,7 @@ export default function Dashboard() {
       </section>
 
       {/* Tools Grid */}
-      <section className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
+      <section data-tour="tools-grid" className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
         {tools.map((tool, index) => (
           <Card 
             key={tool.id} 
