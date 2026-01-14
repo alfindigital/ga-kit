@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { DashboardSkeleton } from '@/components/skeletons';
 import { WelcomeBanner } from '@/components/OnboardingTour';
+import { QuickStats } from '@/components/QuickStats';
 
 const tools = [
   {
@@ -83,7 +84,8 @@ export default function Dashboard() {
       {/* Welcome Banner */}
       <WelcomeBanner />
 
-      {/* Hero Section */}
+      {/* Quick Stats */}
+      <QuickStats />
       <section className="text-center py-6 sm:py-8 lg:py-12">
         <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
           <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary animate-pulse-gentle" />

@@ -11,6 +11,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useUsageStats } from '@/hooks/useUsageStats';
 import { useValidation, validators } from '@/hooks/useValidation';
 import { UTMBuilderSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -118,6 +119,7 @@ export default function UTMBuilder() {
   const { copy, copied } = useClipboard();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
+  const { incrementStat } = useUsageStats();
 
   const { validate, touch, getFieldState, clearErrors } = useValidation({
     url: [validators.url('Please enter a valid URL')],
@@ -228,6 +230,7 @@ export default function UTMBuilder() {
   const handleCopy = () => {
     if (generatedUrl) {
       copy(generatedUrl, 'URL copied to clipboard');
+      incrementStat('utmsCreated');
       
       // Add to history
       const newItem: HistoryItem = {

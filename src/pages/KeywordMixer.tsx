@@ -9,6 +9,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useUsageStats } from '@/hooks/useUsageStats';
 import { ToolPageSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ export default function KeywordMixer() {
   const { toast } = useToast();
   const { exportCsv, exportTxt } = useExport();
   const isLoading = usePageLoading(400);
+  const { incrementStat } = useUsageStats();
 
   if (isLoading) return <ToolPageSkeleton />;
 
@@ -226,7 +228,7 @@ export default function KeywordMixer() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => copy(results.join('\n'))} 
+                onClick={() => { copy(results.join('\n')); incrementStat('keywordsMixed', results.length); }} 
                 className="h-7 text-xs"
                 disabled={results.length === 0}
               >
@@ -239,8 +241,8 @@ export default function KeywordMixer() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => exportTxt(results, 'mixed-keywords')}>TXT</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportCsv(results.map(k => [k]), 'mixed-keywords')}>CSV</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { exportTxt(results, 'mixed-keywords'); incrementStat('keywordsMixed', results.length); }}>TXT</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { exportCsv(results.map(k => [k]), 'mixed-keywords'); incrementStat('keywordsMixed', results.length); }}>CSV</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
