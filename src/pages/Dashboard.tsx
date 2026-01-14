@@ -7,7 +7,9 @@ import {
   Youtube, 
   QrCode,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Star,
+  Pin
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,6 +18,7 @@ import { usePageLoading } from '@/hooks/usePageLoading';
 import { DashboardSkeleton } from '@/components/skeletons';
 import { WelcomeBanner } from '@/components/OnboardingTour';
 import { QuickStats } from '@/components/QuickStats';
+import { useFavoriteTools } from '@/hooks/useFavoriteTools';
 
 const tools = [
   {
@@ -76,8 +79,12 @@ const tools = [
 
 export default function Dashboard() {
   const isLoading = usePageLoading(400);
+  const { favorites, toggleFavorite, isFavorite } = useFavoriteTools();
 
   if (isLoading) return <DashboardSkeleton />;
+
+  const favoriteTools = tools.filter(tool => favorites.includes(tool.id));
+  const hasFavorites = favoriteTools.length > 0;
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -86,6 +93,40 @@ export default function Dashboard() {
 
       {/* Quick Stats */}
       <QuickStats />
+
+      {/* Pinned Tools */}
+      {hasFavorites && (
+        <section className="space-y-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Pin className="h-4 w-4" />
+            <span className="font-medium">Quick Access</span>
+          </div>
+          <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+            {favoriteTools.map((tool, index) => (
+              <Link 
+                key={tool.id} 
+                to={tool.path}
+                className={cn(
+                  "flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border bg-card",
+                  "hover:bg-accent/50 hover:border-primary/30 transition-all",
+                  "opacity-0 animate-fade-in group"
+                )}
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <div className={cn("p-1.5 sm:p-2 rounded-md flex-shrink-0", tool.color)}>
+                  <tool.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </div>
+                <span className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors">
+                  {tool.title}
+                </span>
+                <ArrowRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Hero Section */}
       <section className="text-center py-6 sm:py-8 lg:py-12">
         <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
           <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary animate-pulse-gentle" />
@@ -102,44 +143,62 @@ export default function Dashboard() {
 
       {/* Tools Grid */}
       <section data-tour="tools-grid" className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
-        {tools.map((tool, index) => (
-          <Card 
-            key={tool.id} 
-            className={cn(
-              "tool-card group relative overflow-hidden",
-              "opacity-0 animate-fade-in"
-            )}
-            style={{ animationDelay: `${index * 75}ms` }}
-          >
-            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <div className="flex items-start justify-between">
-                <div className={cn("p-1.5 sm:p-2 rounded-lg w-fit", tool.color)}>
-                  <tool.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+        {tools.map((tool, index) => {
+          const starred = isFavorite(tool.id);
+          return (
+            <Card 
+              key={tool.id} 
+              className={cn(
+                "tool-card group relative overflow-hidden",
+                "opacity-0 animate-fade-in",
+                starred && "ring-1 ring-primary/20"
+              )}
+              style={{ animationDelay: `${index * 75}ms` }}
+            >
+              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+                <div className="flex items-start justify-between">
+                  <div className={cn("p-1.5 sm:p-2 rounded-lg w-fit", tool.color)}>
+                    <tool.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      "h-7 w-7 sm:h-8 sm:w-8 -mt-1 -mr-1",
+                      starred ? "text-yellow-500" : "text-muted-foreground opacity-0 group-hover:opacity-100"
+                    )}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleFavorite(tool.id);
+                    }}
+                  >
+                    <Star className={cn("h-4 w-4", starred && "fill-current")} />
+                  </Button>
                 </div>
-              </div>
-              <CardTitle className="text-sm sm:text-base lg:text-lg">{tool.title}</CardTitle>
-              <CardDescription className="text-xs sm:text-sm line-clamp-2">
-                {tool.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-3 sm:p-4 pt-0">
-              <ul className="hidden sm:block text-xs text-muted-foreground space-y-1 mb-3 sm:mb-4">
-                {tool.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-1.5">
-                    <span className="h-1 w-1 rounded-full bg-primary flex-shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <Button asChild size="sm" className="w-full text-xs sm:text-sm group-hover:bg-primary/90 active:scale-[0.98] transition-all">
-                <Link to={tool.path} className="flex items-center justify-center gap-1.5 sm:gap-2">
-                  Launch
-                  <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+                <CardTitle className="text-sm sm:text-base lg:text-lg">{tool.title}</CardTitle>
+                <CardDescription className="text-xs sm:text-sm line-clamp-2">
+                  {tool.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-3 sm:p-4 pt-0">
+                <ul className="hidden sm:block text-xs text-muted-foreground space-y-1 mb-3 sm:mb-4">
+                  {tool.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-1.5">
+                      <span className="h-1 w-1 rounded-full bg-primary flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild size="sm" className="w-full text-xs sm:text-sm group-hover:bg-primary/90 active:scale-[0.98] transition-all">
+                  <Link to={tool.path} className="flex items-center justify-center gap-1.5 sm:gap-2">
+                    Launch
+                    <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
       </section>
     </div>
   );
