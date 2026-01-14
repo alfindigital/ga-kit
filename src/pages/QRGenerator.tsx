@@ -10,6 +10,7 @@ import { useClipboard } from '@/hooks/useClipboard';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useUsageStats } from '@/hooks/useUsageStats';
 import { useValidation, validators } from '@/hooks/useValidation';
 import { QRGeneratorSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -31,6 +32,7 @@ export default function QRGenerator() {
   const { copy } = useClipboard();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
+  const { incrementStat } = useUsageStats();
   
   // Clear URL param after reading it
   useEffect(() => {
@@ -146,6 +148,7 @@ export default function QRGenerator() {
     a.href = qrDataUrl;
     a.download = 'qrcode.png';
     a.click();
+    incrementStat('qrCodesGenerated');
     toast({ title: 'Downloaded!', description: 'QR code saved as PNG' });
   };
 
@@ -161,6 +164,7 @@ export default function QRGenerator() {
       a.download = 'qrcode.svg';
       a.click();
       URL.revokeObjectURL(url);
+      incrementStat('qrCodesGenerated');
       toast({ title: 'Downloaded!', description: 'QR code saved as SVG' });
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to generate SVG', variant: 'destructive' });

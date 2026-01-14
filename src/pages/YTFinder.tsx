@@ -11,6 +11,7 @@ import { useClipboard } from '@/hooks/useClipboard';
 import { useExport } from '@/hooks/useExport';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useUsageStats } from '@/hooks/useUsageStats';
 import { ToolPageSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
@@ -77,6 +78,7 @@ export default function YTFinder() {
   const { exportCsv, exportTxt } = useExport();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
+  const { incrementStat } = useUsageStats();
   const { history, addToHistory, updateHistoryName, toggleStar, removeFromHistory, clearHistory, exportHistory, importHistory } = useSearchHistory();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -241,6 +243,10 @@ export default function YTFinder() {
       
       const successCount = allResults.filter(r => r.status === 'success').length;
       const failedCount = allResults.filter(r => r.status === 'error').length;
+
+      if (successCount > 0) {
+        incrementStat('videosAnalyzed', successCount);
+      }
 
       if (failedCount > 0 && successCount > 0) {
         toast({ 

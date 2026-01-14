@@ -9,6 +9,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useUsageStats } from '@/hooks/useUsageStats';
 import { KeywordCombinerSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ export default function KeywordCombiner() {
   const { toast } = useToast();
   const { exportCsv, exportTxt } = useExport();
   const isLoading = usePageLoading(400);
+  const { incrementStat } = useUsageStats();
 
   if (isLoading) return <KeywordCombinerSkeleton />;
 
@@ -185,7 +187,7 @@ export default function KeywordCombiner() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => copy(combinations.join('\n'))} 
+                onClick={() => { copy(combinations.join('\n')); incrementStat('keywordsCombined', combinations.length); }} 
                 className="h-7 text-xs"
                 disabled={combinations.length === 0}
               >
@@ -198,8 +200,8 @@ export default function KeywordCombiner() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => exportTxt(combinations, 'keywords')}>TXT</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportCsv(combinations.map(k => [k]), 'keywords')}>CSV</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { exportTxt(combinations, 'keywords'); incrementStat('keywordsCombined', combinations.length); }}>TXT</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { exportCsv(combinations.map(k => [k]), 'keywords'); incrementStat('keywordsCombined', combinations.length); }}>CSV</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
