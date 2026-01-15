@@ -1,11 +1,13 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download, QrCode, Beaker } from 'lucide-react';
+import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download, QrCode, Beaker, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { useClipboard } from '@/hooks/useClipboard';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
@@ -16,6 +18,7 @@ import { useValidation, validators } from '@/hooks/useValidation';
 import { UTMBuilderSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
+import { BulkUrlImport } from '@/components/BulkUrlImport';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -115,6 +118,8 @@ export default function UTMBuilder() {
   const [presetName, setPresetName] = useState('');
   const [historyOpen, setHistoryOpen] = useState(false);
   const [copiedQuery, setCopiedQuery] = useState(false);
+  const [bulkMode, setBulkMode] = useState(false);
+  const [bulkUrls, setBulkUrls] = useState<string[]>([]);
   
   const { copy, copied } = useClipboard();
   const { toast } = useToast();
@@ -174,21 +179,22 @@ export default function UTMBuilder() {
 
   if (isLoading) return <UTMBuilderSkeleton />;
 
-  const generatedUrl = (() => {
-    if (!params.url) return '';
+  // Generate URL with UTM params for a given base URL
+  const generateUtmUrl = (baseUrl: string): string => {
+    if (!baseUrl) return '';
     
-    let baseUrl = params.url.trim();
+    let cleanUrl = baseUrl.trim();
     
     // Ensure URL has protocol
-    if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
-      baseUrl = 'https://' + baseUrl;
+    if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+      cleanUrl = 'https://' + cleanUrl;
     }
     
     // Prevent double protocol
-    baseUrl = baseUrl.replace(/^(https?:\/\/)+/, 'https://');
+    cleanUrl = cleanUrl.replace(/^(https?:\/\/)+/, 'https://');
     
     try {
-      const url = new URL(baseUrl);
+      const url = new URL(cleanUrl);
       
       // Add UTM params
       if (params.source) url.searchParams.set('utm_source', params.source);
@@ -214,7 +220,74 @@ export default function UTMBuilder() {
     } catch {
       return '';
     }
-  })();
+  };
+
+  const generatedUrl = generateUtmUrl(params.url);
+
+  // Generate bulk URLs
+  const bulkGeneratedUrls = useMemo(() => {
+    return bulkUrls.map(url => ({
+      original: url,
+      generated: generateUtmUrl(url)
+    })).filter(item => item.generated);
+  }, [bulkUrls, params, selectedValueTrack]);
+
+  // Handle bulk URL import
+  const handleBulkImport = useCallback((urls: string[]) => {
+    setBulkUrls(urls);
+    setBulkMode(true);
+  }, []);
+
+  // Copy all bulk URLs
+  const handleCopyBulkUrls = useCallback(() => {
+    if (bulkGeneratedUrls.length === 0) return;
+    const allUrls = bulkGeneratedUrls.map(item => item.generated).join('\n');
+    copy(allUrls, `${bulkGeneratedUrls.length} URLs copied to clipboard`);
+    incrementStat('utmsCreated', bulkGeneratedUrls.length);
+    
+    // Add all to history
+    const newItems: HistoryItem[] = bulkGeneratedUrls.map((item, index) => ({
+      id: (Date.now() + index).toString(),
+      url: item.generated,
+      timestamp: Date.now(),
+    }));
+    setHistory(prev => [...newItems, ...prev.slice(0, 50 - newItems.length)]);
+  }, [bulkGeneratedUrls, copy, incrementStat, setHistory]);
+
+  // Export bulk URLs as CSV
+  const handleExportBulkCsv = useCallback(() => {
+    if (bulkGeneratedUrls.length === 0) return;
+    
+    const headers = ['Original URL', 'UTM URL', 'Source', 'Medium', 'Campaign', 'Term', 'Content'];
+    const rows = bulkGeneratedUrls.map(item => [
+      item.original,
+      item.generated,
+      params.source,
+      params.medium,
+      params.campaign,
+      params.term,
+      params.content
+    ]);
+    
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => `"${(cell || '').replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filename = `utm-bulk-${dateStr}.csv`;
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+
+    toast({ title: 'Exported!', description: `${bulkGeneratedUrls.length} URLs exported to ${filename}` });
+  }, [bulkGeneratedUrls, params, toast]);
 
   // Extract query string only
   const queryStringOnly = useMemo(() => {
@@ -310,6 +383,8 @@ export default function UTMBuilder() {
   const handleReset = () => {
     setParams(DEFAULT_PARAMS);
     setSelectedValueTrack([]);
+    setBulkUrls([]);
+    setBulkMode(false);
     clearErrors();
   };
 
@@ -536,51 +611,87 @@ export default function UTMBuilder() {
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-5">
         {/* Input Section - 60% */}
         <div className="lg:col-span-3 space-y-4">
-          {/* Target URL */}
+          {/* Mode Toggle and Target URL */}
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                Target URL
-                <span className="text-destructive">*</span>
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  Target URL{!bulkMode && <span className="text-destructive">*</span>}
+                </CardTitle>
+                <Tabs value={bulkMode ? 'bulk' : 'single'} onValueChange={(v) => setBulkMode(v === 'bulk')}>
+                  <TabsList className="h-7">
+                    <TabsTrigger value="single" className="text-xs h-5 px-2">Single</TabsTrigger>
+                    <TabsTrigger value="bulk" className="text-xs h-5 px-2">Bulk Import</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0">
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <Input
-                    placeholder="https://example.com/page"
-                    value={params.url}
-                    onChange={(e) => handleUrlChange(e.target.value)}
-                    onBlur={handleUrlBlur}
-                    className={cn(
-                      "text-sm",
-                      urlState.hasError && "border-destructive focus-visible:ring-destructive"
-                    )}
-                  />
-                  <InputError message={urlState.error} />
+              {bulkMode ? (
+                <div className="space-y-3">
+                  <BulkUrlImport onImport={handleBulkImport} />
+                  {bulkUrls.length > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{bulkUrls.length} URL{bulkUrls.length > 1 ? 's' : ''} loaded</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 text-xs"
+                          onClick={() => setBulkUrls([])}
+                        >
+                          <X className="h-3 w-3 mr-1" />
+                          Clear
+                        </Button>
+                      </div>
+                      <Textarea
+                        value={bulkUrls.join('\n')}
+                        onChange={(e) => setBulkUrls(e.target.value.split('\n').filter(l => l.trim()))}
+                        placeholder="URLs will appear here..."
+                        className="text-xs min-h-[100px] font-mono"
+                        rows={5}
+                      />
+                    </div>
+                  )}
                 </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-9 w-9 flex-shrink-0"
-                  onClick={handlePaste}
-                  title="Paste from clipboard"
-                >
-                  <ClipboardPaste className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 flex-shrink-0"
-                  onClick={() => {
-                    setParams(prev => ({ ...prev, url: '' }));
-                    clearErrors();
-                  }}
-                  title="Clear URL"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+              ) : (
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="https://example.com/page"
+                      value={params.url}
+                      onChange={(e) => handleUrlChange(e.target.value)}
+                      onBlur={handleUrlBlur}
+                      className={cn(
+                        "text-sm",
+                        urlState.hasError && "border-destructive focus-visible:ring-destructive"
+                      )}
+                    />
+                    <InputError message={urlState.error} />
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 flex-shrink-0"
+                    onClick={handlePaste}
+                    title="Paste from clipboard"
+                  >
+                    <ClipboardPaste className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 flex-shrink-0"
+                    onClick={() => {
+                      setParams(prev => ({ ...prev, url: '' }));
+                      clearErrors();
+                    }}
+                    title="Clear URL"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -684,12 +795,51 @@ export default function UTMBuilder() {
           <Card className="lg:sticky lg:top-20 border-2 border-primary/20">
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                Live Preview
-                {generatedUrl && <Check className="h-4 w-4 text-accent" />}
+                {bulkMode ? 'Generated URLs' : 'Live Preview'}
+                {bulkMode && bulkGeneratedUrls.length > 0 && (
+                  <span className="text-xs font-normal text-muted-foreground">({bulkGeneratedUrls.length})</span>
+                )}
+                {!bulkMode && generatedUrl && <Check className="h-4 w-4 text-accent" />}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
-              {!params.url ? (
+              {bulkMode ? (
+                bulkGeneratedUrls.length === 0 ? (
+                  <EmptyState
+                    icon={Upload}
+                    title="Import URLs to start"
+                    description="Drop a CSV or TXT file above to generate UTM URLs in bulk"
+                    className="py-6"
+                  />
+                ) : (
+                  <>
+                    <div className="p-3 bg-muted rounded-lg max-h-[200px] overflow-y-auto text-xs font-mono space-y-1">
+                      {bulkGeneratedUrls.map((item, idx) => (
+                        <div key={idx} className="break-all py-1 border-b border-border/50 last:border-0">
+                          {item.generated}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={handleCopyBulkUrls} 
+                        className="flex-1 text-sm"
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy All ({bulkGeneratedUrls.length})
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={handleExportBulkCsv}
+                        className="text-sm"
+                      >
+                        <Download className="h-4 w-4 mr-1" />
+                        CSV
+                      </Button>
+                    </div>
+                  </>
+                )
+              ) : !params.url ? (
                 <EmptyState
                   icon={Link2}
                   title="Enter a URL to start"
