@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard, BarChart3, Users, TrendingUp } from 'lucide-react';
+import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard, BarChart3, Users, TrendingUp, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +15,7 @@ import { useUsageStats } from '@/hooks/useUsageStats';
 import { ToolPageSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
+import { BulkUrlImport } from '@/components/BulkUrlImport';
 import { cn } from '@/lib/utils';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -756,6 +757,19 @@ export default function YTFinder() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 pt-0 space-y-3">
+            {/* Bulk Import Option */}
+            <div className="flex items-center gap-2 pb-2 border-b">
+              <BulkUrlImport 
+                onImport={(importedUrls) => {
+                  setUrls(importedUrls.join('\n'));
+                  setTouched(false);
+                  setError('');
+                }}
+                compact
+              />
+              <span className="text-xs text-muted-foreground">or paste URLs below</span>
+            </div>
+            
             <Textarea 
               placeholder="Paste YouTube URLs here, one per line...&#10;&#10;Example:&#10;https://www.youtube.com/watch?v=dQw4w9WgXcQ&#10;https://youtu.be/dQw4w9WgXcQ&#10;https://youtube.com/shorts/dQw4w9WgXcQ" 
               value={urls} 
