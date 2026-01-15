@@ -1,8 +1,21 @@
 import { useEffect, useState, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Link2, Combine, Shuffle, QrCode, Youtube, TrendingUp } from 'lucide-react';
+import { Link2, Combine, Shuffle, QrCode, Youtube, TrendingUp, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUsageStats } from '@/hooks/useUsageStats';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 interface AnimatedCounterProps {
   value: number;
@@ -80,8 +93,13 @@ const statItems = [
 ];
 
 export function QuickStats() {
-  const { stats } = useUsageStats();
+  const { stats, resetStats } = useUsageStats();
   const totalActions = stats.utmsCreated + stats.keywordsCombined + stats.keywordsMixed + stats.qrCodesGenerated + stats.videosAnalyzed;
+
+  const handleReset = () => {
+    resetStats();
+    toast.success('Activity stats have been reset');
+  };
 
   if (totalActions === 0) {
     return null;
@@ -89,9 +107,32 @@ export function QuickStats() {
 
   return (
     <section className="space-y-3">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <TrendingUp className="h-4 w-4" />
-        <span className="font-medium">Your Activity</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <TrendingUp className="h-4 w-4" />
+          <span className="font-medium">Your Activity</span>
+        </div>
+        
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground">
+              <RotateCcw className="h-3 w-3 mr-1" />
+              Reset
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Reset Activity Stats?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will clear all your activity counters. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleReset}>Reset Stats</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
