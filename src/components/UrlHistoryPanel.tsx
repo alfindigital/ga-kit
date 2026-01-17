@@ -173,6 +173,26 @@ export function UrlHistoryPanel({
       return;
     }
 
+    // Page Down: Jump 10 items down
+    if (e.key === 'PageDown') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const next = prev + 10;
+        return next < history.length ? next : history.length - 1;
+      });
+      return;
+    }
+
+    // Page Up: Jump 10 items up
+    if (e.key === 'PageUp') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const next = prev - 10;
+        return next >= 0 ? next : 0;
+      });
+      return;
+    }
+
     // Enter: Load focused item
     if (e.key === 'Enter' && focusedIndex >= 0 && focusedIndex < history.length && onLoadUrl) {
       e.preventDefault();
@@ -524,6 +544,8 @@ export function UrlHistoryPanel({
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">U</kbd>
                   <span className="text-muted-foreground">Copy URLs</span>
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">C</kbd>
+                  <span className="text-muted-foreground">Jump 10 items</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">PgUp/Dn</kbd>
                   <span className="text-muted-foreground">Focus search</span>
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">/</kbd>
                 </div>
