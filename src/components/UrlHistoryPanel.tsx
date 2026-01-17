@@ -109,11 +109,83 @@ export function UrlHistoryPanel({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const [isPanelFocused, setIsPanelFocused] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState<number>(-1);
+  const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  // Scroll focused item into view
+  useEffect(() => {
+    if (focusedIndex >= 0 && focusedIndex < history.length) {
+      const item = history[focusedIndex];
+      const element = itemRefs.current.get(item.id);
+      element?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [focusedIndex, history]);
+
+  // Reset focused index when history changes
+  useEffect(() => {
+    if (focusedIndex >= history.length) {
+      setFocusedIndex(history.length > 0 ? history.length - 1 : -1);
+    }
+  }, [history.length, focusedIndex]);
 
   // Keyboard shortcuts handler
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     // Don't trigger shortcuts when editing or typing in input
     if (editingId || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    // Arrow Down: Move focus down
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const next = prev + 1;
+        return next < history.length ? next : prev;
+      });
+      return;
+    }
+
+    // Arrow Up: Move focus up
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const next = prev - 1;
+        return next >= 0 ? next : 0;
+      });
+      return;
+    }
+
+    // Home: Jump to first item
+    if (e.key === 'Home') {
+      e.preventDefault();
+      if (history.length > 0) {
+        setFocusedIndex(0);
+      }
+      return;
+    }
+
+    // End: Jump to last item
+    if (e.key === 'End') {
+      e.preventDefault();
+      if (history.length > 0) {
+        setFocusedIndex(history.length - 1);
+      }
+      return;
+    }
+
+    // Enter: Load focused item
+    if (e.key === 'Enter' && focusedIndex >= 0 && focusedIndex < history.length && onLoadUrl) {
+      e.preventDefault();
+      onLoadUrl(history[focusedIndex]);
+      toast({ title: 'Loaded', description: 'Item loaded into tool' });
+      return;
+    }
+
+    // Space: Toggle selection of focused item
+    if (e.key === ' ' && focusedIndex >= 0 && focusedIndex < history.length) {
+      e.preventDefault();
+      const item = history[focusedIndex];
+      handleSelectItem(item.id, !selectedIds.has(item.id));
       return;
     }
 
@@ -125,11 +197,12 @@ export function UrlHistoryPanel({
       return;
     }
 
-    // Escape: Clear selection
+    // Escape: Clear selection and focus
     if (e.key === 'Escape') {
-      if (selectedIds.size > 0) {
+      if (selectedIds.size > 0 || focusedIndex >= 0) {
         e.preventDefault();
         setSelectedIds(new Set());
+        setFocusedIndex(-1);
         toast({ title: 'Selection cleared' });
       }
       return;
@@ -176,7 +249,7 @@ export function UrlHistoryPanel({
       searchInput?.focus();
       return;
     }
-  }, [editingId, history, selectedIds, starMultiple, copy, toast]);
+  }, [editingId, history, selectedIds, focusedIndex, onLoadUrl, starMultiple, copy, toast]);
 
   // Register keyboard shortcuts when panel is focused
   useEffect(() => {
@@ -431,6 +504,14 @@ export function UrlHistoryPanel({
               <div className="space-y-1.5 text-xs">
                 <p className="font-medium mb-2">Keyboard Shortcuts</p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  <span className="text-muted-foreground">Navigate items</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">↑/↓</kbd>
+                  <span className="text-muted-foreground">First/Last item</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Home/End</kbd>
+                  <span className="text-muted-foreground">Load item</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Enter</kbd>
+                  <span className="text-muted-foreground">Toggle select</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Space</kbd>
                   <span className="text-muted-foreground">Select all</span>
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Ctrl+A</kbd>
                   <span className="text-muted-foreground">Clear selection</span>
@@ -546,22 +627,34 @@ export function UrlHistoryPanel({
           </div>
         ) : (
           <div className="divide-y">
-            {history.map((item) => {
+            {history.map((item, index) => {
               const Icon = TOOL_ICONS[item.toolType];
               const isEditing = editingId === item.id;
+              const isFocused = focusedIndex === index;
               
               return (
                 <div
                   key={item.id}
+                  ref={(el) => {
+                    if (el) {
+                      itemRefs.current.set(item.id, el);
+                    } else {
+                      itemRefs.current.delete(item.id);
+                    }
+                  }}
                   className={cn(
-                    "flex items-start gap-2 p-3 hover:bg-muted/50 transition-colors group",
-                    selectedIds.has(item.id) && "bg-muted/30"
+                    "flex items-start gap-2 p-3 hover:bg-muted/50 transition-colors group cursor-pointer",
+                    selectedIds.has(item.id) && "bg-muted/30",
+                    isFocused && "ring-2 ring-primary ring-inset bg-primary/5"
                   )}
+                  onClick={() => setFocusedIndex(index)}
+                  onDoubleClick={() => onLoadUrl?.(item)}
                 >
                   <Checkbox
                     checked={selectedIds.has(item.id)}
                     onCheckedChange={(checked) => handleSelectItem(item.id, !!checked)}
                     className="mt-0.5"
+                    onClick={(e) => e.stopPropagation()}
                   />
 
                   <div className={cn("p-1.5 rounded-md flex-shrink-0", TOOL_COLORS[item.toolType])}>
