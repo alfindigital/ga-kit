@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { z } from 'zod';
 
 export interface SearchHistoryItem {
   id: string;
@@ -12,6 +13,27 @@ export interface SearchHistoryItem {
 
 const STORAGE_KEY = 'yt-finder-search-history';
 const MAX_HISTORY_ITEMS = 10;
+
+// Zod schema for validating imported search history items
+const SearchHistoryItemSchema = z.object({
+  id: z.string().max(100),
+  name: z.string().max(500),
+  urls: z.string().max(10000),
+  videoCount: z.number(),
+  timestamp: z.number().optional(),
+  preview: z.string().max(500).optional(),
+  starred: z.boolean().optional(),
+}).strict();
+
+const ImportedSearchHistorySchema = z.array(SearchHistoryItemSchema).max(100);
+
+// Helper to sanitize strings to prevent XSS
+function sanitizeString(str: string): string {
+  return str
+    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+=/gi, ''); // Remove event handlers
+}
 
 function getStoredHistory(): SearchHistoryItem[] {
   try {
@@ -121,20 +143,37 @@ export function useSearchHistory() {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const imported = JSON.parse(e.target?.result as string) as SearchHistoryItem[];
-          if (!Array.isArray(imported)) {
-            reject(new Error('Invalid file format'));
+          const rawText = e.target?.result as string;
+          
+          // Check for prototype pollution patterns before parsing
+          if (rawText.includes('__proto__') || rawText.includes('constructor') || rawText.includes('prototype')) {
+            reject(new Error('Invalid file: contains forbidden properties'));
             return;
           }
+          
+          const parsed = JSON.parse(rawText);
+          
+          // Validate with Zod schema
+          const validationResult = ImportedSearchHistorySchema.safeParse(parsed);
+          if (!validationResult.success) {
+            reject(new Error('Invalid file format: data validation failed'));
+            return;
+          }
+          
+          const imported = validationResult.data;
           
           setHistory(prev => {
             const existingUrls = new Set(prev.map(item => item.urls.trim()));
             const newItems = imported.filter(item => 
               item.urls && item.id && !existingUrls.has(item.urls.trim())
             ).map(item => ({
-              ...item,
               id: crypto.randomUUID(), // Generate new IDs to avoid conflicts
+              name: sanitizeString(item.name),
+              urls: sanitizeString(item.urls),
+              videoCount: item.videoCount,
               timestamp: item.timestamp || Date.now(),
+              preview: item.preview ? sanitizeString(item.preview) : sanitizeString(item.urls.slice(0, 30)),
+              starred: item.starred ?? false,
             }));
             
             const duplicates = imported.length - newItems.length;
