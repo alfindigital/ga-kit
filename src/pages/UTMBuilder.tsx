@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useUsageStats } from '@/hooks/useUsageStats';
 import { useValidation, validators } from '@/hooks/useValidation';
+import { useUrlHistory } from '@/hooks/useUrlHistory';
 import { UTMBuilderSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
@@ -95,11 +96,7 @@ interface Preset {
   valueTrack: string[];
 }
 
-interface HistoryItem {
-  id: string;
-  url: string;
-  timestamp: number;
-}
+// Legacy interface removed - now using unified useUrlHistory
 
 // Helper to format UTM values: lowercase, spaces to hyphens, remove special chars
 const formatUtmValue = (value: string): string => {
@@ -114,7 +111,6 @@ export default function UTMBuilder() {
   const [params, setParams] = useState<UTMParams>(DEFAULT_PARAMS);
   const [selectedValueTrack, setSelectedValueTrack] = useState<string[]>([]);
   const [presets, setPresets] = useLocalStorage<Preset[]>('utm-presets', []);
-  const [history, setHistory] = useLocalStorage<HistoryItem[]>('utm-history', []);
   const [presetName, setPresetName] = useState('');
   const [historyOpen, setHistoryOpen] = useState(false);
   const [copiedQuery, setCopiedQuery] = useState(false);
@@ -123,6 +119,7 @@ export default function UTMBuilder() {
   
   const { copy, copied } = useClipboard();
   const { toast } = useToast();
+  const { addToHistory, history: urlHistory, filters, setFilters } = useUrlHistory();
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
 
@@ -245,14 +242,30 @@ export default function UTMBuilder() {
     copy(allUrls, `${bulkGeneratedUrls.length} URLs copied to clipboard`);
     incrementStat('utmsCreated', bulkGeneratedUrls.length);
     
-    // Add all to history
-    const newItems: HistoryItem[] = bulkGeneratedUrls.map((item, index) => ({
-      id: (Date.now() + index).toString(),
-      url: item.generated,
-      timestamp: Date.now(),
-    }));
-    setHistory(prev => [...newItems, ...prev.slice(0, 50 - newItems.length)]);
-  }, [bulkGeneratedUrls, copy, incrementStat, setHistory]);
+    // Add all to unified URL history with extracted UTM params as tags
+    bulkGeneratedUrls.forEach((item) => {
+      const tags: string[] = [];
+      if (params.source) tags.push(params.source);
+      if (params.medium) tags.push(params.medium);
+      if (params.campaign) tags.push(params.campaign);
+      
+      addToHistory({
+        url: item.generated,
+        originalUrl: item.original,
+        toolType: 'utm',
+        name: params.campaign || `UTM ${new Date().toLocaleDateString()}`,
+        starred: false,
+        tags,
+        metadata: {
+          source: params.source,
+          medium: params.medium,
+          campaign: params.campaign,
+          term: params.term,
+          content: params.content,
+        },
+      });
+    });
+  }, [bulkGeneratedUrls, copy, incrementStat, addToHistory, params]);
 
   // Export bulk URLs as CSV
   const handleExportBulkCsv = useCallback(() => {
@@ -305,13 +318,28 @@ export default function UTMBuilder() {
       copy(generatedUrl, 'URL copied to clipboard');
       incrementStat('utmsCreated');
       
-      // Add to history
-      const newItem: HistoryItem = {
-        id: Date.now().toString(),
+      // Extract UTM params as searchable tags
+      const tags: string[] = [];
+      if (params.source) tags.push(params.source);
+      if (params.medium) tags.push(params.medium);
+      if (params.campaign) tags.push(params.campaign);
+      
+      // Add to unified URL history
+      addToHistory({
         url: generatedUrl,
-        timestamp: Date.now(),
-      };
-      setHistory(prev => [newItem, ...prev.slice(0, 49)]);
+        originalUrl: params.url,
+        toolType: 'utm',
+        name: params.campaign || `UTM ${new Date().toLocaleDateString()}`,
+        starred: false,
+        tags,
+        metadata: {
+          source: params.source,
+          medium: params.medium,
+          campaign: params.campaign,
+          term: params.term,
+          content: params.content,
+        },
+      });
     }
   };
 
@@ -394,53 +422,10 @@ export default function UTMBuilder() {
     );
   };
 
-  // Export history to CSV
-  const handleExportHistory = () => {
-    if (history.length === 0) return;
-
-    // Parse UTM params from each URL
-    const rows = history.map((item) => {
-      let campaign = '';
-      let medium = '';
-      let source = '';
-      
-      try {
-        const url = new URL(item.url);
-        campaign = url.searchParams.get('utm_campaign') || '';
-        medium = url.searchParams.get('utm_medium') || '';
-        source = url.searchParams.get('utm_source') || '';
-      } catch {
-        // Invalid URL, leave params empty
-      }
-
-      const date = new Date(item.timestamp).toLocaleString();
-      return [date, item.url, campaign, medium, source];
-    });
-
-    // Build CSV with BOM for Excel compatibility
-    const headers = ['Date', 'URL', 'Campaign', 'Medium', 'Source'];
-    const csvContent = [headers, ...rows]
-      .map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
-      .join('\n');
-    
-    const BOM = '\uFEFF';
-    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
-    
-    // Generate filename with date
-    const dateStr = new Date().toISOString().split('T')[0];
-    const filename = `utm-history-${dateStr}.csv`;
-    
-    // Download
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-
-    toast({ title: 'Exported!', description: `${history.length} URLs exported to ${filename}` });
-  };
+  // Get UTM-specific history for display
+  const utmHistory = useMemo(() => {
+    return urlHistory.filter(item => item.toolType === 'utm');
+  }, [urlHistory]);
 
   // Load sample data for demo
   const loadSampleData = () => {
@@ -561,36 +546,51 @@ export default function UTMBuilder() {
               <Button variant="outline" size="sm" className="h-8 text-xs">
                 <History className="h-3.5 w-3.5 mr-1" />
                 History
+                {utmHistory.length > 0 && (
+                  <span className="ml-1 text-muted-foreground">({utmHistory.length})</span>
+                )}
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[70vh] overflow-y-auto">
               <DialogHeader>
                 <div className="flex items-center justify-between">
-                  <DialogTitle>URL History</DialogTitle>
-                  {history.length > 0 && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 text-xs"
-                      onClick={handleExportHistory}
-                    >
-                      <Download className="h-3 w-3 mr-1" />
-                      Export CSV
-                    </Button>
-                  )}
+                  <DialogTitle>Recent UTM URLs</DialogTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs"
+                    onClick={() => {
+                      setHistoryOpen(false);
+                      navigate('/history');
+                    }}
+                  >
+                    View All
+                  </Button>
                 </div>
               </DialogHeader>
               <div className="space-y-2">
-                {history.length === 0 ? (
+                {utmHistory.length === 0 ? (
                   <EmptyState
                     icon={History}
                     title="No history yet"
                     description="Generated URLs will appear here for quick access"
                   />
                 ) : (
-                  history.map((item) => (
+                  utmHistory.slice(0, 10).map((item) => (
                     <div key={item.id} className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                      <span className="flex-1 text-xs sm:text-sm truncate">{item.url}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium truncate">{item.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{item.url}</p>
+                        {item.tags.length > 0 && (
+                          <div className="flex gap-1 mt-1 flex-wrap">
+                            {item.tags.slice(0, 3).map((tag, i) => (
+                              <span key={i} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                       <Button
                         variant="ghost"
                         size="icon"
