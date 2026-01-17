@@ -135,6 +135,44 @@ export function UrlHistoryPanel({
       return;
     }
 
+    // Shift+Arrow Down: Extend selection down
+    if (e.shiftKey && e.key === 'ArrowDown') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const next = prev + 1;
+        if (next < history.length) {
+          const item = history[next];
+          setSelectedIds(prevSelected => {
+            const newSet = new Set(prevSelected);
+            newSet.add(item.id);
+            return newSet;
+          });
+          return next;
+        }
+        return prev;
+      });
+      return;
+    }
+
+    // Shift+Arrow Up: Extend selection up
+    if (e.shiftKey && e.key === 'ArrowUp') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const next = prev - 1;
+        if (next >= 0) {
+          const item = history[next];
+          setSelectedIds(prevSelected => {
+            const newSet = new Set(prevSelected);
+            newSet.add(item.id);
+            return newSet;
+          });
+          return next;
+        }
+        return 0;
+      });
+      return;
+    }
+
     // Arrow Down: Move focus down
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -544,6 +582,8 @@ export function UrlHistoryPanel({
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">U</kbd>
                   <span className="text-muted-foreground">Copy URLs</span>
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">C</kbd>
+                  <span className="text-muted-foreground">Extend selection</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+↑/↓</kbd>
                   <span className="text-muted-foreground">Jump 10 items</span>
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">PgUp/Dn</kbd>
                   <span className="text-muted-foreground">Focus search</span>
