@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useUsageStats } from '@/hooks/useUsageStats';
 import { useValidation, validators } from '@/hooks/useValidation';
+import { useUrlHistory } from '@/hooks/useUrlHistory';
 import { QRGeneratorSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
@@ -33,6 +34,7 @@ export default function QRGenerator() {
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
+  const { addToHistory } = useUrlHistory();
   
   // Clear URL param after reading it
   useEffect(() => {
@@ -149,6 +151,18 @@ export default function QRGenerator() {
     a.download = 'qrcode.png';
     a.click();
     incrementStat('qrCodesGenerated');
+    
+    // Add to unified history
+    addToHistory({
+      url: text,
+      originalUrl: text,
+      toolType: 'qr',
+      name: `QR: ${text.slice(0, 30)}${text.length > 30 ? '...' : ''}`,
+      starred: false,
+      tags: ['qr-code'],
+      metadata: { qrContent: text },
+    });
+    
     toast({ title: 'Downloaded!', description: 'QR code saved as PNG' });
   };
 

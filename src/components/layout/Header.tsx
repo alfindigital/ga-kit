@@ -17,7 +17,8 @@ import {
   LayoutDashboard,
   X,
   Keyboard,
-  RotateCcw
+  RotateCcw,
+  History
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,9 +29,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { useState } from 'react';
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { UrlHistoryPanel } from '@/components/UrlHistoryPanel';
+import { useUrlHistory } from '@/hooks/useUrlHistory';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -49,6 +59,8 @@ export function Header() {
   const [, setHasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const { stats } = useUrlHistory();
 
   const handleRestartTour = () => {
     setHasSeenTour(false);
@@ -91,6 +103,37 @@ export function Header() {
 
         {/* Settings & Mobile Menu */}
         <div className="flex items-center gap-1 sm:gap-2">
+          {/* URL History */}
+          <Sheet open={historyOpen} onOpenChange={setHistoryOpen}>
+            <SheetTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-9 w-9 hidden sm:flex relative"
+              >
+                <History className="h-4 w-4" />
+                {stats.total > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-[10px] text-primary-foreground flex items-center justify-center">
+                    {stats.total > 99 ? '99+' : stats.total}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[400px] sm:w-[540px] p-0">
+              <SheetHeader className="p-4 border-b">
+                <SheetTitle className="flex items-center gap-2">
+                  <History className="h-5 w-5" />
+                  URL History
+                </SheetTitle>
+              </SheetHeader>
+              <UrlHistoryPanel 
+                compact 
+                maxHeight="calc(100vh - 140px)"
+                onLoadUrl={() => setHistoryOpen(false)}
+              />
+            </SheetContent>
+          </Sheet>
+
           {/* Keyboard Shortcuts */}
           <Tooltip>
             <TooltipTrigger asChild>
