@@ -9,7 +9,8 @@ import {
   ArrowRight,
   Sparkles,
   Star,
-  Pin
+  Pin,
+  History
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -74,6 +75,15 @@ const tools = [
     path: '/qr-generator',
     color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
     features: ['Custom Colors', 'Logo Support', 'PNG/SVG Export'],
+  },
+  {
+    id: 'url-history',
+    title: 'URL History',
+    description: 'Search, filter, and re-use all your generated URLs',
+    icon: History,
+    path: '/history',
+    color: 'bg-muted text-muted-foreground',
+    features: ['Search & Filter', 'Star Favorites', 'Export/Import'],
   },
 ];
 
