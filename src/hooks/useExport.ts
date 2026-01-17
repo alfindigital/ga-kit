@@ -20,11 +20,21 @@ export function useExport() {
 
   const exportXlsx = useCallback(async (data: string[][], filename: string) => {
     try {
-      const XLSX = await import('xlsx');
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, `${filename}.xlsx`);
+      const ExcelJS = await import('exceljs');
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet1');
+      
+      // Add data rows
+      data.forEach(row => {
+        worksheet.addRow(row);
+      });
+      
+      // Generate buffer and download
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+      });
+      downloadBlob(blob, `${filename}.xlsx`);
       toast({ title: "Exported!", description: `${filename}.xlsx downloaded` });
     } catch (error) {
       toast({ 
