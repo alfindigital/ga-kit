@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { z } from 'zod';
 
 export type ToolType = 'utm' | 'qr' | 'yt-finder';
 
@@ -42,6 +43,42 @@ const STORAGE_KEY = 'ga-toolkit-url-history';
 const MAX_HISTORY_ITEMS = 100;
 const LEGACY_UTM_KEY = 'utm-history';
 const LEGACY_YT_KEY = 'yt-finder-search-history';
+
+// Zod schema for validating imported history items
+const UrlHistoryItemSchema = z.object({
+  id: z.string().max(100),
+  url: z.string().max(5000),
+  originalUrl: z.string().max(5000).optional(),
+  toolType: z.enum(['utm', 'qr', 'yt-finder']),
+  name: z.string().max(500),
+  timestamp: z.number().optional(),
+  starred: z.boolean().optional(),
+  tags: z.array(z.string().max(100)).max(20).optional(),
+  metadata: z.object({
+    source: z.string().max(200).optional(),
+    medium: z.string().max(200).optional(),
+    campaign: z.string().max(200).optional(),
+    term: z.string().max(200).optional(),
+    content: z.string().max(200).optional(),
+    channelName: z.string().max(200).optional(),
+    videoTitle: z.string().max(500).optional(),
+    qrContent: z.string().max(5000).optional(),
+    videoCount: z.number().optional(),
+    channelCount: z.number().optional(),
+    channels: z.string().max(2000).optional(),
+    topChannel: z.string().max(200).optional(),
+  }).strict().optional(),
+}).strict();
+
+const ImportedHistorySchema = z.array(UrlHistoryItemSchema).max(1000);
+
+// Helper to sanitize strings to prevent XSS
+function sanitizeString(str: string): string {
+  return str
+    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+=/gi, ''); // Remove event handlers
+}
 
 function getStoredHistory(): UrlHistoryItem[] {
   try {
@@ -306,20 +343,52 @@ export function useUrlHistory() {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const imported = JSON.parse(e.target?.result as string) as UrlHistoryItem[];
-          if (!Array.isArray(imported)) {
-            reject(new Error('Invalid file format'));
+          const rawText = e.target?.result as string;
+          
+          // Check for prototype pollution patterns before parsing
+          if (rawText.includes('__proto__') || rawText.includes('constructor') || rawText.includes('prototype')) {
+            reject(new Error('Invalid file: contains forbidden properties'));
             return;
           }
+          
+          const parsed = JSON.parse(rawText);
+          
+          // Validate with Zod schema
+          const validationResult = ImportedHistorySchema.safeParse(parsed);
+          if (!validationResult.success) {
+            reject(new Error('Invalid file format: data validation failed'));
+            return;
+          }
+          
+          const imported = validationResult.data;
 
           setHistory(prev => {
             const existingUrls = new Set(prev.map(item => item.url.trim()));
             const newItems = imported.filter(item =>
               item.url && item.id && !existingUrls.has(item.url.trim())
             ).map(item => ({
-              ...item,
               id: crypto.randomUUID(),
+              url: sanitizeString(item.url),
+              originalUrl: sanitizeString(item.originalUrl || item.url),
+              toolType: item.toolType,
+              name: sanitizeString(item.name),
               timestamp: item.timestamp || Date.now(),
+              starred: item.starred ?? false,
+              tags: (item.tags || []).map(sanitizeString),
+              metadata: {
+                source: item.metadata?.source ? sanitizeString(item.metadata.source) : undefined,
+                medium: item.metadata?.medium ? sanitizeString(item.metadata.medium) : undefined,
+                campaign: item.metadata?.campaign ? sanitizeString(item.metadata.campaign) : undefined,
+                term: item.metadata?.term ? sanitizeString(item.metadata.term) : undefined,
+                content: item.metadata?.content ? sanitizeString(item.metadata.content) : undefined,
+                channelName: item.metadata?.channelName ? sanitizeString(item.metadata.channelName) : undefined,
+                videoTitle: item.metadata?.videoTitle ? sanitizeString(item.metadata.videoTitle) : undefined,
+                qrContent: item.metadata?.qrContent ? sanitizeString(item.metadata.qrContent) : undefined,
+                videoCount: item.metadata?.videoCount,
+                channelCount: item.metadata?.channelCount,
+                channels: item.metadata?.channels ? sanitizeString(item.metadata.channels) : undefined,
+                topChannel: item.metadata?.topChannel ? sanitizeString(item.metadata.topChannel) : undefined,
+              },
             }));
 
             const duplicates = imported.length - newItems.length;
