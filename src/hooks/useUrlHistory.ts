@@ -234,6 +234,17 @@ export function useUrlHistory() {
     });
   }, []);
 
+  const starMultiple = useCallback((ids: string[], starred: boolean) => {
+    setHistory(prev => {
+      const idSet = new Set(ids);
+      const updated = prev.map(item =>
+        idSet.has(item.id) ? { ...item, starred } : item
+      );
+      saveHistory(updated);
+      return updated;
+    });
+  }, []);
+
   const clearHistory = useCallback((toolType?: ToolType) => {
     setHistory(prev => {
       const updated = toolType 
@@ -389,6 +400,7 @@ export function useUrlHistory() {
     toggleStar,
     removeFromHistory,
     removeMultiple,
+    starMultiple,
     clearHistory,
     exportHistory,
     exportHistoryCsv,
