@@ -211,6 +211,42 @@ export function UrlHistoryPanel({
       return;
     }
 
+    // Shift+Page Down: Extend selection 10 items down
+    if (e.shiftKey && e.key === 'PageDown') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const start = prev >= 0 ? prev : 0;
+        const end = Math.min(start + 10, history.length - 1);
+        setSelectedIds(prevSelected => {
+          const newSet = new Set(prevSelected);
+          for (let i = start; i <= end; i++) {
+            newSet.add(history[i].id);
+          }
+          return newSet;
+        });
+        return end;
+      });
+      return;
+    }
+
+    // Shift+Page Up: Extend selection 10 items up
+    if (e.shiftKey && e.key === 'PageUp') {
+      e.preventDefault();
+      setFocusedIndex(prev => {
+        const start = prev >= 0 ? prev : history.length - 1;
+        const end = Math.max(start - 10, 0);
+        setSelectedIds(prevSelected => {
+          const newSet = new Set(prevSelected);
+          for (let i = start; i >= end; i--) {
+            newSet.add(history[i].id);
+          }
+          return newSet;
+        });
+        return end;
+      });
+      return;
+    }
+
     // Page Down: Jump 10 items down
     if (e.key === 'PageDown') {
       e.preventDefault();
@@ -586,6 +622,8 @@ export function UrlHistoryPanel({
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+↑/↓</kbd>
                   <span className="text-muted-foreground">Jump 10 items</span>
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">PgUp/Dn</kbd>
+                  <span className="text-muted-foreground">Select 10 items</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+PgUp/Dn</kbd>
                   <span className="text-muted-foreground">Focus search</span>
                   <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">/</kbd>
                 </div>
