@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { 
   Search, 
   Star, 
@@ -16,7 +16,8 @@ import {
   Check,
   Pencil,
   ChevronDown,
-  StarOff
+  StarOff,
+  Keyboard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -106,6 +107,84 @@ export function UrlHistoryPanel({
   const [editingName, setEditingName] = useState('');
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [isPanelFocused, setIsPanelFocused] = useState(false);
+
+  // Keyboard shortcuts handler
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Don't trigger shortcuts when editing or typing in input
+    if (editingId || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    // Ctrl/Cmd + A: Select all
+    if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+      e.preventDefault();
+      setSelectedIds(new Set(history.map(h => h.id)));
+      toast({ title: 'Selected all', description: `${history.length} items selected` });
+      return;
+    }
+
+    // Escape: Clear selection
+    if (e.key === 'Escape') {
+      if (selectedIds.size > 0) {
+        e.preventDefault();
+        setSelectedIds(new Set());
+        toast({ title: 'Selection cleared' });
+      }
+      return;
+    }
+
+    // Delete/Backspace: Delete selected (with confirmation)
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedIds.size > 0) {
+      e.preventDefault();
+      setDeleteDialogOpen(true);
+      return;
+    }
+
+    // S: Star selected
+    if (e.key === 's' && !e.ctrlKey && !e.metaKey && selectedIds.size > 0) {
+      e.preventDefault();
+      starMultiple(Array.from(selectedIds), true);
+      toast({ title: 'Starred', description: `${selectedIds.size} items starred` });
+      return;
+    }
+
+    // U: Unstar selected
+    if (e.key === 'u' && selectedIds.size > 0) {
+      e.preventDefault();
+      starMultiple(Array.from(selectedIds), false);
+      toast({ title: 'Unstarred', description: `${selectedIds.size} items unstarred` });
+      return;
+    }
+
+    // C: Copy selected URLs
+    if (e.key === 'c' && !e.ctrlKey && !e.metaKey && selectedIds.size > 0) {
+      e.preventDefault();
+      const urls = history
+        .filter(h => selectedIds.has(h.id))
+        .map(h => h.url)
+        .join('\n');
+      copy(urls, `${selectedIds.size} URLs copied`);
+      return;
+    }
+
+    // /: Focus search
+    if (e.key === '/') {
+      e.preventDefault();
+      const searchInput = panelRef.current?.querySelector('input[type="text"]') as HTMLInputElement;
+      searchInput?.focus();
+      return;
+    }
+  }, [editingId, history, selectedIds, starMultiple, copy, toast]);
+
+  // Register keyboard shortcuts when panel is focused
+  useEffect(() => {
+    if (!isPanelFocused) return;
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPanelFocused, handleKeyDown]);
 
   // Apply tool filter from props
   const effectiveFilters = useMemo(() => ({
@@ -235,7 +314,18 @@ export function UrlHistoryPanel({
   const hasActiveFilters = filters.search || filters.toolType !== 'all' || filters.dateRange !== 'all' || filters.starredOnly;
 
   return (
-    <div className="flex flex-col h-full">
+    <div 
+      ref={panelRef}
+      className="flex flex-col h-full outline-none"
+      tabIndex={0}
+      onFocus={() => setIsPanelFocused(true)}
+      onBlur={(e) => {
+        // Only blur if focus is leaving the panel entirely
+        if (!panelRef.current?.contains(e.relatedTarget as Node)) {
+          setIsPanelFocused(false);
+        }
+      }}
+    >
       {/* Search and Filters */}
       <div className="space-y-2 p-3 border-b">
         <div className="relative">
@@ -329,6 +419,36 @@ export function UrlHistoryPanel({
           )}
 
           <div className="flex-1" />
+
+          {/* Keyboard Shortcuts Hint */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Keyboard className="h-3.5 w-3.5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs">
+              <div className="space-y-1.5 text-xs">
+                <p className="font-medium mb-2">Keyboard Shortcuts</p>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  <span className="text-muted-foreground">Select all</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Ctrl+A</kbd>
+                  <span className="text-muted-foreground">Clear selection</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Esc</kbd>
+                  <span className="text-muted-foreground">Delete selected</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Delete</kbd>
+                  <span className="text-muted-foreground">Star selected</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">S</kbd>
+                  <span className="text-muted-foreground">Unstar selected</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">U</kbd>
+                  <span className="text-muted-foreground">Copy URLs</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">C</kbd>
+                  <span className="text-muted-foreground">Focus search</span>
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">/</kbd>
+                </div>
+              </div>
+            </TooltipContent>
+          </Tooltip>
 
           {/* Sort */}
           <DropdownMenu>
