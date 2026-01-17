@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { useSearchHistory } from '@/hooks/useSearchHistory';
+import { useUrlHistory } from '@/hooks/useUrlHistory';
 import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard, BarChart3, Users, TrendingUp, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -80,7 +81,24 @@ export default function YTFinder() {
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
-  const { history, addToHistory, updateHistoryName, toggleStar, removeFromHistory, clearHistory, exportHistory, importHistory } = useSearchHistory();
+  const navigate = useNavigate();
+  const { 
+    history: urlHistory, 
+    addToHistory, 
+    updateHistoryItem, 
+    toggleStar, 
+    removeFromHistory, 
+    clearHistory, 
+    exportHistory, 
+    importHistory,
+  } = useUrlHistory();
+  
+  // Filter history to only show YT Finder items
+  const ytHistory = useMemo(() => 
+    urlHistory.filter(item => item.toolType === 'yt-finder'),
+    [urlHistory]
+  );
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -121,10 +139,10 @@ export default function YTFinder() {
     }
 
     try {
-      const result = await importHistory(jsonFile);
+      await importHistory(jsonFile);
       toast({ 
         title: 'Imported!', 
-        description: `Added ${result.added} searches${result.duplicates > 0 ? `, ${result.duplicates} duplicates skipped` : ''}` 
+        description: 'History imported successfully'
       });
     } catch {
       toast({ title: 'Import failed', description: 'Invalid file format', variant: 'destructive' });
@@ -214,9 +232,6 @@ export default function YTFinder() {
     setError('');
     const videoIds = extractVideoIds(urls);
     
-    // Save to search history
-    addToHistory(urls, videoIds);
-    
     setLoading(true);
     setResults([]);
     setProgress({ current: 0, total: videoIds.length });
@@ -247,6 +262,26 @@ export default function YTFinder() {
 
       if (successCount > 0) {
         incrementStat('videosAnalyzed', successCount);
+        
+        // Get unique channel names for tags
+        const uniqueChannels = [...new Set(allResults.filter(r => r.status === 'success').map(r => r.channelName))];
+        const channelTags = uniqueChannels.slice(0, 5); // Limit to 5 channel tags
+        
+        // Save to unified URL history with channel metadata
+        addToHistory({
+          url: urls.split('\n').filter(l => l.trim())[0] || urls.substring(0, 100),
+          originalUrl: urls,
+          toolType: 'yt-finder',
+          name: `${videoIds.length} video${videoIds.length !== 1 ? 's' : ''} - ${uniqueChannels.length} channel${uniqueChannels.length !== 1 ? 's' : ''}`,
+          starred: false,
+          tags: channelTags,
+          metadata: {
+            videoCount: videoIds.length,
+            channelCount: uniqueChannels.length,
+            channels: uniqueChannels.join(', '),
+            topChannel: uniqueChannels[0] || ''
+          }
+        });
       }
 
       if (failedCount > 0 && successCount > 0) {
@@ -270,8 +305,10 @@ export default function YTFinder() {
     }
   };
 
-  const loadFromHistory = (historyUrls: string) => {
-    setUrls(historyUrls);
+  const loadFromHistory = (historyItem: typeof ytHistory[0]) => {
+    // Use originalUrl if available, otherwise fall back to url
+    const urlsToLoad = historyItem.originalUrl || historyItem.url;
+    setUrls(urlsToLoad);
     setTouched(false);
     setError('');
     setHistoryOpen(false);
@@ -435,18 +472,18 @@ export default function YTFinder() {
           </TooltipProvider>
           <Popover open={historyOpen} onOpenChange={setHistoryOpen}>
             <PopoverTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-8 text-xs"
-                disabled={history.length === 0}
-              >
-                <History className="h-3.5 w-3.5 mr-1" /> 
-                History
-                {history.length > 0 && (
-                  <span className="ml-1 text-muted-foreground">({history.length})</span>
-                )}
-              </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 text-xs"
+                  disabled={ytHistory.length === 0}
+                >
+                  <History className="h-3.5 w-3.5 mr-1" /> 
+                  History
+                  {ytHistory.length > 0 && (
+                    <span className="ml-1 text-muted-foreground">({ytHistory.length})</span>
+                  )}
+                </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0" align="end">
               <div className="flex items-center justify-between p-3 border-b">
@@ -461,10 +498,10 @@ export default function YTFinder() {
                       const file = e.target.files?.[0];
                       if (file) {
                         try {
-                          const result = await importHistory(file);
+                          await importHistory(file);
                           toast({ 
                             title: 'Imported!', 
-                            description: `Added ${result.added} searches${result.duplicates > 0 ? `, ${result.duplicates} duplicates skipped` : ''}` 
+                            description: 'History imported successfully'
                           });
                         } catch {
                           toast({ title: 'Import failed', description: 'Invalid file format', variant: 'destructive' });
@@ -496,10 +533,10 @@ export default function YTFinder() {
                           size="icon"
                           className="h-7 w-7"
                           onClick={() => {
-                            exportHistory();
+                            exportHistory('yt-finder');
                             toast({ title: 'Exported!', description: 'History saved to file' });
                           }}
-                          disabled={history.length === 0}
+                          disabled={ytHistory.length === 0}
                         >
                           <Download className="h-3 w-3" />
                         </Button>
@@ -512,9 +549,9 @@ export default function YTFinder() {
                     size="sm" 
                     className="h-7 text-xs text-muted-foreground hover:text-destructive"
                     onClick={() => {
-                      clearHistory();
+                      clearHistory('yt-finder');
                       setHistoryOpen(false);
-                      toast({ title: 'Cleared', description: 'Search history cleared' });
+                      toast({ title: 'Cleared', description: 'YT Finder history cleared' });
                     }}
                   >
                     <Trash2 className="h-3 w-3 mr-1" /> Clear
@@ -523,105 +560,127 @@ export default function YTFinder() {
               </div>
               <ScrollArea className="max-h-[300px]">
                 <div className="p-2 space-y-1">
-                  {history.map((item) => (
-                    <div 
-                      key={item.id}
-                      className="group flex items-center justify-between p-2 rounded-md hover:bg-muted cursor-pointer"
-                      onClick={() => {
-                        if (editingId !== item.id) {
-                          loadFromHistory(item.urls);
-                        }
-                      }}
-                    >
-                      <div className="flex-1 min-w-0">
-                        {editingId === item.id ? (
-                          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                            <input
-                              type="text"
-                              value={editingName}
-                              onChange={(e) => setEditingName(e.target.value)}
-                              className="flex-1 text-sm px-2 py-1 rounded border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-                              autoFocus
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  updateHistoryName(item.id, editingName);
+                  {ytHistory.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-4">No search history yet</p>
+                  ) : (
+                    ytHistory.slice(0, 10).map((item) => (
+                      <div 
+                        key={item.id}
+                        className="group flex items-center justify-between p-2 rounded-md hover:bg-muted cursor-pointer"
+                        onClick={() => {
+                          if (editingId !== item.id) {
+                            loadFromHistory(item);
+                          }
+                        }}
+                      >
+                        <div className="flex-1 min-w-0">
+                          {editingId === item.id ? (
+                            <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                              <input
+                                type="text"
+                                value={editingName}
+                                onChange={(e) => setEditingName(e.target.value)}
+                                className="flex-1 text-sm px-2 py-1 rounded border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                                autoFocus
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    updateHistoryItem(item.id, { name: editingName });
+                                    setEditingId(null);
+                                  } else if (e.key === 'Escape') {
+                                    setEditingId(null);
+                                  }
+                                }}
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => {
+                                  updateHistoryItem(item.id, { name: editingName });
                                   setEditingId(null);
-                                } else if (e.key === 'Escape') {
-                                  setEditingId(null);
-                                }
-                              }}
-                            />
+                                }}
+                              >
+                                <Check className="h-3 w-3 text-primary" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex items-center gap-2">
+                                {item.starred && <Star className="h-3 w-3 fill-yellow-500 text-yellow-500 flex-shrink-0" />}
+                                <Youtube className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                                <span className="text-sm font-medium truncate">{item.name}</span>
+                              </div>
+                              <div className="flex items-center flex-wrap gap-1 mt-1">
+                                {item.tags?.slice(0, 3).map((tag, idx) => (
+                                  <span key={idx} className="text-[10px] px-1.5 py-0.5 bg-muted rounded-full text-muted-foreground">
+                                    {tag}
+                                  </span>
+                                ))}
+                                {(item.tags?.length || 0) > 3 && (
+                                  <span className="text-[10px] text-muted-foreground">+{item.tags!.length - 3}</span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                                <Clock className="h-3 w-3" />
+                                <span>{formatTimeAgo(item.timestamp)}</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        {editingId !== item.id && (
+                          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100">
                             <Button
                               variant="ghost"
                               size="icon"
                               className="h-6 w-6"
-                              onClick={() => {
-                                updateHistoryName(item.id, editingName);
-                                setEditingId(null);
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleStar(item.id);
                               }}
                             >
-                              <Check className="h-3 w-3 text-primary" />
+                              <Star className={cn(
+                                "h-3 w-3",
+                                item.starred && "fill-yellow-500 text-yellow-500"
+                              )} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingId(item.id);
+                                setEditingName(item.name);
+                              }}
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeFromHistory(item.id);
+                              }}
+                            >
+                              <X className="h-3 w-3" />
                             </Button>
                           </div>
-                        ) : (
-                          <>
-                            <div className="flex items-center gap-2">
-                              {item.starred && <Star className="h-3 w-3 fill-yellow-500 text-yellow-500 flex-shrink-0" />}
-                              <Youtube className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
-                              <span className="text-sm font-medium truncate">{item.name}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                              <span>{item.videoCount} video{item.videoCount !== 1 ? 's' : ''}</span>
-                              <span>•</span>
-                              <Clock className="h-3 w-3" />
-                              <span>{formatTimeAgo(item.timestamp)}</span>
-                            </div>
-                          </>
                         )}
                       </div>
-                      {editingId !== item.id && (
-                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleStar(item.id);
-                            }}
-                          >
-                            <Star className={cn(
-                              "h-3 w-3",
-                              item.starred && "fill-yellow-500 text-yellow-500"
-                            )} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingId(item.id);
-                              setEditingName(item.name);
-                            }}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeFromHistory(item.id);
-                            }}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    ))
+                  )}
+                  {ytHistory.length > 10 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full text-xs mt-2"
+                      onClick={() => navigate('/history')}
+                    >
+                      View all {ytHistory.length} items →
+                    </Button>
+                  )}
                 </div>
               </ScrollArea>
             </PopoverContent>

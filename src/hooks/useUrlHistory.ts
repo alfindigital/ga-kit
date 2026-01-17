@@ -20,6 +20,11 @@ export interface UrlHistoryItem {
     channelName?: string;
     videoTitle?: string;
     qrContent?: string;
+    // YT Finder specific
+    videoCount?: number;
+    channelCount?: number;
+    channels?: string;
+    topChannel?: string;
   };
 }
 
@@ -239,14 +244,16 @@ export function useUrlHistory() {
     });
   }, []);
 
-  const exportHistory = useCallback((items?: UrlHistoryItem[]) => {
-    const dataToExport = items || history;
+  const exportHistory = useCallback((toolType?: ToolType) => {
+    const dataToExport = toolType 
+      ? history.filter(item => item.toolType === toolType)
+      : history;
     const data = JSON.stringify(dataToExport, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ga-toolkit-history-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `ga-toolkit-history${toolType ? `-${toolType}` : ''}-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
