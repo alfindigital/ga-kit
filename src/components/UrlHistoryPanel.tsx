@@ -15,7 +15,8 @@ import {
   Upload,
   Check,
   Pencil,
-  ChevronDown
+  ChevronDown,
+  StarOff
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -88,6 +89,7 @@ export function UrlHistoryPanel({
     toggleStar,
     removeFromHistory,
     removeMultiple,
+    starMultiple,
     clearHistory,
     exportHistory,
     exportHistoryCsv,
@@ -356,7 +358,7 @@ export function UrlHistoryPanel({
 
         {/* Bulk Actions */}
         {selectedIds.size > 0 && (
-          <div className="flex items-center gap-2 pt-2 border-t">
+          <div className="flex items-center gap-2 pt-2 border-t flex-wrap">
             <span className="text-xs text-muted-foreground">{selectedIds.size} selected</span>
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleCopySelected}>
               <Copy className="h-3 w-3 mr-1" /> Copy
@@ -367,13 +369,35 @@ export function UrlHistoryPanel({
             <Button 
               variant="ghost" 
               size="sm" 
+              className="h-7 text-xs"
+              onClick={() => {
+                starMultiple(Array.from(selectedIds), true);
+                toast({ title: 'Starred', description: `${selectedIds.size} items starred` });
+              }}
+            >
+              <Star className="h-3 w-3 mr-1" /> Star
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-7 text-xs"
+              onClick={() => {
+                starMultiple(Array.from(selectedIds), false);
+                toast({ title: 'Unstarred', description: `${selectedIds.size} items unstarred` });
+              }}
+            >
+              <StarOff className="h-3 w-3 mr-1" /> Unstar
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
               className="h-7 text-xs text-destructive hover:text-destructive"
               onClick={() => setDeleteDialogOpen(true)}
             >
               <Trash2 className="h-3 w-3 mr-1" /> Delete
             </Button>
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setSelectedIds(new Set())}>
-              Clear
+              <X className="h-3 w-3 mr-1" /> Clear
             </Button>
           </div>
         )}
