@@ -18,7 +18,8 @@ import {
   X,
   Keyboard,
   RotateCcw,
-  History
+  History,
+  Settings
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -151,6 +152,24 @@ export function Header() {
               <p>Keyboard shortcuts <kbd className="ml-1 px-1 py-0.5 text-xs bg-muted rounded">?</kbd></p>
             </TooltipContent>
           </Tooltip>
+
+          {/* Settings Link */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/settings">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-9 w-9 hidden sm:flex"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Settings</p>
+            </TooltipContent>
+          </Tooltip>
           
           {/* Theme Toggle */}
           <DropdownMenu>
@@ -231,6 +250,21 @@ export function Header() {
                 <span>{item.label}</span>
               </Link>
             ))}
+            {/* Settings link in mobile menu */}
+            <Link
+              to="/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 animate-fade-in active:scale-[0.98]",
+                location.pathname === '/settings'
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              )}
+              style={{ animationDelay: `${navItems.length * 30}ms` }}
+            >
+              <Settings className="h-4 w-4" />
+              <span>Settings</span>
+            </Link>
           </nav>
         </div>
       )}

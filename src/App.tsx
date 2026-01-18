@@ -15,6 +15,7 @@ import KeywordTools from "./pages/KeywordTools";
 import YTFinder from "./pages/YTFinder";
 import QRGenerator from "./pages/QRGenerator";
 import UrlHistory from "./pages/UrlHistory";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
                 <Route path="/yt-finder" element={<YTFinder />} />
                 <Route path="/qr-generator" element={<QRGenerator />} />
                 <Route path="/history" element={<UrlHistory />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
