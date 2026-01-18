@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import Joyride, { CallBackProps, STATUS, Step, ACTIONS, EVENTS } from 'react-joyride';
+import Joyride, { CallBackProps, STATUS, Step, ACTIONS, EVENTS, TooltipRenderProps } from 'react-joyride';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Button } from '@/components/ui/button';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import { Sparkles, RotateCcw, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 const tourSteps: Step[] = [
   {
@@ -111,6 +112,105 @@ const tourSteps: Step[] = [
   },
 ];
 
+// Custom tooltip component with progress bar
+function CustomTooltip({
+  continuous,
+  index,
+  step,
+  backProps,
+  closeProps,
+  primaryProps,
+  skipProps,
+  tooltipProps,
+  size,
+  isLastStep,
+}: TooltipRenderProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+  const progress = ((index + 1) / size) * 100;
+  const stepsRemaining = size - index - 1;
+
+  return (
+    <div
+      {...tooltipProps}
+      className={`
+        max-w-sm rounded-xl p-6 border shadow-2xl
+        ${isDark 
+          ? 'bg-card border-border/50' 
+          : 'bg-card border-border'
+        }
+      `}
+      style={{
+        boxShadow: isDark 
+          ? '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 12px 24px -8px rgba(0, 0, 0, 0.4)' 
+          : '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 12px 24px -8px rgba(0, 0, 0, 0.08)',
+      }}
+    >
+      {/* Header with step counter and skip button */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-xs font-medium text-muted-foreground">
+          Step {index + 1} of {size}
+        </span>
+        <button
+          {...skipProps}
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Skip Tour
+        </button>
+      </div>
+
+      {/* Progress bar */}
+      <div className="mb-4">
+        <Progress value={progress} className="h-1.5" />
+        <p className="text-xs text-muted-foreground mt-1.5">
+          {stepsRemaining === 0 
+            ? "Last step!" 
+            : `${stepsRemaining} step${stepsRemaining > 1 ? 's' : ''} remaining`
+          }
+        </p>
+      </div>
+
+      {/* Content */}
+      <div className="mb-6">
+        {step.content}
+      </div>
+
+      {/* Navigation buttons */}
+      <div className="flex items-center justify-between">
+        <div>
+          {index > 0 && (
+            <Button
+              {...backProps}
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-muted-foreground hover:text-foreground"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Back
+            </Button>
+          )}
+        </div>
+        <Button
+          {...primaryProps}
+          size="sm"
+          className="gap-1.5"
+        >
+          {isLastStep ? (
+            <>
+              Finish
+              <Sparkles className="h-4 w-4" />
+            </>
+          ) : (
+            <>
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
 interface OnboardingTourProps {
   forceStart?: boolean;
   onComplete?: () => void;
@@ -161,79 +261,22 @@ export function OnboardingTour({ forceStart = false, onComplete }: OnboardingTou
       run={runTour}
       stepIndex={stepIndex}
       continuous
-      showProgress
-      showSkipButton
       scrollToFirstStep
       spotlightClicks
       disableOverlayClose
       callback={handleJoyrideCallback}
-      locale={{
-        back: 'Back',
-        close: 'Close',
-        last: 'Finish',
-        next: 'Next',
-        skip: 'Skip Tour',
-      }}
+      tooltipComponent={CustomTooltip}
       styles={{
         options: {
           arrowColor: isDark ? 'hsl(220, 15%, 13%)' : 'hsl(0, 0%, 100%)',
-          backgroundColor: isDark ? 'hsl(220, 15%, 13%)' : 'hsl(0, 0%, 100%)',
           overlayColor: 'rgba(0, 0, 0, 0.55)',
-          primaryColor: isDark ? 'hsl(217, 91%, 60%)' : 'hsl(217, 91%, 50%)',
-          textColor: isDark ? 'hsl(220, 14%, 96%)' : 'hsl(220, 15%, 10%)',
           zIndex: 10000,
-        },
-        tooltip: {
-          borderRadius: '12px',
-          padding: '24px',
-          border: isDark ? '1px solid hsl(220, 15%, 22%)' : '1px solid hsl(220, 13%, 90%)',
-          boxShadow: isDark 
-            ? '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 12px 24px -8px rgba(0, 0, 0, 0.4)' 
-            : '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 12px 24px -8px rgba(0, 0, 0, 0.08)',
-        },
-        tooltipContainer: {
-          textAlign: 'left',
-        },
-        tooltipTitle: {
-          fontSize: '16px',
-          fontWeight: 600,
-        },
-        tooltipContent: {
-          padding: '10px 0 4px 0',
-        },
-        buttonNext: {
-          backgroundColor: isDark ? 'hsl(217, 91%, 60%)' : 'hsl(217, 91%, 50%)',
-          color: 'hsl(0, 0%, 100%)',
-          borderRadius: '8px',
-          fontSize: '14px',
-          fontWeight: 500,
-          padding: '10px 20px',
-          border: 'none',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-          transition: 'all 0.2s ease',
-        },
-        buttonBack: {
-          color: isDark ? 'hsl(220, 14%, 70%)' : 'hsl(220, 10%, 40%)',
-          backgroundColor: 'transparent',
-          borderRadius: '8px',
-          fontSize: '14px',
-          fontWeight: 500,
-          padding: '10px 16px',
-          marginRight: '12px',
-        },
-        buttonSkip: {
-          color: isDark ? 'hsl(220, 10%, 50%)' : 'hsl(220, 10%, 55%)',
-          fontSize: '13px',
-          fontWeight: 400,
         },
         spotlight: {
           borderRadius: '12px',
           boxShadow: isDark 
             ? '0 0 0 4px rgba(96, 165, 250, 0.25)' 
             : '0 0 0 4px rgba(59, 130, 246, 0.2)',
-        },
-        beacon: {
-          display: 'none',
         },
       }}
       floaterProps={{
