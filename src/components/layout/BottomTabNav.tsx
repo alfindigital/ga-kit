@@ -5,7 +5,7 @@ import {
   Link2,
   Combine,
   Wrench,
-  QrCode,
+  Settings,
 } from 'lucide-react';
 
 const tabItems = [
@@ -13,7 +13,7 @@ const tabItems = [
   { path: '/utm-builder', label: 'UTM', icon: Link2 },
   { path: '/keyword-combiner', label: 'Combine', icon: Combine },
   { path: '/keyword-tools', label: 'Tools', icon: Wrench },
-  { path: '/qr-generator', label: 'QR', icon: QrCode },
+  { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export function BottomTabNav() {
