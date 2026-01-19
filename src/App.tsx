@@ -15,6 +15,7 @@ import KeywordTools from "./pages/KeywordTools";
 import YTFinder from "./pages/YTFinder";
 import QRGenerator from "./pages/QRGenerator";
 import UrlHistory from "./pages/UrlHistory";
+import UrlValidator from "./pages/UrlValidator";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ const App = () => (
                 <Route path="/keyword-tools" element={<KeywordTools />} />
                 <Route path="/yt-finder" element={<YTFinder />} />
                 <Route path="/qr-generator" element={<QRGenerator />} />
+                <Route path="/url-validator" element={<UrlValidator />} />
                 <Route path="/history" element={<UrlHistory />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />

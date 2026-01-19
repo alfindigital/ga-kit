@@ -10,7 +10,8 @@ import {
   Sparkles,
   Star,
   Pin,
-  History
+  History,
+  ShieldCheck
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -75,6 +76,15 @@ const tools = [
     path: '/qr-generator',
     color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
     features: ['Custom Colors', 'Logo Support', 'PNG/SVG Export'],
+  },
+  {
+    id: 'url-validator',
+    title: 'URL Validator',
+    description: 'Validate URL format and structure before use',
+    icon: ShieldCheck,
+    path: '/url-validator',
+    color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
+    features: ['Format Check', 'Bulk Validation', 'Quick Actions'],
   },
   {
     id: 'url-history',
