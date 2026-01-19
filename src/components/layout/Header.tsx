@@ -19,7 +19,8 @@ import {
   Keyboard,
   RotateCcw,
   History,
-  Settings
+  Settings,
+  ShieldCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -51,6 +52,7 @@ const navItems = [
   { path: '/keyword-tools', label: 'Tools', icon: Wrench },
   { path: '/yt-finder', label: 'YT Finder', icon: Youtube },
   { path: '/qr-generator', label: 'QR Code', icon: QrCode },
+  { path: '/url-validator', label: 'Validator', icon: ShieldCheck },
 ];
 
 export function Header() {
