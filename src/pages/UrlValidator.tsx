@@ -13,7 +13,9 @@ import {
   Loader2,
   ClipboardPaste,
   ArrowRight,
-  Filter
+  Filter,
+  Code,
+  ArrowRightLeft
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -117,6 +119,12 @@ export default function UrlValidator() {
   const [filter, setFilter] = useState<FilterType>('all');
   const [isValidating, setIsValidating] = useState(false);
   
+  // Encoding/Decoding mode
+  const [encodeInput, setEncodeInput] = useState('');
+  const [encodeOutput, setEncodeOutput] = useState('');
+  const [decodeInput, setDecodeInput] = useState('');
+  const [decodeOutput, setDecodeOutput] = useState('');
+  
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
       toast({ title: "Enter a URL", description: "Please enter a URL to validate", variant: "destructive" });
@@ -197,6 +205,45 @@ export default function UrlValidator() {
     setBulkResults([]);
   }, []);
   
+  // Encoding handlers
+  const handleEncode = useCallback(() => {
+    if (!encodeInput.trim()) {
+      toast({ title: "Enter text", description: "Please enter text to encode", variant: "destructive" });
+      return;
+    }
+    try {
+      const encoded = encodeURIComponent(encodeInput);
+      setEncodeOutput(encoded);
+      toast({ title: "Encoded!", description: "Text successfully URL encoded" });
+    } catch {
+      toast({ title: "Encoding failed", description: "Unable to encode the text", variant: "destructive" });
+    }
+  }, [encodeInput, toast]);
+  
+  const handleDecode = useCallback(() => {
+    if (!decodeInput.trim()) {
+      toast({ title: "Enter text", description: "Please enter text to decode", variant: "destructive" });
+      return;
+    }
+    try {
+      const decoded = decodeURIComponent(decodeInput);
+      setDecodeOutput(decoded);
+      toast({ title: "Decoded!", description: "Text successfully URL decoded" });
+    } catch {
+      toast({ title: "Decoding failed", description: "Invalid encoded text", variant: "destructive" });
+    }
+  }, [decodeInput, toast]);
+  
+  const handleClearEncode = useCallback(() => {
+    setEncodeInput('');
+    setEncodeOutput('');
+  }, []);
+  
+  const handleClearDecode = useCallback(() => {
+    setDecodeInput('');
+    setDecodeOutput('');
+  }, []);
+  
   const getFilteredResults = useCallback(() => {
     switch (filter) {
       case 'valid':
@@ -236,9 +283,10 @@ export default function UrlValidator() {
       </div>
       
       <Tabs defaultValue="single" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 max-w-md">
+        <TabsList className="grid w-full grid-cols-3 max-w-lg">
           <TabsTrigger value="single">Single URL</TabsTrigger>
           <TabsTrigger value="bulk">Bulk Validation</TabsTrigger>
+          <TabsTrigger value="encode">Encode/Decode</TabsTrigger>
         </TabsList>
         
         {/* Single URL Mode */}
@@ -542,6 +590,145 @@ export default function UrlValidator() {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+        
+        {/* Encode/Decode Mode */}
+        <TabsContent value="encode" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Encode Card */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Code className="h-4 w-4" />
+                  URL Encode
+                </CardTitle>
+                <CardDescription>Convert special characters to URL-safe format</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Input Text</Label>
+                  <div className="flex gap-2">
+                    <Textarea
+                      placeholder="Hello World! Special chars: @#$%"
+                      value={encodeInput}
+                      onChange={(e) => setEncodeInput(e.target.value)}
+                      rows={3}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button onClick={handleEncode} className="flex-1">
+                    <ArrowRightLeft className="h-4 w-4 mr-2" />
+                    Encode
+                  </Button>
+                  {encodeInput && (
+                    <Button variant="outline" size="icon" onClick={handleClearEncode}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                {encodeOutput && (
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Encoded Output</Label>
+                    <div className="flex gap-2">
+                      <Textarea
+                        value={encodeOutput}
+                        readOnly
+                        rows={3}
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(encodeOutput)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            
+            {/* Decode Card */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Code className="h-4 w-4" />
+                  URL Decode
+                </CardTitle>
+                <CardDescription>Convert URL-encoded text back to readable format</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Encoded Text</Label>
+                  <div className="flex gap-2">
+                    <Textarea
+                      placeholder="Hello%20World%21%20Special%20chars%3A%20%40%23%24%25"
+                      value={decodeInput}
+                      onChange={(e) => setDecodeInput(e.target.value)}
+                      rows={3}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button onClick={handleDecode} className="flex-1">
+                    <ArrowRightLeft className="h-4 w-4 mr-2" />
+                    Decode
+                  </Button>
+                  {decodeInput && (
+                    <Button variant="outline" size="icon" onClick={handleClearDecode}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                {decodeOutput && (
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Decoded Output</Label>
+                    <div className="flex gap-2">
+                      <Textarea
+                        value={decodeOutput}
+                        readOnly
+                        rows={3}
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(decodeOutput)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Encoding Info */}
+          <Card className="bg-muted/30">
+            <CardContent className="pt-4">
+              <div className="flex items-start gap-3">
+                <Code className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="space-y-1 text-sm">
+                  <p className="font-medium">About URL Encoding</p>
+                  <p className="text-muted-foreground">
+                    URL encoding converts special characters (like spaces, @, #, etc.) into percent-encoded format 
+                    that is safe for use in URLs. Use this when building query parameters or passing data in URLs.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
       
