@@ -125,6 +125,12 @@ export default function UrlValidator() {
   const [decodeInput, setDecodeInput] = useState('');
   const [decodeOutput, setDecodeOutput] = useState('');
   
+  // Base64 encoding/decoding
+  const [base64EncodeInput, setBase64EncodeInput] = useState('');
+  const [base64EncodeOutput, setBase64EncodeOutput] = useState('');
+  const [base64DecodeInput, setBase64DecodeInput] = useState('');
+  const [base64DecodeOutput, setBase64DecodeOutput] = useState('');
+  
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
       toast({ title: "Enter a URL", description: "Please enter a URL to validate", variant: "destructive" });
@@ -242,6 +248,45 @@ export default function UrlValidator() {
   const handleClearDecode = useCallback(() => {
     setDecodeInput('');
     setDecodeOutput('');
+  }, []);
+  
+  // Base64 handlers
+  const handleBase64Encode = useCallback(() => {
+    if (!base64EncodeInput.trim()) {
+      toast({ title: "Enter text", description: "Please enter text to encode", variant: "destructive" });
+      return;
+    }
+    try {
+      const encoded = btoa(unescape(encodeURIComponent(base64EncodeInput)));
+      setBase64EncodeOutput(encoded);
+      toast({ title: "Encoded!", description: "Text successfully Base64 encoded" });
+    } catch {
+      toast({ title: "Encoding failed", description: "Unable to encode the text", variant: "destructive" });
+    }
+  }, [base64EncodeInput, toast]);
+  
+  const handleBase64Decode = useCallback(() => {
+    if (!base64DecodeInput.trim()) {
+      toast({ title: "Enter text", description: "Please enter Base64 text to decode", variant: "destructive" });
+      return;
+    }
+    try {
+      const decoded = decodeURIComponent(escape(atob(base64DecodeInput)));
+      setBase64DecodeOutput(decoded);
+      toast({ title: "Decoded!", description: "Base64 text successfully decoded" });
+    } catch {
+      toast({ title: "Decoding failed", description: "Invalid Base64 text", variant: "destructive" });
+    }
+  }, [base64DecodeInput, toast]);
+  
+  const handleClearBase64Encode = useCallback(() => {
+    setBase64EncodeInput('');
+    setBase64EncodeOutput('');
+  }, []);
+  
+  const handleClearBase64Decode = useCallback(() => {
+    setBase64DecodeInput('');
+    setBase64DecodeOutput('');
   }, []);
   
   const getFilteredResults = useCallback(() => {
@@ -724,6 +769,143 @@ export default function UrlValidator() {
                   <p className="text-muted-foreground">
                     URL encoding converts special characters (like spaces, @, #, etc.) into percent-encoded format 
                     that is safe for use in URLs. Use this when building query parameters or passing data in URLs.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Base64 Section */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Base64 Encode Card */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Code className="h-4 w-4" />
+                  Base64 Encode
+                </CardTitle>
+                <CardDescription>Convert text to Base64 encoded format</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Input Text</Label>
+                  <div className="flex gap-2">
+                    <Textarea
+                      placeholder="Hello World! Enter any text..."
+                      value={base64EncodeInput}
+                      onChange={(e) => setBase64EncodeInput(e.target.value)}
+                      rows={3}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button onClick={handleBase64Encode} className="flex-1">
+                    <ArrowRightLeft className="h-4 w-4 mr-2" />
+                    Encode
+                  </Button>
+                  {base64EncodeInput && (
+                    <Button variant="outline" size="icon" onClick={handleClearBase64Encode}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                {base64EncodeOutput && (
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Base64 Output</Label>
+                    <div className="flex gap-2">
+                      <Textarea
+                        value={base64EncodeOutput}
+                        readOnly
+                        rows={3}
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(base64EncodeOutput)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            
+            {/* Base64 Decode Card */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Code className="h-4 w-4" />
+                  Base64 Decode
+                </CardTitle>
+                <CardDescription>Convert Base64 encoded text back to readable format</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Base64 Text</Label>
+                  <div className="flex gap-2">
+                    <Textarea
+                      placeholder="SGVsbG8gV29ybGQh"
+                      value={base64DecodeInput}
+                      onChange={(e) => setBase64DecodeInput(e.target.value)}
+                      rows={3}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button onClick={handleBase64Decode} className="flex-1">
+                    <ArrowRightLeft className="h-4 w-4 mr-2" />
+                    Decode
+                  </Button>
+                  {base64DecodeInput && (
+                    <Button variant="outline" size="icon" onClick={handleClearBase64Decode}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                {base64DecodeOutput && (
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Decoded Output</Label>
+                    <div className="flex gap-2">
+                      <Textarea
+                        value={base64DecodeOutput}
+                        readOnly
+                        rows={3}
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(base64DecodeOutput)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Base64 Info */}
+          <Card className="bg-muted/30">
+            <CardContent className="pt-4">
+              <div className="flex items-start gap-3">
+                <Code className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="space-y-1 text-sm">
+                  <p className="font-medium">About Base64 Encoding</p>
+                  <p className="text-muted-foreground">
+                    Base64 encoding converts binary data or text into ASCII characters. It's commonly used for 
+                    embedding images in CSS/HTML, encoding data in URLs, and transmitting data over text-based protocols.
                   </p>
                 </div>
               </div>
