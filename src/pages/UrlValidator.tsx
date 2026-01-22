@@ -17,7 +17,8 @@ import {
   Code,
   ArrowRightLeft,
   Hash,
-  FileDigit
+  FileDigit,
+  Upload
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -137,6 +138,9 @@ export default function UrlValidator() {
   const [hashInput, setHashInput] = useState('');
   const [hashResults, setHashResults] = useState<{ md5: string; sha1: string; sha256: string } | null>(null);
   const [isHashing, setIsHashing] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isFileHashing, setIsFileHashing] = useState(false);
+  const [fileHashResults, setFileHashResults] = useState<{ md5: string; sha1: string; sha256: string } | null>(null);
   
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
@@ -443,6 +447,161 @@ export default function UrlValidator() {
   const handleClearHash = useCallback(() => {
     setHashInput('');
     setHashResults(null);
+  }, []);
+  
+  // MD5 for ArrayBuffer
+  const md5ArrayBuffer = useCallback((buffer: ArrayBuffer): string => {
+    function rotateLeft(x: number, n: number) {
+      return (x << n) | (x >>> (32 - n));
+    }
+    
+    function addUnsigned(x: number, y: number) {
+      const x8 = x & 0x80000000;
+      const y8 = y & 0x80000000;
+      const x4 = x & 0x40000000;
+      const y4 = y & 0x40000000;
+      const result = (x & 0x3FFFFFFF) + (y & 0x3FFFFFFF);
+      if (x4 & y4) return result ^ 0x80000000 ^ x8 ^ y8;
+      if (x4 | y4) {
+        if (result & 0x40000000) return result ^ 0xC0000000 ^ x8 ^ y8;
+        return result ^ 0x40000000 ^ x8 ^ y8;
+      }
+      return result ^ x8 ^ y8;
+    }
+    
+    function F(x: number, y: number, z: number) { return (x & y) | (~x & z); }
+    function G(x: number, y: number, z: number) { return (x & z) | (y & ~z); }
+    function H(x: number, y: number, z: number) { return x ^ y ^ z; }
+    function I(x: number, y: number, z: number) { return y ^ (x | ~z); }
+    
+    function FF(a: number, b: number, c: number, d: number, x: number, s: number, ac: number) {
+      a = addUnsigned(a, addUnsigned(addUnsigned(F(b, c, d), x), ac));
+      return addUnsigned(rotateLeft(a, s), b);
+    }
+    function GG(a: number, b: number, c: number, d: number, x: number, s: number, ac: number) {
+      a = addUnsigned(a, addUnsigned(addUnsigned(G(b, c, d), x), ac));
+      return addUnsigned(rotateLeft(a, s), b);
+    }
+    function HH(a: number, b: number, c: number, d: number, x: number, s: number, ac: number) {
+      a = addUnsigned(a, addUnsigned(addUnsigned(H(b, c, d), x), ac));
+      return addUnsigned(rotateLeft(a, s), b);
+    }
+    function II(a: number, b: number, c: number, d: number, x: number, s: number, ac: number) {
+      a = addUnsigned(a, addUnsigned(addUnsigned(I(b, c, d), x), ac));
+      return addUnsigned(rotateLeft(a, s), b);
+    }
+    
+    function wordToHex(n: number) {
+      let hex = '';
+      for (let c = 0; c <= 3; c++) {
+        hex += ((n >>> (c * 8)) & 0xFF).toString(16).padStart(2, '0');
+      }
+      return hex;
+    }
+    
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.length;
+    const words: number[] = [];
+    
+    for (let i = 0; i < len; i++) {
+      words[i >> 2] |= bytes[i] << ((i % 4) * 8);
+    }
+    words[len >> 2] |= 0x80 << ((len % 4) * 8);
+    
+    const totalLen = (((len + 8) >> 6) + 1) * 16;
+    while (words.length < totalLen) words.push(0);
+    words[totalLen - 2] = len * 8;
+    
+    let a = 0x67452301, b = 0xEFCDAB89, c = 0x98BADCFE, d = 0x10325476;
+    
+    for (let k = 0; k < words.length; k += 16) {
+      const AA = a, BB = b, CC = c, DD = d;
+      const x = words.slice(k, k + 16);
+      
+      a = FF(a, b, c, d, x[0], 7, 0xD76AA478); d = FF(d, a, b, c, x[1], 12, 0xE8C7B756);
+      c = FF(c, d, a, b, x[2], 17, 0x242070DB); b = FF(b, c, d, a, x[3], 22, 0xC1BDCEEE);
+      a = FF(a, b, c, d, x[4], 7, 0xF57C0FAF); d = FF(d, a, b, c, x[5], 12, 0x4787C62A);
+      c = FF(c, d, a, b, x[6], 17, 0xA8304613); b = FF(b, c, d, a, x[7], 22, 0xFD469501);
+      a = FF(a, b, c, d, x[8], 7, 0x698098D8); d = FF(d, a, b, c, x[9], 12, 0x8B44F7AF);
+      c = FF(c, d, a, b, x[10], 17, 0xFFFF5BB1); b = FF(b, c, d, a, x[11], 22, 0x895CD7BE);
+      a = FF(a, b, c, d, x[12], 7, 0x6B901122); d = FF(d, a, b, c, x[13], 12, 0xFD987193);
+      c = FF(c, d, a, b, x[14], 17, 0xA679438E); b = FF(b, c, d, a, x[15], 22, 0x49B40821);
+      
+      a = GG(a, b, c, d, x[1], 5, 0xF61E2562); d = GG(d, a, b, c, x[6], 9, 0xC040B340);
+      c = GG(c, d, a, b, x[11], 14, 0x265E5A51); b = GG(b, c, d, a, x[0], 20, 0xE9B6C7AA);
+      a = GG(a, b, c, d, x[5], 5, 0xD62F105D); d = GG(d, a, b, c, x[10], 9, 0x02441453);
+      c = GG(c, d, a, b, x[15], 14, 0xD8A1E681); b = GG(b, c, d, a, x[4], 20, 0xE7D3FBC8);
+      a = GG(a, b, c, d, x[9], 5, 0x21E1CDE6); d = GG(d, a, b, c, x[14], 9, 0xC33707D6);
+      c = GG(c, d, a, b, x[3], 14, 0xF4D50D87); b = GG(b, c, d, a, x[8], 20, 0x455A14ED);
+      a = GG(a, b, c, d, x[13], 5, 0xA9E3E905); d = GG(d, a, b, c, x[2], 9, 0xFCEFA3F8);
+      c = GG(c, d, a, b, x[7], 14, 0x676F02D9); b = GG(b, c, d, a, x[12], 20, 0x8D2A4C8A);
+      
+      a = HH(a, b, c, d, x[5], 4, 0xFFFA3942); d = HH(d, a, b, c, x[8], 11, 0x8771F681);
+      c = HH(c, d, a, b, x[11], 16, 0x6D9D6122); b = HH(b, c, d, a, x[14], 23, 0xFDE5380C);
+      a = HH(a, b, c, d, x[1], 4, 0xA4BEEA44); d = HH(d, a, b, c, x[4], 11, 0x4BDECFA9);
+      c = HH(c, d, a, b, x[7], 16, 0xF6BB4B60); b = HH(b, c, d, a, x[10], 23, 0xBEBFBC70);
+      a = HH(a, b, c, d, x[13], 4, 0x289B7EC6); d = HH(d, a, b, c, x[0], 11, 0xEAA127FA);
+      c = HH(c, d, a, b, x[3], 16, 0xD4EF3085); b = HH(b, c, d, a, x[6], 23, 0x04881D05);
+      a = HH(a, b, c, d, x[9], 4, 0xD9D4D039); d = HH(d, a, b, c, x[12], 11, 0xE6DB99E5);
+      c = HH(c, d, a, b, x[15], 16, 0x1FA27CF8); b = HH(b, c, d, a, x[2], 23, 0xC4AC5665);
+      
+      a = II(a, b, c, d, x[0], 6, 0xF4292244); d = II(d, a, b, c, x[7], 10, 0x432AFF97);
+      c = II(c, d, a, b, x[14], 15, 0xAB9423A7); b = II(b, c, d, a, x[5], 21, 0xFC93A039);
+      a = II(a, b, c, d, x[12], 6, 0x655B59C3); d = II(d, a, b, c, x[3], 10, 0x8F0CCC92);
+      c = II(c, d, a, b, x[10], 15, 0xFFEFF47D); b = II(b, c, d, a, x[1], 21, 0x85845DD1);
+      a = II(a, b, c, d, x[8], 6, 0x6FA87E4F); d = II(d, a, b, c, x[15], 10, 0xFE2CE6E0);
+      c = II(c, d, a, b, x[6], 15, 0xA3014314); b = II(b, c, d, a, x[13], 21, 0x4E0811A1);
+      a = II(a, b, c, d, x[4], 6, 0xF7537E82); d = II(d, a, b, c, x[11], 10, 0xBD3AF235);
+      c = II(c, d, a, b, x[2], 15, 0x2AD7D2BB); b = II(b, c, d, a, x[9], 21, 0xEB86D391);
+      
+      a = addUnsigned(a, AA); b = addUnsigned(b, BB);
+      c = addUnsigned(c, CC); d = addUnsigned(d, DD);
+    }
+    
+    return wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
+  }, []);
+  
+  // Hash ArrayBuffer using Web Crypto API
+  const computeHashFromBuffer = useCallback(async (buffer: ArrayBuffer, algorithm: 'SHA-1' | 'SHA-256'): Promise<string> => {
+    const hashBuffer = await crypto.subtle.digest(algorithm, buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }, []);
+  
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setFileHashResults(null);
+    }
+  }, []);
+  
+  const handleGenerateFileHashes = useCallback(async () => {
+    if (!selectedFile) {
+      toast({ title: "Select a file", description: "Please select a file to hash", variant: "destructive" });
+      return;
+    }
+    
+    setIsFileHashing(true);
+    try {
+      const buffer = await selectedFile.arrayBuffer();
+      const [sha1, sha256] = await Promise.all([
+        computeHashFromBuffer(buffer, 'SHA-1'),
+        computeHashFromBuffer(buffer, 'SHA-256')
+      ]);
+      const md5Hash = md5ArrayBuffer(buffer);
+      
+      setFileHashResults({ md5: md5Hash, sha1, sha256 });
+      toast({ title: "File hashes generated!", description: `Computed hashes for ${selectedFile.name}` });
+    } catch {
+      toast({ title: "Hashing failed", description: "Unable to compute file hashes", variant: "destructive" });
+    }
+    setIsFileHashing(false);
+  }, [selectedFile, toast, computeHashFromBuffer, md5ArrayBuffer]);
+  
+  const handleClearFileHash = useCallback(() => {
+    setSelectedFile(null);
+    setFileHashResults(null);
   }, []);
   
   const getFilteredResults = useCallback(() => {
@@ -1171,6 +1330,121 @@ export default function UrlValidator() {
                         size="icon"
                         className="flex-shrink-0"
                         onClick={() => handleCopy(hashResults.sha256)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* File Hash Generator Section */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Upload className="h-4 w-4" />
+                File Hash Generator
+              </CardTitle>
+              <CardDescription>Generate MD5, SHA-1, and SHA-256 hashes from uploaded files</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Select File</Label>
+                <div className="flex gap-2">
+                  <Input
+                    type="file"
+                    onChange={handleFileSelect}
+                    className="cursor-pointer"
+                  />
+                  {selectedFile && (
+                    <Button variant="outline" size="icon" onClick={handleClearFileHash}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                {selectedFile && (
+                  <p className="text-xs text-muted-foreground">
+                    Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
+                  </p>
+                )}
+              </div>
+              
+              <Button onClick={handleGenerateFileHashes} disabled={isFileHashing || !selectedFile} className="w-full sm:w-auto">
+                {isFileHashing ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <FileDigit className="h-4 w-4 mr-2" />
+                )}
+                Generate File Hashes
+              </Button>
+              
+              {fileHashResults && (
+                <div className="space-y-3">
+                  {/* MD5 */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">MD5</Badge>
+                      <span>32 characters</span>
+                    </Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={fileHashResults.md5}
+                        readOnly
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(fileHashResults.md5)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* SHA-1 */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">SHA-1</Badge>
+                      <span>40 characters</span>
+                    </Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={fileHashResults.sha1}
+                        readOnly
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(fileHashResults.sha1)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* SHA-256 */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">SHA-256</Badge>
+                      <span>64 characters</span>
+                    </Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={fileHashResults.sha256}
+                        readOnly
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(fileHashResults.sha256)}
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
