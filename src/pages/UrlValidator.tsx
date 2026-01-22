@@ -460,6 +460,7 @@ export default function UrlValidator() {
   useKeyboardShortcuts([
     { key: 'v', shift: true, action: () => singleUrl ? handleSingleValidate() : handleBulkValidate(), description: 'Validate URL(s)' },
     { key: 'r', shift: true, action: () => { handleClearSingle(); handleClearBulk(); }, description: 'Reset form' },
+    { key: 'h', shift: true, action: handleGenerateHashes, description: 'Generate hashes' },
   ]);
   
   if (isLoading) return <UrlValidatorSkeleton />;
