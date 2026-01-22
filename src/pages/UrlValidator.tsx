@@ -141,6 +141,7 @@ export default function UrlValidator() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isFileHashing, setIsFileHashing] = useState(false);
   const [fileHashResults, setFileHashResults] = useState<{ md5: string; sha1: string; sha256: string } | null>(null);
+  const [isFileDragging, setIsFileDragging] = useState(false);
   
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
@@ -575,6 +576,39 @@ export default function UrlValidator() {
       setFileHashResults(null);
     }
   }, []);
+  
+  const handleFileDrop = useCallback((file: File) => {
+    setSelectedFile(file);
+    setFileHashResults(null);
+    toast({ title: "File selected", description: `${file.name} ready for hashing` });
+  }, [toast]);
+  
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.types.includes('Files')) {
+      setIsFileDragging(true);
+    }
+  }, []);
+  
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target || !e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsFileDragging(false);
+    }
+  }, []);
+  
+  const handleDropFile = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFileDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleFileDrop(files[0]);
+    }
+  }, [handleFileDrop]);
   
   const handleGenerateFileHashes = useCallback(async () => {
     if (!selectedFile) {
@@ -1350,35 +1384,79 @@ export default function UrlValidator() {
               <CardDescription>Generate MD5, SHA-1, and SHA-256 hashes from uploaded files</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Select File</Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="file"
-                    onChange={handleFileSelect}
-                    className="cursor-pointer"
-                  />
-                  {selectedFile && (
-                    <Button variant="outline" size="icon" onClick={handleClearFileHash}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-                {selectedFile && (
-                  <p className="text-xs text-muted-foreground">
-                    Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
-                  </p>
+              {/* Drag and Drop Zone */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDropFile}
+                className={cn(
+                  "relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200",
+                  isFileDragging 
+                    ? "border-primary bg-primary/5 scale-[1.02]" 
+                    : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50",
+                  isFileHashing && "pointer-events-none opacity-60"
+                )}
+              >
+                {isFileHashing ? (
+                  <div className="space-y-3">
+                    <div className="relative mx-auto w-12 h-12">
+                      <Loader2 className="h-12 w-12 text-primary animate-spin" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Processing {selectedFile?.name}...</p>
+                      <p className="text-xs text-muted-foreground">Computing MD5, SHA-1, and SHA-256 hashes</p>
+                    </div>
+                  </div>
+                ) : selectedFile ? (
+                  <div className="space-y-3">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <FileDigit className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{selectedFile.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(selectedFile.size / 1024).toFixed(2)} KB
+                      </p>
+                    </div>
+                    <div className="flex justify-center gap-2">
+                      <Button onClick={handleGenerateFileHashes} size="sm">
+                        <FileDigit className="h-4 w-4 mr-2" />
+                        Generate Hashes
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={handleClearFileHash}>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Clear
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="cursor-pointer block space-y-3">
+                    <input
+                      type="file"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                    <div className={cn(
+                      "mx-auto w-12 h-12 rounded-full flex items-center justify-center transition-all",
+                      isFileDragging 
+                        ? "bg-primary/20 scale-110" 
+                        : "bg-muted"
+                    )}>
+                      <Upload className={cn(
+                        "h-6 w-6 transition-colors",
+                        isFileDragging ? "text-primary" : "text-muted-foreground"
+                      )} />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm">
+                        <span className="font-medium text-foreground">Click to upload</span>{" "}
+                        <span className="text-muted-foreground">or drag and drop</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">Any file type supported</p>
+                    </div>
+                  </label>
                 )}
               </div>
-              
-              <Button onClick={handleGenerateFileHashes} disabled={isFileHashing || !selectedFile} className="w-full sm:w-auto">
-                {isFileHashing ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <FileDigit className="h-4 w-4 mr-2" />
-                )}
-                Generate File Hashes
-              </Button>
               
               {fileHashResults && (
                 <div className="space-y-3">
