@@ -20,7 +20,8 @@ import {
   FileDigit,
   Upload,
   Files,
-  FileText
+  FileText,
+  Key
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -167,6 +168,17 @@ export default function UrlValidator() {
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
   const [isBatchListDragging, setIsBatchListDragging] = useState(false);
   const [isBatchFilesDragging, setIsBatchFilesDragging] = useState(false);
+  
+  // HMAC generator
+  const [hmacTextInput, setHmacTextInput] = useState('');
+  const [hmacSecretKey, setHmacSecretKey] = useState('');
+  const [hmacAlgorithm, setHmacAlgorithm] = useState<'sha1' | 'sha256' | 'sha512'>('sha256');
+  const [hmacResult, setHmacResult] = useState('');
+  const [isHmacGenerating, setIsHmacGenerating] = useState(false);
+  const [hmacFile, setHmacFile] = useState<File | null>(null);
+  const [hmacFileResult, setHmacFileResult] = useState('');
+  const [isHmacFileGenerating, setIsHmacFileGenerating] = useState(false);
+  const [isHmacFileDragging, setIsHmacFileDragging] = useState(false);
   
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
@@ -909,6 +921,123 @@ export default function UrlValidator() {
   const handleClearBatchChecksum = useCallback(() => {
     setBatchChecksumList([]);
     setBatchFiles([]);
+  }, []);
+  
+  // HMAC handlers
+  const computeHmac = useCallback(async (data: ArrayBuffer, key: string, algorithm: 'SHA-1' | 'SHA-256' | 'SHA-512'): Promise<string> => {
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(key);
+    
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyData,
+      { name: 'HMAC', hash: algorithm },
+      false,
+      ['sign']
+    );
+    
+    const signature = await crypto.subtle.sign('HMAC', cryptoKey, data);
+    const hashArray = Array.from(new Uint8Array(signature));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }, []);
+  
+  const handleGenerateTextHmac = useCallback(async () => {
+    if (!hmacTextInput.trim()) {
+      toast({ title: "Enter text", description: "Please enter text to generate HMAC", variant: "destructive" });
+      return;
+    }
+    if (!hmacSecretKey.trim()) {
+      toast({ title: "Enter secret key", description: "Please enter a secret key for HMAC", variant: "destructive" });
+      return;
+    }
+    
+    setIsHmacGenerating(true);
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(hmacTextInput);
+      const algorithmMap = { sha1: 'SHA-1', sha256: 'SHA-256', sha512: 'SHA-512' } as const;
+      const result = await computeHmac(data.buffer, hmacSecretKey, algorithmMap[hmacAlgorithm]);
+      setHmacResult(result);
+      toast({ title: "HMAC generated!", description: `${hmacAlgorithm.toUpperCase()} HMAC computed successfully` });
+    } catch {
+      toast({ title: "HMAC generation failed", description: "Unable to compute HMAC", variant: "destructive" });
+    }
+    setIsHmacGenerating(false);
+  }, [hmacTextInput, hmacSecretKey, hmacAlgorithm, computeHmac, toast]);
+  
+  const handleClearTextHmac = useCallback(() => {
+    setHmacTextInput('');
+    setHmacSecretKey('');
+    setHmacResult('');
+  }, []);
+  
+  const handleHmacFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setHmacFile(file);
+      setHmacFileResult('');
+    }
+  }, []);
+  
+  const handleHmacFileDrop = useCallback((file: File) => {
+    setHmacFile(file);
+    setHmacFileResult('');
+    toast({ title: "File selected", description: `${file.name} ready for HMAC generation` });
+  }, [toast]);
+  
+  const handleHmacFileDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.types.includes('Files')) {
+      setIsHmacFileDragging(true);
+    }
+  }, []);
+  
+  const handleHmacFileDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target || !e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsHmacFileDragging(false);
+    }
+  }, []);
+  
+  const handleHmacFileDropEvent = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsHmacFileDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleHmacFileDrop(files[0]);
+    }
+  }, [handleHmacFileDrop]);
+  
+  const handleGenerateFileHmac = useCallback(async () => {
+    if (!hmacFile) {
+      toast({ title: "Select a file", description: "Please select a file to generate HMAC", variant: "destructive" });
+      return;
+    }
+    if (!hmacSecretKey.trim()) {
+      toast({ title: "Enter secret key", description: "Please enter a secret key for HMAC", variant: "destructive" });
+      return;
+    }
+    
+    setIsHmacFileGenerating(true);
+    try {
+      const buffer = await hmacFile.arrayBuffer();
+      const algorithmMap = { sha1: 'SHA-1', sha256: 'SHA-256', sha512: 'SHA-512' } as const;
+      const result = await computeHmac(buffer, hmacSecretKey, algorithmMap[hmacAlgorithm]);
+      setHmacFileResult(result);
+      toast({ title: "File HMAC generated!", description: `${hmacAlgorithm.toUpperCase()} HMAC computed for ${hmacFile.name}` });
+    } catch {
+      toast({ title: "HMAC generation failed", description: "Unable to compute file HMAC", variant: "destructive" });
+    }
+    setIsHmacFileGenerating(false);
+  }, [hmacFile, hmacSecretKey, hmacAlgorithm, computeHmac, toast]);
+  
+  const handleClearFileHmac = useCallback(() => {
+    setHmacFile(null);
+    setHmacFileResult('');
   }, []);
   
   const getFilteredResults = useCallback(() => {
@@ -2160,6 +2289,211 @@ export default function UrlValidator() {
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+          
+          {/* HMAC Generator Section */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Key className="h-4 w-4" />
+                HMAC Generator
+              </CardTitle>
+              <CardDescription>Generate keyed-hash message authentication codes (HMAC) using a secret key</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Shared Settings */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Secret Key</Label>
+                  <Input
+                    type="password"
+                    placeholder="Enter your secret key..."
+                    value={hmacSecretKey}
+                    onChange={(e) => setHmacSecretKey(e.target.value)}
+                    className="font-mono text-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Algorithm</Label>
+                  <Select value={hmacAlgorithm} onValueChange={(v) => setHmacAlgorithm(v as 'sha1' | 'sha256' | 'sha512')}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sha1">HMAC-SHA1</SelectItem>
+                      <SelectItem value="sha256">HMAC-SHA256</SelectItem>
+                      <SelectItem value="sha512">HMAC-SHA512</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* Text HMAC */}
+              <div className="space-y-3 p-4 rounded-lg bg-muted/30 border">
+                <Label className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">Text</Badge>
+                  Generate HMAC from Text
+                </Label>
+                <div className="space-y-2">
+                  <Textarea
+                    placeholder="Enter text to generate HMAC..."
+                    value={hmacTextInput}
+                    onChange={(e) => setHmacTextInput(e.target.value)}
+                    rows={3}
+                    className="font-mono text-sm"
+                  />
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={handleGenerateTextHmac} 
+                      disabled={isHmacGenerating || !hmacSecretKey.trim()}
+                      className="flex-1"
+                    >
+                      {isHmacGenerating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Key className="h-4 w-4 mr-2" />
+                          Generate HMAC
+                        </>
+                      )}
+                    </Button>
+                    <Button variant="outline" onClick={handleClearTextHmac}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                {hmacResult && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">HMAC-{hmacAlgorithm.toUpperCase()}</Badge>
+                    </Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={hmacResult}
+                        readOnly
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(hmacResult)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* File HMAC */}
+              <div className="space-y-3 p-4 rounded-lg bg-muted/30 border">
+                <Label className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">File</Badge>
+                  Generate HMAC from File
+                </Label>
+                
+                <div
+                  onDragOver={handleHmacFileDragOver}
+                  onDragLeave={handleHmacFileDragLeave}
+                  onDrop={handleHmacFileDropEvent}
+                  className={cn(
+                    "relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-200",
+                    isHmacFileDragging 
+                      ? "border-primary bg-primary/5 scale-[1.02]" 
+                      : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50",
+                    isHmacFileGenerating && "pointer-events-none opacity-60"
+                  )}
+                >
+                  {isHmacFileGenerating ? (
+                    <div className="space-y-2">
+                      <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto" />
+                      <p className="text-sm font-medium">Processing {hmacFile?.name}...</p>
+                    </div>
+                  ) : hmacFile ? (
+                    <div className="space-y-2">
+                      <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <FileDigit className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-medium">{hmacFile.name}</p>
+                        <p className="text-xs text-muted-foreground">{(hmacFile.size / 1024).toFixed(2)} KB</p>
+                      </div>
+                      <div className="flex justify-center gap-2">
+                        <Button 
+                          onClick={handleGenerateFileHmac} 
+                          size="sm" 
+                          disabled={!hmacSecretKey.trim()}
+                        >
+                          <Key className="h-4 w-4 mr-2" />
+                          Generate HMAC
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={handleClearFileHmac}>
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Clear
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="cursor-pointer block space-y-2">
+                      <input
+                        type="file"
+                        onChange={handleHmacFileSelect}
+                        className="hidden"
+                      />
+                      <div className={cn(
+                        "mx-auto w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                        isHmacFileDragging ? "bg-primary/20 scale-110" : "bg-muted"
+                      )}>
+                        <Upload className={cn(
+                          "h-5 w-5 transition-colors",
+                          isHmacFileDragging ? "text-primary" : "text-muted-foreground"
+                        )} />
+                      </div>
+                      <p className="text-sm">
+                        <span className="font-medium text-foreground">Click to upload</span>{" "}
+                        <span className="text-muted-foreground">or drag and drop</span>
+                      </p>
+                    </label>
+                  )}
+                </div>
+                
+                {hmacFileResult && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">HMAC-{hmacAlgorithm.toUpperCase()}</Badge>
+                    </Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={hmacFileResult}
+                        readOnly
+                        className="font-mono text-xs bg-muted/50"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleCopy(hmacFileResult)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* HMAC Info */}
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 text-sm">
+                <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
+                <p className="text-muted-foreground">
+                  HMAC provides message authentication using a secret key. Keep your key secure and never share it publicly.
+                </p>
+              </div>
             </CardContent>
           </Card>
           
