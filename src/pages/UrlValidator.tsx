@@ -18,7 +18,9 @@ import {
   ArrowRightLeft,
   Hash,
   FileDigit,
-  Upload
+  Upload,
+  Files,
+  FileText
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -150,6 +152,21 @@ export default function UrlValidator() {
   const [checksumResult, setChecksumResult] = useState<{ computed: string; match: boolean } | null>(null);
   const [isChecksumHashing, setIsChecksumHashing] = useState(false);
   const [isChecksumDragging, setIsChecksumDragging] = useState(false);
+  
+  // Batch checksum verification
+  interface BatchChecksumEntry {
+    filename: string;
+    expectedHash: string;
+    file?: File;
+    computed?: string;
+    status: 'pending' | 'verified' | 'failed' | 'missing';
+  }
+  const [batchChecksumList, setBatchChecksumList] = useState<BatchChecksumEntry[]>([]);
+  const [batchAlgorithm, setBatchAlgorithm] = useState<'md5' | 'sha1' | 'sha256'>('sha256');
+  const [isBatchVerifying, setIsBatchVerifying] = useState(false);
+  const [batchFiles, setBatchFiles] = useState<File[]>([]);
+  const [isBatchListDragging, setIsBatchListDragging] = useState(false);
+  const [isBatchFilesDragging, setIsBatchFilesDragging] = useState(false);
   
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
@@ -731,6 +748,167 @@ export default function UrlValidator() {
     setChecksumFile(null);
     setExpectedHash('');
     setChecksumResult(null);
+  }, []);
+  
+  // Batch checksum handlers
+  const parseChecksumFile = useCallback((content: string): { filename: string; expectedHash: string }[] => {
+    const lines = content.split('\n').filter(line => line.trim());
+    const entries: { filename: string; expectedHash: string }[] = [];
+    
+    for (const line of lines) {
+      // Format: <hash>  <filename> or <hash> *<filename> (GNU coreutils format)
+      const match = line.match(/^([a-fA-F0-9]+)\s+\*?(.+)$/);
+      if (match) {
+        entries.push({
+          expectedHash: match[1].toLowerCase(),
+          filename: match[2].trim()
+        });
+      }
+    }
+    return entries;
+  }, []);
+  
+  const handleBatchListFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const content = await file.text();
+      const entries = parseChecksumFile(content);
+      setBatchChecksumList(entries.map(e => ({ ...e, status: 'pending' as const })));
+      toast({ title: "Checksum list loaded", description: `Found ${entries.length} entries` });
+    }
+  }, [parseChecksumFile, toast]);
+  
+  const handleBatchListDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsBatchListDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      const file = files[0];
+      const content = await file.text();
+      const entries = parseChecksumFile(content);
+      setBatchChecksumList(entries.map(e => ({ ...e, status: 'pending' as const })));
+      toast({ title: "Checksum list loaded", description: `Found ${entries.length} entries` });
+    }
+  }, [parseChecksumFile, toast]);
+  
+  const handleBatchListDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.types.includes('Files')) {
+      setIsBatchListDragging(true);
+    }
+  }, []);
+  
+  const handleBatchListDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target || !e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsBatchListDragging(false);
+    }
+  }, []);
+  
+  const handleBatchFilesSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setBatchFiles(prev => [...prev, ...files]);
+    
+    // Match files to entries
+    setBatchChecksumList(prev => prev.map(entry => {
+      const matchedFile = files.find(f => f.name === entry.filename);
+      if (matchedFile) {
+        return { ...entry, file: matchedFile };
+      }
+      return entry;
+    }));
+    
+    toast({ title: "Files added", description: `${files.length} file(s) added for verification` });
+  }, [toast]);
+  
+  const handleBatchFilesDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsBatchFilesDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    setBatchFiles(prev => [...prev, ...files]);
+    
+    // Match files to entries
+    setBatchChecksumList(prev => prev.map(entry => {
+      const matchedFile = files.find(f => f.name === entry.filename);
+      if (matchedFile) {
+        return { ...entry, file: matchedFile };
+      }
+      return entry;
+    }));
+    
+    toast({ title: "Files added", description: `${files.length} file(s) added for verification` });
+  }, [toast]);
+  
+  const handleBatchFilesDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.types.includes('Files')) {
+      setIsBatchFilesDragging(true);
+    }
+  }, []);
+  
+  const handleBatchFilesDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target || !e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsBatchFilesDragging(false);
+    }
+  }, []);
+  
+  const handleVerifyBatch = useCallback(async () => {
+    if (batchChecksumList.length === 0) {
+      toast({ title: "No checksums loaded", description: "Please load a checksum list file first", variant: "destructive" });
+      return;
+    }
+    
+    setIsBatchVerifying(true);
+    
+    const updatedList = await Promise.all(batchChecksumList.map(async (entry) => {
+      if (!entry.file) {
+        return { ...entry, status: 'missing' as const };
+      }
+      
+      try {
+        const buffer = await entry.file.arrayBuffer();
+        let computed: string;
+        
+        if (batchAlgorithm === 'md5') {
+          computed = md5ArrayBuffer(buffer);
+        } else if (batchAlgorithm === 'sha1') {
+          computed = await computeHashFromBuffer(buffer, 'SHA-1');
+        } else {
+          computed = await computeHashFromBuffer(buffer, 'SHA-256');
+        }
+        
+        const match = computed.toLowerCase() === entry.expectedHash.toLowerCase();
+        return { ...entry, computed, status: match ? 'verified' as const : 'failed' as const };
+      } catch {
+        return { ...entry, status: 'failed' as const };
+      }
+    }));
+    
+    setBatchChecksumList(updatedList);
+    setIsBatchVerifying(false);
+    
+    const verified = updatedList.filter(e => e.status === 'verified').length;
+    const failed = updatedList.filter(e => e.status === 'failed').length;
+    const missing = updatedList.filter(e => e.status === 'missing').length;
+    
+    toast({ 
+      title: "Batch verification complete", 
+      description: `${verified} verified, ${failed} failed, ${missing} missing` 
+    });
+  }, [batchChecksumList, batchAlgorithm, md5ArrayBuffer, computeHashFromBuffer, toast]);
+  
+  const handleClearBatchChecksum = useCallback(() => {
+    setBatchChecksumList([]);
+    setBatchFiles([]);
   }, []);
   
   const getFilteredResults = useCallback(() => {
@@ -1775,6 +1953,211 @@ export default function UrlValidator() {
                       The file may be corrupted or modified. Try downloading it again from a trusted source.
                     </p>
                   )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Batch Checksum Verification Section */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Files className="h-4 w-4" />
+                Batch Checksum Verification
+              </CardTitle>
+              <CardDescription>Verify multiple files against a checksum list file (like SHA256SUMS)</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Algorithm Selection */}
+              <div className="flex items-center gap-2">
+                <Label className="text-sm">Algorithm:</Label>
+                <Select value={batchAlgorithm} onValueChange={(v) => setBatchAlgorithm(v as 'md5' | 'sha1' | 'sha256')}>
+                  <SelectTrigger className="w-28">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="md5">MD5</SelectItem>
+                    <SelectItem value="sha1">SHA-1</SelectItem>
+                    <SelectItem value="sha256">SHA-256</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Step 1: Upload Checksum List */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">Step 1</Badge>
+                  Upload Checksum List
+                </Label>
+                <div
+                  onDragOver={handleBatchListDragOver}
+                  onDragLeave={handleBatchListDragLeave}
+                  onDrop={handleBatchListDrop}
+                  className={cn(
+                    "relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-200",
+                    isBatchListDragging 
+                      ? "border-primary bg-primary/5 scale-[1.02]" 
+                      : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+                  )}
+                >
+                  <label className="cursor-pointer block space-y-2">
+                    <input
+                      type="file"
+                      accept=".txt,.md5,.sha1,.sha256,.sha512"
+                      onChange={handleBatchListFileSelect}
+                      className="hidden"
+                    />
+                    <div className={cn(
+                      "mx-auto w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                      isBatchListDragging ? "bg-primary/20 scale-110" : "bg-muted"
+                    )}>
+                      <FileText className={cn(
+                        "h-5 w-5 transition-colors",
+                        isBatchListDragging ? "text-primary" : "text-muted-foreground"
+                      )} />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-sm">
+                        <span className="font-medium text-foreground">Upload checksum file</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">SHA256SUMS, MD5SUMS, or similar format</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              
+              {/* Loaded Checksum List */}
+              {batchChecksumList.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">{batchChecksumList.length} entries loaded</Label>
+                    <Button variant="ghost" size="sm" onClick={handleClearBatchChecksum}>
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Clear
+                    </Button>
+                  </div>
+                  <div className="max-h-48 overflow-y-auto rounded-lg border bg-muted/30">
+                    <div className="p-2 space-y-1">
+                      {batchChecksumList.map((entry, idx) => (
+                        <div 
+                          key={idx} 
+                          className={cn(
+                            "flex items-center gap-2 p-2 rounded text-sm",
+                            entry.status === 'verified' && "bg-green-500/10",
+                            entry.status === 'failed' && "bg-red-500/10",
+                            entry.status === 'missing' && "bg-yellow-500/10",
+                            entry.status === 'pending' && "bg-muted/50"
+                          )}
+                        >
+                          {entry.status === 'verified' && <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />}
+                          {entry.status === 'failed' && <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />}
+                          {entry.status === 'missing' && <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0" />}
+                          {entry.status === 'pending' && <FileDigit className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+                          <span className="font-mono text-xs truncate flex-1">{entry.filename}</span>
+                          {entry.file && (
+                            <Badge variant="secondary" className="text-[10px] px-1.5">
+                              matched
+                            </Badge>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Step 2: Upload Files to Verify */}
+              {batchChecksumList.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs">Step 2</Badge>
+                    Upload Files to Verify
+                  </Label>
+                  <div
+                    onDragOver={handleBatchFilesDragOver}
+                    onDragLeave={handleBatchFilesDragLeave}
+                    onDrop={handleBatchFilesDrop}
+                    className={cn(
+                      "relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-200",
+                      isBatchFilesDragging 
+                        ? "border-primary bg-primary/5 scale-[1.02]" 
+                        : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+                    )}
+                  >
+                    <label className="cursor-pointer block space-y-2">
+                      <input
+                        type="file"
+                        multiple
+                        onChange={handleBatchFilesSelect}
+                        className="hidden"
+                      />
+                      <div className={cn(
+                        "mx-auto w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                        isBatchFilesDragging ? "bg-primary/20 scale-110" : "bg-muted"
+                      )}>
+                        <Upload className={cn(
+                          "h-5 w-5 transition-colors",
+                          isBatchFilesDragging ? "text-primary" : "text-muted-foreground"
+                        )} />
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-sm">
+                          <span className="font-medium text-foreground">Upload files to verify</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {batchFiles.length > 0 
+                            ? `${batchFiles.length} file(s) selected` 
+                            : "Files will be matched by filename"
+                          }
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              )}
+              
+              {/* Verify Button */}
+              {batchChecksumList.length > 0 && (
+                <Button 
+                  onClick={handleVerifyBatch} 
+                  disabled={isBatchVerifying || batchChecksumList.every(e => !e.file)}
+                  className="w-full"
+                >
+                  {isBatchVerifying ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="h-4 w-4 mr-2" />
+                      Verify All Files
+                    </>
+                  )}
+                </Button>
+              )}
+              
+              {/* Results Summary */}
+              {batchChecksumList.some(e => e.status !== 'pending') && (
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/30">
+                    <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                      {batchChecksumList.filter(e => e.status === 'verified').length}
+                    </div>
+                    <div className="text-xs text-muted-foreground">Verified</div>
+                  </div>
+                  <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/30">
+                    <div className="text-lg font-bold text-red-600 dark:text-red-400">
+                      {batchChecksumList.filter(e => e.status === 'failed').length}
+                    </div>
+                    <div className="text-xs text-muted-foreground">Failed</div>
+                  </div>
+                  <div className="p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+                    <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
+                      {batchChecksumList.filter(e => e.status === 'missing').length}
+                    </div>
+                    <div className="text-xs text-muted-foreground">Missing</div>
+                  </div>
                 </div>
               )}
             </CardContent>
