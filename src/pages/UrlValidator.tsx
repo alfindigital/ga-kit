@@ -143,6 +143,14 @@ export default function UrlValidator() {
   const [fileHashResults, setFileHashResults] = useState<{ md5: string; sha1: string; sha256: string } | null>(null);
   const [isFileDragging, setIsFileDragging] = useState(false);
   
+  // Checksum comparison
+  const [checksumFile, setChecksumFile] = useState<File | null>(null);
+  const [expectedHash, setExpectedHash] = useState('');
+  const [checksumAlgorithm, setChecksumAlgorithm] = useState<'md5' | 'sha1' | 'sha256'>('sha256');
+  const [checksumResult, setChecksumResult] = useState<{ computed: string; match: boolean } | null>(null);
+  const [isChecksumHashing, setIsChecksumHashing] = useState(false);
+  const [isChecksumDragging, setIsChecksumDragging] = useState(false);
+  
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
       toast({ title: "Enter a URL", description: "Please enter a URL to validate", variant: "destructive" });
@@ -636,6 +644,93 @@ export default function UrlValidator() {
   const handleClearFileHash = useCallback(() => {
     setSelectedFile(null);
     setFileHashResults(null);
+  }, []);
+  
+  // Checksum comparison handlers
+  const handleChecksumFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setChecksumFile(file);
+      setChecksumResult(null);
+    }
+  }, []);
+  
+  const handleChecksumFileDrop = useCallback((file: File) => {
+    setChecksumFile(file);
+    setChecksumResult(null);
+    toast({ title: "File selected", description: `${file.name} ready for verification` });
+  }, [toast]);
+  
+  const handleChecksumDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.types.includes('Files')) {
+      setIsChecksumDragging(true);
+    }
+  }, []);
+  
+  const handleChecksumDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target || !e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsChecksumDragging(false);
+    }
+  }, []);
+  
+  const handleChecksumDropFile = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsChecksumDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleChecksumFileDrop(files[0]);
+    }
+  }, [handleChecksumFileDrop]);
+  
+  const handleVerifyChecksum = useCallback(async () => {
+    if (!checksumFile) {
+      toast({ title: "Select a file", description: "Please select a file to verify", variant: "destructive" });
+      return;
+    }
+    if (!expectedHash.trim()) {
+      toast({ title: "Enter expected hash", description: "Please enter the expected hash value", variant: "destructive" });
+      return;
+    }
+    
+    setIsChecksumHashing(true);
+    try {
+      const buffer = await checksumFile.arrayBuffer();
+      let computed: string;
+      
+      if (checksumAlgorithm === 'md5') {
+        computed = md5ArrayBuffer(buffer);
+      } else if (checksumAlgorithm === 'sha1') {
+        computed = await computeHashFromBuffer(buffer, 'SHA-1');
+      } else {
+        computed = await computeHashFromBuffer(buffer, 'SHA-256');
+      }
+      
+      const normalizedExpected = expectedHash.trim().toLowerCase().replace(/\s/g, '');
+      const match = computed.toLowerCase() === normalizedExpected;
+      
+      setChecksumResult({ computed, match });
+      
+      if (match) {
+        toast({ title: "✓ Checksum verified!", description: "The file matches the expected hash" });
+      } else {
+        toast({ title: "✗ Checksum mismatch", description: "The file does NOT match the expected hash", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Verification failed", description: "Unable to compute file hash", variant: "destructive" });
+    }
+    setIsChecksumHashing(false);
+  }, [checksumFile, expectedHash, checksumAlgorithm, toast, md5ArrayBuffer, computeHashFromBuffer]);
+  
+  const handleClearChecksum = useCallback(() => {
+    setChecksumFile(null);
+    setExpectedHash('');
+    setChecksumResult(null);
   }, []);
   
   const getFilteredResults = useCallback(() => {
@@ -1528,6 +1623,158 @@ export default function UrlValidator() {
                       </Button>
                     </div>
                   </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Checksum Comparison Section */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                Checksum Verification
+              </CardTitle>
+              <CardDescription>Verify downloaded files by comparing computed hashes against expected values</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Expected Hash Input */}
+              <div className="space-y-2">
+                <Label>Expected Hash</Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Paste the expected hash value here..."
+                    value={expectedHash}
+                    onChange={(e) => setExpectedHash(e.target.value)}
+                    className="font-mono text-sm flex-1"
+                  />
+                  <Select value={checksumAlgorithm} onValueChange={(v) => setChecksumAlgorithm(v as 'md5' | 'sha1' | 'sha256')}>
+                    <SelectTrigger className="w-28">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="md5">MD5</SelectItem>
+                      <SelectItem value="sha1">SHA-1</SelectItem>
+                      <SelectItem value="sha256">SHA-256</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* Drag and Drop Zone */}
+              <div
+                onDragOver={handleChecksumDragOver}
+                onDragLeave={handleChecksumDragLeave}
+                onDrop={handleChecksumDropFile}
+                className={cn(
+                  "relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200",
+                  isChecksumDragging 
+                    ? "border-primary bg-primary/5 scale-[1.02]" 
+                    : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50",
+                  isChecksumHashing && "pointer-events-none opacity-60"
+                )}
+              >
+                {isChecksumHashing ? (
+                  <div className="space-y-3">
+                    <div className="relative mx-auto w-12 h-12">
+                      <Loader2 className="h-12 w-12 text-primary animate-spin" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Verifying {checksumFile?.name}...</p>
+                      <p className="text-xs text-muted-foreground">Computing {checksumAlgorithm.toUpperCase()} hash</p>
+                    </div>
+                  </div>
+                ) : checksumFile ? (
+                  <div className="space-y-3">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <FileDigit className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{checksumFile.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(checksumFile.size / 1024).toFixed(2)} KB
+                      </p>
+                    </div>
+                    <div className="flex justify-center gap-2">
+                      <Button onClick={handleVerifyChecksum} size="sm" disabled={!expectedHash.trim()}>
+                        <ShieldCheck className="h-4 w-4 mr-2" />
+                        Verify Checksum
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={handleClearChecksum}>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Clear
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="cursor-pointer block space-y-3">
+                    <input
+                      type="file"
+                      onChange={handleChecksumFileSelect}
+                      className="hidden"
+                    />
+                    <div className={cn(
+                      "mx-auto w-12 h-12 rounded-full flex items-center justify-center transition-all",
+                      isChecksumDragging 
+                        ? "bg-primary/20 scale-110" 
+                        : "bg-muted"
+                    )}>
+                      <Upload className={cn(
+                        "h-6 w-6 transition-colors",
+                        isChecksumDragging ? "text-primary" : "text-muted-foreground"
+                      )} />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm">
+                        <span className="font-medium text-foreground">Click to upload</span>{" "}
+                        <span className="text-muted-foreground">or drag and drop</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">Select file to verify its integrity</p>
+                    </div>
+                  </label>
+                )}
+              </div>
+              
+              {/* Checksum Result */}
+              {checksumResult && (
+                <div className={cn(
+                  "p-4 rounded-lg border-2 space-y-3",
+                  checksumResult.match 
+                    ? "border-green-500/50 bg-green-500/10" 
+                    : "border-red-500/50 bg-red-500/10"
+                )}>
+                  <div className="flex items-center gap-2">
+                    {checksumResult.match ? (
+                      <>
+                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                        <span className="font-medium text-green-600 dark:text-green-400">Checksum Match!</span>
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="h-5 w-5 text-red-500" />
+                        <span className="font-medium text-red-600 dark:text-red-400">Checksum Mismatch!</span>
+                      </>
+                    )}
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-start gap-2">
+                      <span className="text-muted-foreground w-20 flex-shrink-0">Expected:</span>
+                      <code className="font-mono text-xs break-all bg-muted/50 px-1.5 py-0.5 rounded">
+                        {expectedHash.trim().toLowerCase().replace(/\s/g, '')}
+                      </code>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-muted-foreground w-20 flex-shrink-0">Computed:</span>
+                      <code className="font-mono text-xs break-all bg-muted/50 px-1.5 py-0.5 rounded">
+                        {checksumResult.computed}
+                      </code>
+                    </div>
+                  </div>
+                  {!checksumResult.match && (
+                    <p className="text-xs text-muted-foreground">
+                      The file may be corrupted or modified. Try downloading it again from a trusted source.
+                    </p>
+                  )}
                 </div>
               )}
             </CardContent>
