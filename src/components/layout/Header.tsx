@@ -20,7 +20,8 @@ import {
   RotateCcw,
   History,
   Settings,
-  ShieldCheck
+  ShieldCheck,
+  Ban
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,6 +51,7 @@ const navItems = [
   { path: '/keyword-combiner', label: 'Combiner', icon: Combine },
   { path: '/keyword-mixer', label: 'Mixer', icon: Shuffle },
   { path: '/keyword-tools', label: 'Tools', icon: Wrench },
+  { path: '/negative-keywords', label: 'Negatives', icon: Ban },
   { path: '/yt-finder', label: 'YT Finder', icon: Youtube },
   { path: '/qr-generator', label: 'QR Code', icon: QrCode },
   { path: '/url-validator', label: 'Validator', icon: ShieldCheck },
