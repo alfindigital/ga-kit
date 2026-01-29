@@ -11,7 +11,8 @@ import {
   Star,
   Pin,
   History,
-  ShieldCheck
+  ShieldCheck,
+  Ban
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -85,6 +86,15 @@ const tools = [
     path: '/url-validator',
     color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
     features: ['Format Check', 'Bulk Validation', 'Quick Actions'],
+  },
+  {
+    id: 'negative-keywords',
+    title: 'Negative Keywords',
+    description: 'Manage, deduplicate, and detect conflicts in negative keywords',
+    icon: Ban,
+    path: '/negative-keywords',
+    color: 'bg-destructive/10 text-destructive',
+    features: ['Deduplicate', 'Match Types', 'Conflict Detection'],
   },
   {
     id: 'url-history',
