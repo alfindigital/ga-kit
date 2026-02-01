@@ -12,7 +12,8 @@ import {
   Pin,
   History,
   ShieldCheck,
-  Ban
+  Ban,
+  FileText
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -95,6 +96,15 @@ const tools = [
     path: '/negative-keywords',
     color: 'bg-destructive/10 text-destructive',
     features: ['Deduplicate', 'Match Types', 'Conflict Detection'],
+  },
+  {
+    id: 'ad-copy-validator',
+    title: 'Ad Copy Validator',
+    description: 'Validate RSA headlines (30 chars) and descriptions (90 chars)',
+    icon: FileText,
+    path: '/ad-copy-validator',
+    color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+    features: ['Character Limits', 'RSA Preview', 'Bulk Import'],
   },
   {
     id: 'url-history',
