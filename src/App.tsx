@@ -17,6 +17,7 @@ import QRGenerator from "./pages/QRGenerator";
 import UrlHistory from "./pages/UrlHistory";
 import UrlValidator from "./pages/UrlValidator";
 import NegativeKeywords from "./pages/NegativeKeywords";
+import AdCopyValidator from "./pages/AdCopyValidator";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -41,6 +42,7 @@ const App = () => (
                 <Route path="/qr-generator" element={<QRGenerator />} />
                 <Route path="/url-validator" element={<UrlValidator />} />
                 <Route path="/negative-keywords" element={<NegativeKeywords />} />
+                <Route path="/ad-copy-validator" element={<AdCopyValidator />} />
                 <Route path="/history" element={<UrlHistory />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />

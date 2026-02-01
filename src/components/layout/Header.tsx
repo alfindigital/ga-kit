@@ -21,7 +21,8 @@ import {
   History,
   Settings,
   ShieldCheck,
-  Ban
+  Ban,
+  FileText
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -52,6 +53,7 @@ const navItems = [
   { path: '/keyword-mixer', label: 'Mixer', icon: Shuffle },
   { path: '/keyword-tools', label: 'Tools', icon: Wrench },
   { path: '/negative-keywords', label: 'Negatives', icon: Ban },
+  { path: '/ad-copy-validator', label: 'Ad Copy', icon: FileText },
   { path: '/yt-finder', label: 'YT Finder', icon: Youtube },
   { path: '/qr-generator', label: 'QR Code', icon: QrCode },
   { path: '/url-validator', label: 'Validator', icon: ShieldCheck },
