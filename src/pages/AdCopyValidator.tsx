@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText } from 'lucide-react';
+import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useClipboard } from '@/hooks/useClipboard';
@@ -263,6 +264,28 @@ export default function AdCopyValidator() {
 
         {/* Editor Tab */}
         <TabsContent value="editor" className="space-y-6">
+          {/* Validation Warning Alert */}
+          {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0) && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Character Limit Exceeded</AlertTitle>
+              <AlertDescription>
+                {stats.invalidHeadlines > 0 && (
+                  <span>
+                    {stats.invalidHeadlines} headline{stats.invalidHeadlines > 1 ? 's' : ''} exceed{stats.invalidHeadlines === 1 ? 's' : ''} the {MAX_HEADLINE_LENGTH} character limit.
+                  </span>
+                )}
+                {stats.invalidHeadlines > 0 && stats.invalidDescriptions > 0 && ' '}
+                {stats.invalidDescriptions > 0 && (
+                  <span>
+                    {stats.invalidDescriptions} description{stats.invalidDescriptions > 1 ? 's' : ''} exceed{stats.invalidDescriptions === 1 ? 's' : ''} the {MAX_DESCRIPTION_LENGTH} character limit.
+                  </span>
+                )}
+                {' '}Please shorten them to create a valid RSA ad.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Headlines */}
             <Card>
