@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link } from 'lucide-react';
+import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +31,11 @@ interface Sitelink {
   description2: string;
 }
 
+interface Callout {
+  id: string;
+  text: string;
+}
+
 const MAX_HEADLINE_LENGTH = 30;
 const MAX_DESCRIPTION_LENGTH = 90;
 const MAX_HEADLINES = 15;
@@ -38,6 +43,8 @@ const MAX_DESCRIPTIONS = 4;
 const MAX_SITELINK_TITLE_LENGTH = 25;
 const MAX_SITELINK_DESC_LENGTH = 35;
 const MAX_SITELINKS = 6;
+const MAX_CALLOUT_LENGTH = 25;
+const MAX_CALLOUTS = 10;
 
 const SAMPLE_HEADLINES: Headline[] = [
   { id: '1', text: 'Shop the Best Deals Today' },
@@ -69,6 +76,13 @@ export default function AdCopyValidator() {
   const [sitelinks, setSitelinks] = useState<Sitelink[]>([
     { id: '1', title: '', description1: '', description2: '' },
     { id: '2', title: '', description1: '', description2: '' },
+  ]);
+
+  const [callouts, setCallouts] = useState<Callout[]>([
+    { id: '1', text: '' },
+    { id: '2', text: '' },
+    { id: '3', text: '' },
+    { id: '4', text: '' },
   ]);
 
   const [bulkHeadlines, setBulkHeadlines] = useState('');
@@ -112,6 +126,16 @@ export default function AdCopyValidator() {
     }));
   }, [sitelinks]);
 
+  const calloutValidation = useMemo(() => {
+    return callouts.map(c => ({
+      ...c,
+      length: c.text.length,
+      isValid: c.text.length > 0 && c.text.length <= MAX_CALLOUT_LENGTH,
+      isEmpty: c.text.length === 0,
+      isOverLimit: c.text.length > MAX_CALLOUT_LENGTH,
+    }));
+  }, [callouts]);
+
   // Stats
   const stats = useMemo(() => {
     const validHeadlines = headlineValidation.filter(h => h.isValid).length;
@@ -120,6 +144,8 @@ export default function AdCopyValidator() {
     const invalidDescriptions = descriptionValidation.filter(d => d.isOverLimit).length;
     const validSitelinks = sitelinkValidation.filter(s => s.isComplete).length;
     const invalidSitelinks = sitelinkValidation.filter(s => s.isTitleOverLimit || s.isDesc1OverLimit || s.isDesc2OverLimit).length;
+    const validCallouts = calloutValidation.filter(c => c.isValid).length;
+    const invalidCallouts = calloutValidation.filter(c => c.isOverLimit).length;
     
     return {
       validHeadlines,
@@ -128,12 +154,15 @@ export default function AdCopyValidator() {
       invalidDescriptions,
       validSitelinks,
       invalidSitelinks,
+      validCallouts,
+      invalidCallouts,
       totalHeadlines: headlines.length,
       totalDescriptions: descriptions.length,
       totalSitelinks: sitelinks.length,
+      totalCallouts: callouts.length,
       isRSAReady: validHeadlines >= 3 && validDescriptions >= 2,
     };
-  }, [headlineValidation, descriptionValidation, sitelinkValidation, headlines.length, descriptions.length, sitelinks.length]);
+  }, [headlineValidation, descriptionValidation, sitelinkValidation, calloutValidation, headlines.length, descriptions.length, sitelinks.length, callouts.length]);
 
   const updateHeadline = (id: string, text: string) => {
     setHeadlines(prev => prev.map(h => h.id === id ? { ...h, text } : h));
@@ -145,6 +174,10 @@ export default function AdCopyValidator() {
 
   const updateSitelink = (id: string, field: 'title' | 'description1' | 'description2', value: string) => {
     setSitelinks(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
+  };
+
+  const updateCallout = (id: string, text: string) => {
+    setCallouts(prev => prev.map(c => c.id === id ? { ...c, text } : c));
   };
 
   const addHeadline = () => {
@@ -171,6 +204,14 @@ export default function AdCopyValidator() {
     setSitelinks(prev => [...prev, { id: Date.now().toString(), title: '', description1: '', description2: '' }]);
   };
 
+  const addCallout = () => {
+    if (callouts.length >= MAX_CALLOUTS) {
+      toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_CALLOUTS} callouts` });
+      return;
+    }
+    setCallouts(prev => [...prev, { id: Date.now().toString(), text: '' }]);
+  };
+
   const removeHeadline = (id: string) => {
     if (headlines.length <= 3) {
       toast({ title: 'Minimum required', description: 'RSA requires at least 3 headlines' });
@@ -195,6 +236,14 @@ export default function AdCopyValidator() {
     setSitelinks(prev => prev.filter(s => s.id !== id));
   };
 
+  const removeCallout = (id: string) => {
+    if (callouts.length <= 4) {
+      toast({ title: 'Minimum required', description: 'At least 4 callouts recommended' });
+      return;
+    }
+    setCallouts(prev => prev.filter(c => c.id !== id));
+  };
+
   const loadSample = () => {
     setHeadlines(SAMPLE_HEADLINES);
     setDescriptions(SAMPLE_DESCRIPTIONS);
@@ -202,6 +251,12 @@ export default function AdCopyValidator() {
       { id: '1', title: 'Shop Now', description1: 'Browse our collection', description2: 'Find your perfect item' },
       { id: '2', title: 'Free Shipping', description1: 'On orders over $50', description2: 'Fast delivery guaranteed' },
       { id: '3', title: 'Contact Us', description1: 'Get in touch today', description2: 'We are here to help' },
+    ]);
+    setCallouts([
+      { id: '1', text: 'Free Returns' },
+      { id: '2', text: '24/7 Support' },
+      { id: '3', text: 'Price Match' },
+      { id: '4', text: 'Fast Delivery' },
     ]);
     toast({ title: 'Sample loaded', description: 'Sample ad copy has been loaded' });
   };
@@ -219,6 +274,12 @@ export default function AdCopyValidator() {
     setSitelinks([
       { id: '1', title: '', description1: '', description2: '' },
       { id: '2', title: '', description1: '', description2: '' },
+    ]);
+    setCallouts([
+      { id: '1', text: '' },
+      { id: '2', text: '' },
+      { id: '3', text: '' },
+      { id: '4', text: '' },
     ]);
     setBulkHeadlines('');
     setBulkDescriptions('');
@@ -312,11 +373,14 @@ export default function AdCopyValidator() {
             <span>
               Sitelinks: <strong className="text-primary">{stats.validSitelinks}</strong>/{stats.totalSitelinks} valid
             </span>
-            {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0 || stats.invalidSitelinks > 0) && (
+            <span>
+              Callouts: <strong className="text-primary">{stats.validCallouts}</strong>/{stats.totalCallouts} valid
+            </span>
+            {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0 || stats.invalidSitelinks > 0 || stats.invalidCallouts > 0) && (
               <>
                 <Separator orientation="vertical" className="h-6 hidden sm:block" />
                 <span className="text-destructive text-sm">
-                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks} over limit
+                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks + stats.invalidCallouts} over limit
                 </span>
               </>
             )}
@@ -333,6 +397,16 @@ export default function AdCopyValidator() {
 
         {/* Editor Tab */}
         <TabsContent value="editor" className="space-y-6">
+          {/* Callout Validation Warning Alert */}
+          {stats.invalidCallouts > 0 && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Callout Character Limit Exceeded</AlertTitle>
+              <AlertDescription>
+                {stats.invalidCallouts} callout{stats.invalidCallouts > 1 ? 's' : ''} exceed{stats.invalidCallouts === 1 ? 's' : ''} the {MAX_CALLOUT_LENGTH} character limit.
+              </AlertDescription>
+            </Alert>
+          )}
           {/* Sitelink Validation Warning Alert */}
           {stats.invalidSitelinks > 0 && (
             <Alert variant="destructive">
@@ -605,6 +679,69 @@ export default function AdCopyValidator() {
                   </div>
                 );
               })}
+            </CardContent>
+          </Card>
+
+          {/* Callout Extensions */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5" />
+                    Callout Extensions
+                  </CardTitle>
+                  <CardDescription>Max {MAX_CALLOUT_LENGTH} characters each (4-{MAX_CALLOUTS} recommended)</CardDescription>
+                </div>
+                <Button variant="outline" size="sm" onClick={addCallout} disabled={callouts.length >= MAX_CALLOUTS}>
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {callouts.map((callout, index) => {
+                  const validation = calloutValidation[index];
+                  return (
+                    <div key={callout.id} className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground w-5">C{index + 1}</span>
+                        <div className="flex-1 relative">
+                          <Input
+                            value={callout.text}
+                            onChange={(e) => updateCallout(callout.id, e.target.value)}
+                            placeholder={`Callout ${index + 1}`}
+                            className={cn(
+                              "pr-14",
+                              validation.isOverLimit && "border-destructive focus-visible:ring-destructive"
+                            )}
+                          />
+                          <span className={cn(
+                            "absolute right-3 top-1/2 -translate-y-1/2 text-xs",
+                            validation.isOverLimit ? "text-destructive font-medium" : "text-muted-foreground"
+                          )}>
+                            {validation.length}/{MAX_CALLOUT_LENGTH}
+                          </span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          onClick={() => removeCallout(callout.id)}
+                          disabled={callouts.length <= 4}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {validation.isOverLimit && (
+                        <p className="text-xs text-destructive pl-7">
+                          Exceeds limit by {validation.length - MAX_CALLOUT_LENGTH} characters
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </CardContent>
           </Card>
 
