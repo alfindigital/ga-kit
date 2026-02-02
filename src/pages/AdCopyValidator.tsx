@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List } from 'lucide-react';
+import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +43,14 @@ interface StructuredSnippet {
   values: string[];
 }
 
+interface PriceExtension {
+  id: string;
+  header: string;
+  price: string;
+  unit: string;
+  description: string;
+}
+
 const SNIPPET_HEADERS = [
   'Amenities',
   'Brands',
@@ -59,6 +67,17 @@ const SNIPPET_HEADERS = [
   'Types',
 ];
 
+const PRICE_UNITS = [
+  'None',
+  'per hour',
+  'per day',
+  'per week',
+  'per month',
+  'per year',
+  'per night',
+  'per item',
+];
+
 const MAX_HEADLINE_LENGTH = 30;
 const MAX_DESCRIPTION_LENGTH = 90;
 const MAX_HEADLINES = 15;
@@ -71,6 +90,9 @@ const MAX_CALLOUTS = 10;
 const MAX_SNIPPET_VALUE_LENGTH = 25;
 const MAX_SNIPPET_VALUES = 10;
 const MIN_SNIPPET_VALUES = 3;
+const MAX_PRICE_HEADER_LENGTH = 25;
+const MAX_PRICE_DESC_LENGTH = 25;
+const MAX_PRICES = 8;
 
 const SAMPLE_HEADLINES: Headline[] = [
   { id: '1', text: 'Shop the Best Deals Today' },
@@ -113,6 +135,12 @@ export default function AdCopyValidator() {
 
   const [snippets, setSnippets] = useState<StructuredSnippet[]>([
     { id: '1', header: 'Types', values: ['', '', ''] },
+  ]);
+
+  const [prices, setPrices] = useState<PriceExtension[]>([
+    { id: '1', header: '', price: '', unit: 'None', description: '' },
+    { id: '2', header: '', price: '', unit: 'None', description: '' },
+    { id: '3', header: '', price: '', unit: 'None', description: '' },
   ]);
 
   const [bulkHeadlines, setBulkHeadlines] = useState('');
@@ -189,6 +217,21 @@ export default function AdCopyValidator() {
     });
   }, [snippets]);
 
+  const priceValidation = useMemo(() => {
+    return prices.map(p => ({
+      ...p,
+      headerLength: p.header.length,
+      descLength: p.description.length,
+      isHeaderValid: p.header.length > 0 && p.header.length <= MAX_PRICE_HEADER_LENGTH,
+      isDescValid: p.description.length === 0 || p.description.length <= MAX_PRICE_DESC_LENGTH,
+      isPriceValid: p.price.length > 0,
+      isHeaderEmpty: p.header.length === 0,
+      isHeaderOverLimit: p.header.length > MAX_PRICE_HEADER_LENGTH,
+      isDescOverLimit: p.description.length > MAX_PRICE_DESC_LENGTH,
+      isComplete: p.header.length > 0 && p.header.length <= MAX_PRICE_HEADER_LENGTH && p.price.length > 0,
+    }));
+  }, [prices]);
+
   // Stats
   const stats = useMemo(() => {
     const validHeadlines = headlineValidation.filter(h => h.isValid).length;
@@ -201,6 +244,8 @@ export default function AdCopyValidator() {
     const invalidCallouts = calloutValidation.filter(c => c.isOverLimit).length;
     const validSnippets = snippetValidation.filter(s => s.isComplete).length;
     const invalidSnippetValues = snippetValidation.reduce((acc, s) => acc + s.invalidValues, 0);
+    const validPrices = priceValidation.filter(p => p.isComplete).length;
+    const invalidPrices = priceValidation.filter(p => p.isHeaderOverLimit || p.isDescOverLimit).length;
     
     return {
       validHeadlines,
@@ -213,14 +258,17 @@ export default function AdCopyValidator() {
       invalidCallouts,
       validSnippets,
       invalidSnippetValues,
+      validPrices,
+      invalidPrices,
       totalHeadlines: headlines.length,
       totalDescriptions: descriptions.length,
       totalSitelinks: sitelinks.length,
       totalCallouts: callouts.length,
       totalSnippets: snippets.length,
+      totalPrices: prices.length,
       isRSAReady: validHeadlines >= 3 && validDescriptions >= 2,
     };
-  }, [headlineValidation, descriptionValidation, sitelinkValidation, calloutValidation, snippetValidation, headlines.length, descriptions.length, sitelinks.length, callouts.length, snippets.length]);
+  }, [headlineValidation, descriptionValidation, sitelinkValidation, calloutValidation, snippetValidation, priceValidation, headlines.length, descriptions.length, sitelinks.length, callouts.length, snippets.length, prices.length]);
 
   const updateHeadline = (id: string, text: string) => {
     setHeadlines(prev => prev.map(h => h.id === id ? { ...h, text } : h));
@@ -268,6 +316,10 @@ export default function AdCopyValidator() {
     }));
   };
 
+  const updatePrice = (id: string, field: 'header' | 'price' | 'unit' | 'description', value: string) => {
+    setPrices(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
+  };
+
   const addHeadline = () => {
     if (headlines.length >= MAX_HEADLINES) {
       toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_HEADLINES} headlines` });
@@ -306,6 +358,14 @@ export default function AdCopyValidator() {
       return;
     }
     setSnippets(prev => [...prev, { id: Date.now().toString(), header: 'Brands', values: ['', '', ''] }]);
+  };
+
+  const addPrice = () => {
+    if (prices.length >= MAX_PRICES) {
+      toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_PRICES} price items` });
+      return;
+    }
+    setPrices(prev => [...prev, { id: Date.now().toString(), header: '', price: '', unit: 'None', description: '' }]);
   };
 
   const removeHeadline = (id: string) => {
@@ -348,6 +408,14 @@ export default function AdCopyValidator() {
     setSnippets(prev => prev.filter(s => s.id !== id));
   };
 
+  const removePrice = (id: string) => {
+    if (prices.length <= 3) {
+      toast({ title: 'Minimum required', description: 'At least 3 price items recommended' });
+      return;
+    }
+    setPrices(prev => prev.filter(p => p.id !== id));
+  };
+
   const loadSample = () => {
     setHeadlines(SAMPLE_HEADLINES);
     setDescriptions(SAMPLE_DESCRIPTIONS);
@@ -364,6 +432,11 @@ export default function AdCopyValidator() {
     ]);
     setSnippets([
       { id: '1', header: 'Brands', values: ['Nike', 'Adidas', 'Puma', 'Reebok'] },
+    ]);
+    setPrices([
+      { id: '1', header: 'Basic Plan', price: '$9.99', unit: 'per month', description: 'For individuals' },
+      { id: '2', header: 'Pro Plan', price: '$29.99', unit: 'per month', description: 'For small teams' },
+      { id: '3', header: 'Enterprise', price: '$99.99', unit: 'per month', description: 'For large orgs' },
     ]);
     toast({ title: 'Sample loaded', description: 'Sample ad copy has been loaded' });
   };
@@ -390,6 +463,11 @@ export default function AdCopyValidator() {
     ]);
     setSnippets([
       { id: '1', header: 'Types', values: ['', '', ''] },
+    ]);
+    setPrices([
+      { id: '1', header: '', price: '', unit: 'None', description: '' },
+      { id: '2', header: '', price: '', unit: 'None', description: '' },
+      { id: '3', header: '', price: '', unit: 'None', description: '' },
     ]);
     setBulkHeadlines('');
     setBulkDescriptions('');
@@ -489,11 +567,14 @@ export default function AdCopyValidator() {
             <span>
               Snippets: <strong className="text-primary">{stats.validSnippets}</strong>/{stats.totalSnippets} valid
             </span>
-            {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0 || stats.invalidSitelinks > 0 || stats.invalidCallouts > 0 || stats.invalidSnippetValues > 0) && (
+            <span>
+              Prices: <strong className="text-primary">{stats.validPrices}</strong>/{stats.totalPrices} valid
+            </span>
+            {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0 || stats.invalidSitelinks > 0 || stats.invalidCallouts > 0 || stats.invalidSnippetValues > 0 || stats.invalidPrices > 0) && (
               <>
                 <Separator orientation="vertical" className="h-6 hidden sm:block" />
                 <span className="text-destructive text-sm">
-                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks + stats.invalidCallouts + stats.invalidSnippetValues} over limit
+                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks + stats.invalidCallouts + stats.invalidSnippetValues + stats.invalidPrices} over limit
                 </span>
               </>
             )}
@@ -510,6 +591,17 @@ export default function AdCopyValidator() {
 
         {/* Editor Tab */}
         <TabsContent value="editor" className="space-y-6">
+          {/* Price Extension Validation Warning Alert */}
+          {stats.invalidPrices > 0 && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Price Extension Character Limit Exceeded</AlertTitle>
+              <AlertDescription>
+                {stats.invalidPrices} price item{stats.invalidPrices > 1 ? 's have' : ' has'} fields exceeding character limits.
+                Headers and descriptions must be max {MAX_PRICE_HEADER_LENGTH} chars each.
+              </AlertDescription>
+            </Alert>
+          )}
           {/* Structured Snippet Validation Warning Alert */}
           {stats.invalidSnippetValues > 0 && (
             <Alert variant="destructive">
@@ -972,6 +1064,126 @@ export default function AdCopyValidator() {
                           );
                         })}
                       </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          {/* Price Extensions */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <DollarSign className="h-5 w-5" />
+                    Price Extensions
+                  </CardTitle>
+                  <CardDescription>Header & description max {MAX_PRICE_HEADER_LENGTH} chars each (3-{MAX_PRICES} items)</CardDescription>
+                </div>
+                <Button variant="outline" size="sm" onClick={addPrice} disabled={prices.length >= MAX_PRICES}>
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {prices.map((price, index) => {
+                const validation = priceValidation[index];
+                const hasError = validation.isHeaderOverLimit || validation.isDescOverLimit;
+                return (
+                  <div key={price.id} className={cn(
+                    "p-3 rounded-lg border",
+                    hasError ? "border-destructive/50 bg-destructive/5" : "border-border"
+                  )}>
+                    <div className="flex items-start gap-3">
+                      <span className="text-xs text-muted-foreground w-5 mt-2.5">P{index + 1}</span>
+                      <div className="flex-1 grid sm:grid-cols-4 gap-2">
+                        {/* Header */}
+                        <div className="space-y-1">
+                          <label className="text-xs text-muted-foreground">Header</label>
+                          <div className="relative">
+                            <Input
+                              value={price.header}
+                              onChange={(e) => updatePrice(price.id, 'header', e.target.value)}
+                              placeholder="e.g., Basic Plan"
+                              className={cn(
+                                "pr-14 h-9",
+                                validation.isHeaderOverLimit && "border-destructive focus-visible:ring-destructive"
+                              )}
+                            />
+                            <span className={cn(
+                              "absolute right-2 top-1/2 -translate-y-1/2 text-xs",
+                              validation.isHeaderOverLimit ? "text-destructive font-medium" : "text-muted-foreground"
+                            )}>
+                              {validation.headerLength}/{MAX_PRICE_HEADER_LENGTH}
+                            </span>
+                          </div>
+                          {validation.isHeaderOverLimit && (
+                            <p className="text-xs text-destructive">Over by {validation.headerLength - MAX_PRICE_HEADER_LENGTH}</p>
+                          )}
+                        </div>
+                        
+                        {/* Price */}
+                        <div className="space-y-1">
+                          <label className="text-xs text-muted-foreground">Price</label>
+                          <Input
+                            value={price.price}
+                            onChange={(e) => updatePrice(price.id, 'price', e.target.value)}
+                            placeholder="e.g., $9.99"
+                            className="h-9"
+                          />
+                        </div>
+                        
+                        {/* Unit */}
+                        <div className="space-y-1">
+                          <label className="text-xs text-muted-foreground">Unit</label>
+                          <Select value={price.unit} onValueChange={(value) => updatePrice(price.id, 'unit', value)}>
+                            <SelectTrigger className="h-9">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {PRICE_UNITS.map((unit) => (
+                                <SelectItem key={unit} value={unit}>{unit}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        {/* Description */}
+                        <div className="space-y-1">
+                          <label className="text-xs text-muted-foreground">Description</label>
+                          <div className="relative">
+                            <Input
+                              value={price.description}
+                              onChange={(e) => updatePrice(price.id, 'description', e.target.value)}
+                              placeholder="e.g., For individuals"
+                              className={cn(
+                                "pr-14 h-9",
+                                validation.isDescOverLimit && "border-destructive focus-visible:ring-destructive"
+                              )}
+                            />
+                            <span className={cn(
+                              "absolute right-2 top-1/2 -translate-y-1/2 text-xs",
+                              validation.isDescOverLimit ? "text-destructive font-medium" : "text-muted-foreground"
+                            )}>
+                              {validation.descLength}/{MAX_PRICE_DESC_LENGTH}
+                            </span>
+                          </div>
+                          {validation.isDescOverLimit && (
+                            <p className="text-xs text-destructive">Over by {validation.descLength - MAX_PRICE_DESC_LENGTH}</p>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive mt-5"
+                        onClick={() => removePrice(price.id)}
+                        disabled={prices.length <= 3}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 );
