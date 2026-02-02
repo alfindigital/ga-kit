@@ -1243,28 +1243,34 @@ export default function AdCopyValidator() {
 
         {/* Ad Preview Tab */}
         <TabsContent value="preview" className="space-y-6">
+          {/* Main RSA Preview Card */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Google Search Ad Preview</CardTitle>
-              <CardDescription>Preview how your ad might appear in search results</CardDescription>
+              <CardDescription>Preview how your ad might appear in search results with all extensions</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="max-w-xl space-y-4">
+              <div className="max-w-2xl space-y-6">
                 {/* Desktop Preview */}
                 <div className="border rounded-lg p-4 bg-background">
-                  <p className="text-xs text-muted-foreground mb-2">Desktop Preview</p>
-                  <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground mb-3">Desktop Preview</p>
+                  <div className="space-y-2">
+                    {/* Ad Header */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="px-1 py-0.5 border rounded text-[10px]">Ad</span>
+                      <span className="px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-medium">Sponsored</span>
                       <span>www.example.com</span>
                     </div>
-                    <h3 className="text-lg text-primary font-medium leading-snug">
+                    
+                    {/* Headlines */}
+                    <h3 className="text-xl text-primary font-medium leading-snug hover:underline cursor-pointer">
                       {headlineValidation
                         .filter(h => h.isValid)
                         .slice(0, 3)
                         .map(h => h.text)
                         .join(' | ') || 'Your headlines will appear here'}
                     </h3>
+                    
+                    {/* Descriptions */}
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {descriptionValidation
                         .filter(d => d.isValid)
@@ -1272,17 +1278,75 @@ export default function AdCopyValidator() {
                         .map(d => d.text)
                         .join(' ') || 'Your descriptions will appear here'}
                     </p>
+
+                    {/* Sitelinks Preview */}
+                    {sitelinkValidation.filter(s => s.isComplete).length > 0 && (
+                      <div className="pt-2 border-t mt-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          {sitelinkValidation
+                            .filter(s => s.isComplete)
+                            .slice(0, 4)
+                            .map((s, i) => (
+                              <div key={i} className="space-y-0.5">
+                                <p className="text-sm text-primary font-medium hover:underline cursor-pointer truncate">
+                                  {s.title}
+                                </p>
+                                {(s.description1 || s.description2) && (
+                                  <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {[s.description1, s.description2].filter(Boolean).join(' · ')}
+                                  </p>
+                                )}
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Callouts Preview */}
+                    {calloutValidation.filter(c => c.isValid).length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-2 text-xs text-muted-foreground">
+                        {calloutValidation
+                          .filter(c => c.isValid)
+                          .slice(0, 10)
+                          .map((c, i) => (
+                            <span key={i} className="flex items-center gap-1">
+                              <span className="text-muted-foreground/50">✓</span>
+                              {c.text}
+                            </span>
+                          ))}
+                      </div>
+                    )}
+
+                    {/* Structured Snippets Preview */}
+                    {snippetValidation.filter(s => s.isComplete).length > 0 && (
+                      <div className="pt-2 text-xs text-muted-foreground space-y-1">
+                        {snippetValidation
+                          .filter(s => s.isComplete)
+                          .map((s, i) => (
+                            <p key={i}>
+                              <span className="font-medium">{s.header}:</span>{' '}
+                              {s.valueValidations
+                                .filter(v => v.isValid)
+                                .map(v => v.text)
+                                .join(', ')}
+                            </p>
+                          ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Mobile Preview */}
-                <div className="border rounded-lg p-4 bg-background max-w-xs">
-                  <p className="text-xs text-muted-foreground mb-2">Mobile Preview</p>
-                  <div className="space-y-1">
+                <div className="border rounded-lg p-4 bg-background max-w-sm">
+                  <p className="text-xs text-muted-foreground mb-3">Mobile Preview</p>
+                  <div className="space-y-2">
+                    {/* Ad Header */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="px-1 py-0.5 border rounded text-[10px]">Ad</span>
+                      <span className="px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-medium">Sponsored</span>
                       <span>example.com</span>
                     </div>
+                    
+                    {/* Headlines */}
                     <h3 className="text-base text-primary font-medium leading-snug">
                       {headlineValidation
                         .filter(h => h.isValid)
@@ -1290,6 +1354,8 @@ export default function AdCopyValidator() {
                         .map(h => h.text)
                         .join(' | ') || 'Headlines here'}
                     </h3>
+                    
+                    {/* Descriptions */}
                     <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                       {descriptionValidation
                         .filter(d => d.isValid)
@@ -1297,52 +1363,254 @@ export default function AdCopyValidator() {
                         .map(d => d.text)
                         .join(' ') || 'Description here'}
                     </p>
+
+                    {/* Sitelinks Preview (Mobile - horizontal scroll) */}
+                    {sitelinkValidation.filter(s => s.isComplete).length > 0 && (
+                      <div className="pt-2 border-t mt-2">
+                        <div className="flex gap-2 overflow-x-auto pb-1">
+                          {sitelinkValidation
+                            .filter(s => s.isComplete)
+                            .slice(0, 4)
+                            .map((s, i) => (
+                              <span key={i} className="text-xs text-primary font-medium whitespace-nowrap px-2 py-1 bg-muted/50 rounded hover:underline cursor-pointer">
+                                {s.title}
+                              </span>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Callouts Preview (Mobile) */}
+                    {calloutValidation.filter(c => c.isValid).length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-1 text-[10px] text-muted-foreground">
+                        {calloutValidation
+                          .filter(c => c.isValid)
+                          .slice(0, 6)
+                          .map((c, i) => (
+                            <span key={i}>{c.text}</span>
+                          ))
+                          .reduce((prev, curr, i) => (
+                            i === 0 ? [curr] : [...prev, <span key={`sep-${i}`} className="text-muted-foreground/40">·</span>, curr]
+                          ), [] as React.ReactNode[])}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Price Extensions Preview */}
+          {priceValidation.filter(p => p.isComplete).length >= 3 && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <DollarSign className="h-5 w-5" />
+                  Price Extensions Preview
+                </CardTitle>
+                <CardDescription>How your price assets appear below ads</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg p-4 bg-background">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {priceValidation
+                      .filter(p => p.isComplete)
+                      .slice(0, 8)
+                      .map((p, i) => (
+                        <div key={i} className="p-3 border rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors">
+                          <p className="text-sm font-medium text-primary truncate">{p.header}</p>
+                          <p className="text-lg font-bold mt-1">
+                            {p.price}
+                            {p.unit !== 'None' && <span className="text-xs font-normal text-muted-foreground ml-1">{p.unit}</span>}
+                          </p>
+                          {p.description && (
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{p.description}</p>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* All Extensions Summary */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Extensions Summary</CardTitle>
+              <CardDescription>Overview of all ad assets and their validation status</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Headlines Summary */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm">Headlines</h4>
+                    <Badge variant={stats.validHeadlines >= 3 ? 'default' : 'secondary'} className="text-xs">
+                      {stats.validHeadlines}/{stats.totalHeadlines}
+                    </Badge>
+                  </div>
+                  <ul className="space-y-1 text-sm">
+                    {headlineValidation.slice(0, 5).map((h, i) => (
+                      <li key={h.id} className="flex items-center gap-2">
+                        {h.isValid ? (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                        ) : h.isEmpty ? (
+                          <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
+                        ) : (
+                          <AlertCircle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                        )}
+                        <span className={cn("truncate", h.isOverLimit && "text-destructive")}>
+                          {h.text || `H${i + 1}`} <span className="text-muted-foreground text-xs">({h.length}/{MAX_HEADLINE_LENGTH})</span>
+                        </span>
+                      </li>
+                    ))}
+                    {headlineValidation.length > 5 && (
+                      <li className="text-xs text-muted-foreground pl-5">+{headlineValidation.length - 5} more</li>
+                    )}
+                  </ul>
+                </div>
+
+                {/* Descriptions Summary */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm">Descriptions</h4>
+                    <Badge variant={stats.validDescriptions >= 2 ? 'default' : 'secondary'} className="text-xs">
+                      {stats.validDescriptions}/{stats.totalDescriptions}
+                    </Badge>
+                  </div>
+                  <ul className="space-y-1 text-sm">
+                    {descriptionValidation.map((d, i) => (
+                      <li key={d.id} className="flex items-center gap-2">
+                        {d.isValid ? (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                        ) : d.isEmpty ? (
+                          <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
+                        ) : (
+                          <AlertCircle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                        )}
+                        <span className={cn("truncate", d.isOverLimit && "text-destructive")}>
+                          {d.text ? d.text.substring(0, 30) + (d.text.length > 30 ? '...' : '') : `D${i + 1}`}
+                          <span className="text-muted-foreground text-xs ml-1">({d.length}/{MAX_DESCRIPTION_LENGTH})</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Sitelinks Summary */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm flex items-center gap-1">
+                      <Link className="h-3.5 w-3.5" />
+                      Sitelinks
+                    </h4>
+                    <Badge variant={stats.validSitelinks >= 2 ? 'default' : 'secondary'} className="text-xs">
+                      {stats.validSitelinks}/{stats.totalSitelinks}
+                    </Badge>
+                  </div>
+                  <ul className="space-y-1 text-sm">
+                    {sitelinkValidation.map((s, i) => (
+                      <li key={s.id} className="flex items-center gap-2">
+                        {s.isComplete ? (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                        ) : s.isTitleEmpty ? (
+                          <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
+                        ) : (
+                          <AlertCircle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                        )}
+                        <span className="truncate">{s.title || `Sitelink ${i + 1}`}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Callouts Summary */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm flex items-center gap-1">
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      Callouts
+                    </h4>
+                    <Badge variant={stats.validCallouts >= 4 ? 'default' : 'secondary'} className="text-xs">
+                      {stats.validCallouts}/{stats.totalCallouts}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {calloutValidation.map((c, i) => (
+                      <span
+                        key={c.id}
+                        className={cn(
+                          "text-xs px-2 py-0.5 rounded-full",
+                          c.isValid ? "bg-green-500/10 text-green-700 dark:text-green-400" :
+                          c.isEmpty ? "bg-muted text-muted-foreground" :
+                          "bg-destructive/10 text-destructive"
+                        )}
+                      >
+                        {c.text || `C${i + 1}`}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                {/* Validation Summary */}
-                <div className="pt-4 border-t">
-                  <h4 className="font-medium mb-2">Validation Summary</h4>
-                  <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground mb-1">Headlines</p>
-                      <ul className="space-y-1">
-                        {headlineValidation.map((h, i) => (
-                          <li key={h.id} className="flex items-center gap-2">
-                            {h.isValid ? (
-                              <CheckCircle2 className="h-4 w-4 text-green-500" />
-                            ) : h.isEmpty ? (
-                              <span className="h-4 w-4 rounded-full border-2 border-muted-foreground/30" />
-                            ) : (
-                              <AlertCircle className="h-4 w-4 text-destructive" />
-                            )}
-                            <span className={cn(h.isOverLimit && "text-destructive")}>
-                              H{i + 1}: {h.length}/{MAX_HEADLINE_LENGTH}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground mb-1">Descriptions</p>
-                      <ul className="space-y-1">
-                        {descriptionValidation.map((d, i) => (
-                          <li key={d.id} className="flex items-center gap-2">
-                            {d.isValid ? (
-                              <CheckCircle2 className="h-4 w-4 text-green-500" />
-                            ) : d.isEmpty ? (
-                              <span className="h-4 w-4 rounded-full border-2 border-muted-foreground/30" />
-                            ) : (
-                              <AlertCircle className="h-4 w-4 text-destructive" />
-                            )}
-                            <span className={cn(d.isOverLimit && "text-destructive")}>
-                              D{i + 1}: {d.length}/{MAX_DESCRIPTION_LENGTH}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                {/* Structured Snippets Summary */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm flex items-center gap-1">
+                      <List className="h-3.5 w-3.5" />
+                      Snippets
+                    </h4>
+                    <Badge variant={stats.validSnippets >= 1 ? 'default' : 'secondary'} className="text-xs">
+                      {stats.validSnippets}/{stats.totalSnippets}
+                    </Badge>
                   </div>
+                  <ul className="space-y-1 text-sm">
+                    {snippetValidation.map((s) => (
+                      <li key={s.id} className="flex items-center gap-2">
+                        {s.isComplete ? (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                        ) : (
+                          <AlertCircle className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                        )}
+                        <span className="truncate">
+                          {s.header}: {s.validValues}/{s.valueValidations.length} values
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Prices Summary */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm flex items-center gap-1">
+                      <DollarSign className="h-3.5 w-3.5" />
+                      Prices
+                    </h4>
+                    <Badge variant={stats.validPrices >= 3 ? 'default' : 'secondary'} className="text-xs">
+                      {stats.validPrices}/{stats.totalPrices}
+                    </Badge>
+                  </div>
+                  <ul className="space-y-1 text-sm">
+                    {priceValidation.slice(0, 4).map((p, i) => (
+                      <li key={p.id} className="flex items-center gap-2">
+                        {p.isComplete ? (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                        ) : p.isHeaderEmpty ? (
+                          <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
+                        ) : (
+                          <AlertCircle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                        )}
+                        <span className="truncate">
+                          {p.header || `Price ${i + 1}`}
+                          {p.price && <span className="text-muted-foreground ml-1">({p.price})</span>}
+                        </span>
+                      </li>
+                    ))}
+                    {priceValidation.length > 4 && (
+                      <li className="text-xs text-muted-foreground pl-5">+{priceValidation.length - 4} more</li>
+                    )}
+                  </ul>
                 </div>
               </div>
             </CardContent>
