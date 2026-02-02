@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare } from 'lucide-react';
+import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -36,6 +37,28 @@ interface Callout {
   text: string;
 }
 
+interface StructuredSnippet {
+  id: string;
+  header: string;
+  values: string[];
+}
+
+const SNIPPET_HEADERS = [
+  'Amenities',
+  'Brands',
+  'Courses',
+  'Degree programs',
+  'Destinations',
+  'Featured hotels',
+  'Insurance coverage',
+  'Models',
+  'Neighborhoods',
+  'Service catalog',
+  'Shows',
+  'Styles',
+  'Types',
+];
+
 const MAX_HEADLINE_LENGTH = 30;
 const MAX_DESCRIPTION_LENGTH = 90;
 const MAX_HEADLINES = 15;
@@ -45,6 +68,9 @@ const MAX_SITELINK_DESC_LENGTH = 35;
 const MAX_SITELINKS = 6;
 const MAX_CALLOUT_LENGTH = 25;
 const MAX_CALLOUTS = 10;
+const MAX_SNIPPET_VALUE_LENGTH = 25;
+const MAX_SNIPPET_VALUES = 10;
+const MIN_SNIPPET_VALUES = 3;
 
 const SAMPLE_HEADLINES: Headline[] = [
   { id: '1', text: 'Shop the Best Deals Today' },
@@ -83,6 +109,10 @@ export default function AdCopyValidator() {
     { id: '2', text: '' },
     { id: '3', text: '' },
     { id: '4', text: '' },
+  ]);
+
+  const [snippets, setSnippets] = useState<StructuredSnippet[]>([
+    { id: '1', header: 'Types', values: ['', '', ''] },
   ]);
 
   const [bulkHeadlines, setBulkHeadlines] = useState('');
@@ -136,6 +166,29 @@ export default function AdCopyValidator() {
     }));
   }, [callouts]);
 
+  const snippetValidation = useMemo(() => {
+    return snippets.map(s => {
+      const valueValidations = s.values.map(v => ({
+        text: v,
+        length: v.length,
+        isValid: v.length > 0 && v.length <= MAX_SNIPPET_VALUE_LENGTH,
+        isEmpty: v.length === 0,
+        isOverLimit: v.length > MAX_SNIPPET_VALUE_LENGTH,
+      }));
+      const validValues = valueValidations.filter(v => v.isValid).length;
+      const invalidValues = valueValidations.filter(v => v.isOverLimit).length;
+      return {
+        ...s,
+        valueValidations,
+        validValues,
+        invalidValues,
+        hasHeader: s.header.length > 0,
+        isComplete: s.header.length > 0 && validValues >= MIN_SNIPPET_VALUES,
+        hasInvalidValues: invalidValues > 0,
+      };
+    });
+  }, [snippets]);
+
   // Stats
   const stats = useMemo(() => {
     const validHeadlines = headlineValidation.filter(h => h.isValid).length;
@@ -146,6 +199,8 @@ export default function AdCopyValidator() {
     const invalidSitelinks = sitelinkValidation.filter(s => s.isTitleOverLimit || s.isDesc1OverLimit || s.isDesc2OverLimit).length;
     const validCallouts = calloutValidation.filter(c => c.isValid).length;
     const invalidCallouts = calloutValidation.filter(c => c.isOverLimit).length;
+    const validSnippets = snippetValidation.filter(s => s.isComplete).length;
+    const invalidSnippetValues = snippetValidation.reduce((acc, s) => acc + s.invalidValues, 0);
     
     return {
       validHeadlines,
@@ -156,13 +211,16 @@ export default function AdCopyValidator() {
       invalidSitelinks,
       validCallouts,
       invalidCallouts,
+      validSnippets,
+      invalidSnippetValues,
       totalHeadlines: headlines.length,
       totalDescriptions: descriptions.length,
       totalSitelinks: sitelinks.length,
       totalCallouts: callouts.length,
+      totalSnippets: snippets.length,
       isRSAReady: validHeadlines >= 3 && validDescriptions >= 2,
     };
-  }, [headlineValidation, descriptionValidation, sitelinkValidation, calloutValidation, headlines.length, descriptions.length, sitelinks.length, callouts.length]);
+  }, [headlineValidation, descriptionValidation, sitelinkValidation, calloutValidation, snippetValidation, headlines.length, descriptions.length, sitelinks.length, callouts.length, snippets.length]);
 
   const updateHeadline = (id: string, text: string) => {
     setHeadlines(prev => prev.map(h => h.id === id ? { ...h, text } : h));
@@ -178,6 +236,36 @@ export default function AdCopyValidator() {
 
   const updateCallout = (id: string, text: string) => {
     setCallouts(prev => prev.map(c => c.id === id ? { ...c, text } : c));
+  };
+
+  const updateSnippetHeader = (id: string, header: string) => {
+    setSnippets(prev => prev.map(s => s.id === id ? { ...s, header } : s));
+  };
+
+  const updateSnippetValue = (snippetId: string, valueIndex: number, value: string) => {
+    setSnippets(prev => prev.map(s => 
+      s.id === snippetId 
+        ? { ...s, values: s.values.map((v, i) => i === valueIndex ? value : v) }
+        : s
+    ));
+  };
+
+  const addSnippetValue = (snippetId: string) => {
+    setSnippets(prev => prev.map(s => {
+      if (s.id === snippetId && s.values.length < MAX_SNIPPET_VALUES) {
+        return { ...s, values: [...s.values, ''] };
+      }
+      return s;
+    }));
+  };
+
+  const removeSnippetValue = (snippetId: string, valueIndex: number) => {
+    setSnippets(prev => prev.map(s => {
+      if (s.id === snippetId && s.values.length > MIN_SNIPPET_VALUES) {
+        return { ...s, values: s.values.filter((_, i) => i !== valueIndex) };
+      }
+      return s;
+    }));
   };
 
   const addHeadline = () => {
@@ -212,6 +300,14 @@ export default function AdCopyValidator() {
     setCallouts(prev => [...prev, { id: Date.now().toString(), text: '' }]);
   };
 
+  const addSnippet = () => {
+    if (snippets.length >= 2) {
+      toast({ title: 'Maximum reached', description: 'You can only add up to 2 structured snippets' });
+      return;
+    }
+    setSnippets(prev => [...prev, { id: Date.now().toString(), header: 'Brands', values: ['', '', ''] }]);
+  };
+
   const removeHeadline = (id: string) => {
     if (headlines.length <= 3) {
       toast({ title: 'Minimum required', description: 'RSA requires at least 3 headlines' });
@@ -244,6 +340,14 @@ export default function AdCopyValidator() {
     setCallouts(prev => prev.filter(c => c.id !== id));
   };
 
+  const removeSnippet = (id: string) => {
+    if (snippets.length <= 1) {
+      toast({ title: 'Minimum required', description: 'At least 1 structured snippet recommended' });
+      return;
+    }
+    setSnippets(prev => prev.filter(s => s.id !== id));
+  };
+
   const loadSample = () => {
     setHeadlines(SAMPLE_HEADLINES);
     setDescriptions(SAMPLE_DESCRIPTIONS);
@@ -257,6 +361,9 @@ export default function AdCopyValidator() {
       { id: '2', text: '24/7 Support' },
       { id: '3', text: 'Price Match' },
       { id: '4', text: 'Fast Delivery' },
+    ]);
+    setSnippets([
+      { id: '1', header: 'Brands', values: ['Nike', 'Adidas', 'Puma', 'Reebok'] },
     ]);
     toast({ title: 'Sample loaded', description: 'Sample ad copy has been loaded' });
   };
@@ -280,6 +387,9 @@ export default function AdCopyValidator() {
       { id: '2', text: '' },
       { id: '3', text: '' },
       { id: '4', text: '' },
+    ]);
+    setSnippets([
+      { id: '1', header: 'Types', values: ['', '', ''] },
     ]);
     setBulkHeadlines('');
     setBulkDescriptions('');
@@ -376,11 +486,14 @@ export default function AdCopyValidator() {
             <span>
               Callouts: <strong className="text-primary">{stats.validCallouts}</strong>/{stats.totalCallouts} valid
             </span>
-            {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0 || stats.invalidSitelinks > 0 || stats.invalidCallouts > 0) && (
+            <span>
+              Snippets: <strong className="text-primary">{stats.validSnippets}</strong>/{stats.totalSnippets} valid
+            </span>
+            {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0 || stats.invalidSitelinks > 0 || stats.invalidCallouts > 0 || stats.invalidSnippetValues > 0) && (
               <>
                 <Separator orientation="vertical" className="h-6 hidden sm:block" />
                 <span className="text-destructive text-sm">
-                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks + stats.invalidCallouts} over limit
+                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks + stats.invalidCallouts + stats.invalidSnippetValues} over limit
                 </span>
               </>
             )}
@@ -397,6 +510,16 @@ export default function AdCopyValidator() {
 
         {/* Editor Tab */}
         <TabsContent value="editor" className="space-y-6">
+          {/* Structured Snippet Validation Warning Alert */}
+          {stats.invalidSnippetValues > 0 && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Structured Snippet Character Limit Exceeded</AlertTitle>
+              <AlertDescription>
+                {stats.invalidSnippetValues} snippet value{stats.invalidSnippetValues > 1 ? 's' : ''} exceed{stats.invalidSnippetValues === 1 ? 's' : ''} the {MAX_SNIPPET_VALUE_LENGTH} character limit.
+              </AlertDescription>
+            </Alert>
+          )}
           {/* Callout Validation Warning Alert */}
           {stats.invalidCallouts > 0 && (
             <Alert variant="destructive">
@@ -742,6 +865,117 @@ export default function AdCopyValidator() {
                   );
                 })}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Structured Snippet Extensions */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <List className="h-5 w-5" />
+                    Structured Snippet Extensions
+                  </CardTitle>
+                  <CardDescription>Select a header and add {MIN_SNIPPET_VALUES}-{MAX_SNIPPET_VALUES} values (max {MAX_SNIPPET_VALUE_LENGTH} chars each)</CardDescription>
+                </div>
+                <Button variant="outline" size="sm" onClick={addSnippet} disabled={snippets.length >= 2}>
+                  <Plus className="h-4 w-4 mr-1" /> Add Snippet
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {snippets.map((snippet, snippetIndex) => {
+                const validation = snippetValidation[snippetIndex];
+                return (
+                  <div key={snippet.id} className={cn(
+                    "p-4 rounded-lg border space-y-3",
+                    validation.hasInvalidValues ? "border-destructive/50 bg-destructive/5" : "border-border"
+                  )}>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 flex-1">
+                        <span className="text-sm font-medium whitespace-nowrap">Snippet {snippetIndex + 1}</span>
+                        <Select value={snippet.header} onValueChange={(value) => updateSnippetHeader(snippet.id, value)}>
+                          <SelectTrigger className="w-48">
+                            <SelectValue placeholder="Select header" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {SNIPPET_HEADERS.map((header) => (
+                              <SelectItem key={header} value={header}>{header}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        onClick={() => removeSnippet(snippet.id)}
+                        disabled={snippets.length <= 1}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs text-muted-foreground">Values ({validation.validValues}/{snippet.values.length} valid, min {MIN_SNIPPET_VALUES})</label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => addSnippetValue(snippet.id)}
+                          disabled={snippet.values.length >= MAX_SNIPPET_VALUES}
+                          className="h-7 text-xs"
+                        >
+                          <Plus className="h-3 w-3 mr-1" /> Add Value
+                        </Button>
+                      </div>
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {snippet.values.map((value, valueIndex) => {
+                          const valueValidation = validation.valueValidations[valueIndex];
+                          return (
+                            <div key={valueIndex} className="space-y-1">
+                              <div className="flex items-center gap-1">
+                                <div className="flex-1 relative">
+                                  <Input
+                                    value={value}
+                                    onChange={(e) => updateSnippetValue(snippet.id, valueIndex, e.target.value)}
+                                    placeholder={`Value ${valueIndex + 1}`}
+                                    className={cn(
+                                      "pr-14 h-9",
+                                      valueValidation.isOverLimit && "border-destructive focus-visible:ring-destructive"
+                                    )}
+                                  />
+                                  <span className={cn(
+                                    "absolute right-3 top-1/2 -translate-y-1/2 text-xs",
+                                    valueValidation.isOverLimit ? "text-destructive font-medium" : "text-muted-foreground"
+                                  )}>
+                                    {valueValidation.length}/{MAX_SNIPPET_VALUE_LENGTH}
+                                  </span>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive flex-shrink-0"
+                                  onClick={() => removeSnippetValue(snippet.id, valueIndex)}
+                                  disabled={snippet.values.length <= MIN_SNIPPET_VALUES}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                              {valueValidation.isOverLimit && (
+                                <p className="text-xs text-destructive">
+                                  Exceeds by {valueValidation.length - MAX_SNIPPET_VALUE_LENGTH} chars
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
 
