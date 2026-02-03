@@ -174,7 +174,6 @@ export default function UTMBuilder() {
     toast({ title: 'Applied!', description: `${preset.label} preset applied` });
   }, [toast]);
 
-  if (isLoading) return <UTMBuilderSkeleton />;
 
   // Generate URL with UTM params for a given base URL
   const generateUtmUrl = (baseUrl: string): string => {
@@ -447,6 +446,8 @@ export default function UTMBuilder() {
     { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
     { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
   ]);
+
+  if (isLoading) return <UTMBuilderSkeleton />;
 
   return (
     <div className="space-y-4 sm:space-y-6">
