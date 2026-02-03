@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign, Save, FolderOpen, X } from 'lucide-react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign, Save, FolderOpen, X, Clock, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +30,9 @@ interface AdCopyDraft {
 }
 
 const DRAFTS_STORAGE_KEY = 'ad-copy-validator-drafts';
+const AUTOSAVE_STORAGE_KEY = 'ad-copy-validator-autosave';
+const AUTOSAVE_ENABLED_KEY = 'ad-copy-validator-autosave-enabled';
+const AUTOSAVE_INTERVAL = 5000; // 5 seconds
 
 interface Headline {
   id: string;
@@ -168,6 +171,19 @@ export default function AdCopyValidator() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
 
+  // Auto-save state
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(() => {
+    try {
+      const stored = localStorage.getItem(AUTOSAVE_ENABLED_KEY);
+      return stored ? JSON.parse(stored) : true;
+    } catch {
+      return true;
+    }
+  });
+  const [lastAutoSave, setLastAutoSave] = useState<Date | null>(null);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Load drafts from localStorage on mount
   useEffect(() => {
     try {
@@ -180,6 +196,45 @@ export default function AdCopyValidator() {
     }
   }, []);
 
+  // Load auto-saved data on mount
+  useEffect(() => {
+    try {
+      const autoSaved = localStorage.getItem(AUTOSAVE_STORAGE_KEY);
+      if (autoSaved) {
+        const data = JSON.parse(autoSaved);
+        // Check if auto-save data has content (not empty default state)
+        const hasContent = data.headlines?.some((h: Headline) => h.text) ||
+                          data.descriptions?.some((d: Description) => d.text) ||
+                          data.sitelinks?.some((s: Sitelink) => s.title) ||
+                          data.callouts?.some((c: Callout) => c.text);
+        
+        if (hasContent && data.timestamp) {
+          const savedTime = new Date(data.timestamp);
+          const now = new Date();
+          const hoursDiff = (now.getTime() - savedTime.getTime()) / (1000 * 60 * 60);
+          
+          // Only restore if saved within last 24 hours
+          if (hoursDiff < 24) {
+            setHeadlines(data.headlines || headlines);
+            setDescriptions(data.descriptions || descriptions);
+            setSitelinks(data.sitelinks || sitelinks);
+            setCallouts(data.callouts || callouts);
+            setSnippets(data.snippets || snippets);
+            setPrices(data.prices || prices);
+            setLastAutoSave(savedTime);
+            toast({
+              title: 'Draft restored',
+              description: `Auto-saved draft from ${savedTime.toLocaleTimeString()} restored`,
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load auto-saved data:', error);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Save drafts to localStorage whenever they change
   useEffect(() => {
     try {
@@ -188,6 +243,83 @@ export default function AdCopyValidator() {
       console.error('Failed to save drafts to localStorage:', error);
     }
   }, [drafts]);
+
+  // Save auto-save enabled preference
+  useEffect(() => {
+    try {
+      localStorage.setItem(AUTOSAVE_ENABLED_KEY, JSON.stringify(autoSaveEnabled));
+    } catch (error) {
+      console.error('Failed to save auto-save preference:', error);
+    }
+  }, [autoSaveEnabled]);
+
+  // Auto-save function
+  const performAutoSave = useCallback(() => {
+    if (!autoSaveEnabled) return;
+
+    // Check if there's any content to save
+    const hasContent = headlines.some(h => h.text) ||
+                      descriptions.some(d => d.text) ||
+                      sitelinks.some(s => s.title) ||
+                      callouts.some(c => c.text);
+
+    if (!hasContent) return;
+
+    setIsAutoSaving(true);
+    
+    try {
+      const autoSaveData = {
+        headlines,
+        descriptions,
+        sitelinks,
+        callouts,
+        snippets,
+        prices,
+        timestamp: new Date().toISOString(),
+      };
+      localStorage.setItem(AUTOSAVE_STORAGE_KEY, JSON.stringify(autoSaveData));
+      setLastAutoSave(new Date());
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+    } finally {
+      setTimeout(() => setIsAutoSaving(false), 500);
+    }
+  }, [autoSaveEnabled, headlines, descriptions, sitelinks, callouts, snippets, prices]);
+
+  // Auto-save effect with debounce
+  useEffect(() => {
+    if (!autoSaveEnabled) return;
+
+    // Clear existing timeout
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+
+    // Set new timeout for auto-save
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      performAutoSave();
+    }, AUTOSAVE_INTERVAL);
+
+    // Cleanup on unmount or when dependencies change
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, [autoSaveEnabled, headlines, descriptions, sitelinks, callouts, snippets, prices, performAutoSave]);
+
+  // Toggle auto-save
+  const toggleAutoSave = useCallback(() => {
+    setAutoSaveEnabled((prev: boolean) => {
+      const newValue = !prev;
+      if (newValue) {
+        toast({ title: 'Auto-save enabled', description: 'Your work will be saved automatically every 5 seconds' });
+      } else {
+        toast({ title: 'Auto-save disabled', description: 'Remember to save your work manually' });
+      }
+      return newValue;
+    });
+  }, []);
 
   // Validation results
   const headlineValidation = useMemo(() => {
@@ -627,9 +759,35 @@ export default function AdCopyValidator() {
             <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             Ad Copy Validator
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Validate character limits for Google Ads RSA headlines and descriptions
-          </p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-muted-foreground">
+              Validate character limits for Google Ads RSA headlines and descriptions
+            </p>
+            {/* Auto-save indicator */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleAutoSave}
+                className={cn(
+                  "h-7 px-2 text-xs",
+                  autoSaveEnabled ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                {isAutoSaving ? (
+                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                ) : (
+                  <Clock className="h-3 w-3 mr-1" />
+                )}
+                {autoSaveEnabled ? "Auto-save ON" : "Auto-save OFF"}
+              </Button>
+              {lastAutoSave && autoSaveEnabled && (
+                <span className="text-xs text-muted-foreground hidden sm:inline">
+                  Last saved: {lastAutoSave.toLocaleTimeString()}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
