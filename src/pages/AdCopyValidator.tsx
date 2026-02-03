@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign, Save, FolderOpen, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,11 +9,27 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useClipboard } from '@/hooks/useClipboard';
 import { AdCopyValidatorSkeleton } from '@/components/skeletons';
 import { toast } from '@/hooks/use-toast';
+
+interface AdCopyDraft {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  headlines: Headline[];
+  descriptions: Description[];
+  sitelinks: Sitelink[];
+  callouts: Callout[];
+  snippets: StructuredSnippet[];
+  prices: PriceExtension[];
+}
+
+const DRAFTS_STORAGE_KEY = 'ad-copy-validator-drafts';
 
 interface Headline {
   id: string;
@@ -145,6 +161,33 @@ export default function AdCopyValidator() {
 
   const [bulkHeadlines, setBulkHeadlines] = useState('');
   const [bulkDescriptions, setBulkDescriptions] = useState('');
+
+  // Draft management state
+  const [drafts, setDrafts] = useState<AdCopyDraft[]>([]);
+  const [draftName, setDraftName] = useState('');
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [loadDialogOpen, setLoadDialogOpen] = useState(false);
+
+  // Load drafts from localStorage on mount
+  useEffect(() => {
+    try {
+      const storedDrafts = localStorage.getItem(DRAFTS_STORAGE_KEY);
+      if (storedDrafts) {
+        setDrafts(JSON.parse(storedDrafts));
+      }
+    } catch (error) {
+      console.error('Failed to load drafts from localStorage:', error);
+    }
+  }, []);
+
+  // Save drafts to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(DRAFTS_STORAGE_KEY, JSON.stringify(drafts));
+    } catch (error) {
+      console.error('Failed to save drafts to localStorage:', error);
+    }
+  }, [drafts]);
 
   // Validation results
   const headlineValidation = useMemo(() => {
@@ -474,6 +517,69 @@ export default function AdCopyValidator() {
     toast({ title: 'Reset', description: 'All fields have been cleared' });
   };
 
+  const saveDraft = () => {
+    if (!draftName.trim()) {
+      toast({ title: 'Error', description: 'Please enter a draft name', variant: 'destructive' });
+      return;
+    }
+
+    const existingDraftIndex = drafts.findIndex(d => d.name.toLowerCase() === draftName.trim().toLowerCase());
+    const now = new Date().toISOString();
+
+    if (existingDraftIndex >= 0) {
+      // Update existing draft
+      const updatedDrafts = [...drafts];
+      updatedDrafts[existingDraftIndex] = {
+        ...updatedDrafts[existingDraftIndex],
+        updatedAt: now,
+        headlines,
+        descriptions,
+        sitelinks,
+        callouts,
+        snippets,
+        prices,
+      };
+      setDrafts(updatedDrafts);
+      toast({ title: 'Draft updated', description: `"${draftName}" has been updated` });
+    } else {
+      // Create new draft
+      const newDraft: AdCopyDraft = {
+        id: Date.now().toString(),
+        name: draftName.trim(),
+        createdAt: now,
+        updatedAt: now,
+        headlines,
+        descriptions,
+        sitelinks,
+        callouts,
+        snippets,
+        prices,
+      };
+      setDrafts(prev => [...prev, newDraft]);
+      toast({ title: 'Draft saved', description: `"${draftName}" has been saved` });
+    }
+
+    setDraftName('');
+    setSaveDialogOpen(false);
+  };
+
+  const loadDraft = (draft: AdCopyDraft) => {
+    setHeadlines(draft.headlines);
+    setDescriptions(draft.descriptions);
+    setSitelinks(draft.sitelinks);
+    setCallouts(draft.callouts);
+    setSnippets(draft.snippets);
+    setPrices(draft.prices);
+    setLoadDialogOpen(false);
+    toast({ title: 'Draft loaded', description: `"${draft.name}" has been loaded` });
+  };
+
+  const deleteDraft = (draftId: string) => {
+    const draft = drafts.find(d => d.id === draftId);
+    setDrafts(prev => prev.filter(d => d.id !== draftId));
+    toast({ title: 'Draft deleted', description: `"${draft?.name}" has been deleted` });
+  };
+
   const importBulk = () => {
     const newHeadlines = bulkHeadlines
       .split('\n')
@@ -525,7 +631,101 @@ export default function AdCopyValidator() {
             Validate character limits for Google Ads RSA headlines and descriptions
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Save className="h-4 w-4 mr-1" />
+                Save Draft
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Save Draft</DialogTitle>
+                <DialogDescription>
+                  Save your current ad copy as a draft for later use.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <Input
+                  placeholder="Enter draft name..."
+                  value={draftName}
+                  onChange={(e) => setDraftName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && saveDraft()}
+                />
+                {drafts.length > 0 && (
+                  <div className="text-sm text-muted-foreground">
+                    Existing drafts: {drafts.map(d => d.name).join(', ')}
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={saveDraft}>
+                  <Save className="h-4 w-4 mr-1" />
+                  Save
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={loadDialogOpen} onOpenChange={setLoadDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <FolderOpen className="h-4 w-4 mr-1" />
+                Load Draft
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Load Draft</DialogTitle>
+                <DialogDescription>
+                  Select a saved draft to load.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2 py-4 max-h-[300px] overflow-y-auto">
+                {drafts.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">
+                    No saved drafts yet.
+                  </div>
+                ) : (
+                  drafts.map(draft => (
+                    <div
+                      key={draft.id}
+                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <div
+                        className="flex-1 cursor-pointer"
+                        onClick={() => loadDraft(draft)}
+                      >
+                        <div className="font-medium">{draft.name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Updated: {new Date(draft.updatedAt).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {draft.headlines.filter(h => h.text).length} headlines, {draft.descriptions.filter(d => d.text).length} descriptions
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteDraft(draft.id);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+
           <Button variant="outline" size="sm" onClick={loadSample}>
             Sample
           </Button>
