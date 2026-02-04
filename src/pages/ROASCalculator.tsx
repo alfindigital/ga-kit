@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Calculator, DollarSign, TrendingUp, Target, Percent, AlertCircle, CheckCircle2, Info, RotateCcw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { ToolPageSkeleton } from '@/components/skeletons';
+import { useROASScenarios, ROASScenarioData } from '@/hooks/useROASScenarios';
+import { ScenarioManager } from '@/components/roas/ScenarioManager';
 
 interface CalculatorResult {
   value: number | null;
@@ -22,6 +24,20 @@ interface CalculatorResult {
 
 export default function ROASCalculator() {
   const isLoading = usePageLoading(400);
+  
+  // Scenario management
+  const {
+    scenarios,
+    currentScenarioId,
+    currentScenario,
+    saveScenario,
+    updateScenario,
+    deleteScenario,
+    loadScenario,
+    duplicateScenario,
+    renameScenario,
+    clearCurrentScenario,
+  } = useROASScenarios();
 
   // ROAS Calculator state
   const [roasAdSpend, setRoasAdSpend] = useState('');
@@ -41,6 +57,40 @@ export default function ROASCalculator() {
   const [avgCPC, setAvgCPC] = useState('');
   const [conversionRate, setConversionRate] = useState('');
   const [avgOrderValue, setAvgOrderValue] = useState('');
+
+  // Current data for scenario management
+  const currentData: ROASScenarioData = useMemo(() => ({
+    roasAdSpend,
+    roasRevenue,
+    targetRevenue,
+    expectedROAS,
+    aov,
+    profitMargin,
+    targetProfit,
+    monthlyBudget,
+    avgCPC,
+    conversionRate,
+    avgOrderValue,
+  }), [roasAdSpend, roasRevenue, targetRevenue, expectedROAS, aov, profitMargin, targetProfit, monthlyBudget, avgCPC, conversionRate, avgOrderValue]);
+
+  // Load scenario data into form
+  const handleLoadScenario = useCallback((id: string) => {
+    const scenario = loadScenario(id);
+    if (scenario) {
+      setRoasAdSpend(scenario.data.roasAdSpend);
+      setRoasRevenue(scenario.data.roasRevenue);
+      setTargetRevenue(scenario.data.targetRevenue);
+      setExpectedROAS(scenario.data.expectedROAS);
+      setAOV(scenario.data.aov);
+      setProfitMargin(scenario.data.profitMargin);
+      setTargetProfit(scenario.data.targetProfit);
+      setMonthlyBudget(scenario.data.monthlyBudget);
+      setAvgCPC(scenario.data.avgCPC);
+      setConversionRate(scenario.data.conversionRate);
+      setAvgOrderValue(scenario.data.avgOrderValue);
+    }
+    return scenario;
+  }, [loadScenario]);
 
   // ROAS Calculation
   const roasResult = useMemo((): CalculatorResult[] => {
@@ -232,6 +282,7 @@ export default function ROASCalculator() {
     setAvgCPC('');
     setConversionRate('');
     setAvgOrderValue('');
+    clearCurrentScenario();
   };
 
   const formatCurrency = (value: number) => {
@@ -264,11 +315,29 @@ export default function ROASCalculator() {
           <p className="text-muted-foreground mt-1">
             Calculate Return on Ad Spend, estimate budgets, and find break-even CPA
           </p>
+          {currentScenario && (
+            <Badge variant="outline" className="mt-2">
+              Editing: {currentScenario.name}
+            </Badge>
+          )}
         </div>
-        <Button variant="outline" size="sm" onClick={resetAll}>
-          <RotateCcw className="h-4 w-4 mr-1" />
-          Reset All
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <ScenarioManager
+            scenarios={scenarios}
+            currentScenarioId={currentScenarioId}
+            currentData={currentData}
+            onSave={saveScenario}
+            onLoad={handleLoadScenario}
+            onDelete={deleteScenario}
+            onDuplicate={duplicateScenario}
+            onRename={renameScenario}
+            onUpdate={updateScenario}
+          />
+          <Button variant="outline" size="sm" onClick={resetAll}>
+            <RotateCcw className="h-4 w-4 mr-1" />
+            Reset All
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="roas" className="space-y-6">
