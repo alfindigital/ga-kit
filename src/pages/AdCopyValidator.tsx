@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign, Save, FolderOpen, X, Clock, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign, Save, FolderOpen, X, Clock, Loader2, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -748,6 +748,127 @@ export default function AdCopyValidator() {
     toast({ title: 'Copied', description: 'Valid ad copy copied to clipboard' });
   };
 
+  // Export to Google Ads Editor CSV format
+  const exportToGoogleAdsCSV = () => {
+    const validHeadlineTexts = headlineValidation.filter(h => h.isValid).map(h => h.text);
+    const validDescriptionTexts = descriptionValidation.filter(d => d.isValid).map(d => d.text);
+    const validSitelinkData = sitelinkValidation.filter(s => s.isComplete);
+    const validCalloutTexts = calloutValidation.filter(c => c.isValid).map(c => c.text);
+    const validSnippetData = snippetValidation.filter(s => s.isComplete);
+    const validPriceData = priceValidation.filter(p => p.isComplete);
+
+    if (validHeadlineTexts.length < 3 || validDescriptionTexts.length < 2) {
+      toast({
+        title: 'Cannot export',
+        description: 'You need at least 3 valid headlines and 2 valid descriptions to export',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Build RSA CSV row
+    const rsaHeaders = [
+      'Campaign', 'Ad group', 'Ad type', 'Ad status', 'Final URL', 'Path 1', 'Path 2',
+      ...Array.from({ length: 15 }, (_, i) => `Headline ${i + 1}`),
+      ...Array.from({ length: 4 }, (_, i) => `Description ${i + 1}`),
+    ];
+
+    const rsaRow = [
+      '[CAMPAIGN_NAME]', // Campaign
+      '[AD_GROUP_NAME]', // Ad group
+      'Responsive search ad', // Ad type
+      'Enabled', // Ad status
+      'https://example.com', // Final URL
+      '', // Path 1
+      '', // Path 2
+      ...Array.from({ length: 15 }, (_, i) => validHeadlineTexts[i] || ''),
+      ...Array.from({ length: 4 }, (_, i) => validDescriptionTexts[i] || ''),
+    ];
+
+    // Build Sitelinks CSV
+    const sitelinkHeaders = ['Campaign', 'Sitelink text', 'Description line 1', 'Description line 2', 'Final URL'];
+    const sitelinkRows = validSitelinkData.map(s => [
+      '[CAMPAIGN_NAME]',
+      s.title,
+      s.description1,
+      s.description2,
+      'https://example.com',
+    ]);
+
+    // Build Callouts CSV
+    const calloutHeaders = ['Campaign', 'Callout text'];
+    const calloutRows = validCalloutTexts.map(text => ['[CAMPAIGN_NAME]', text]);
+
+    // Build Structured Snippets CSV
+    const snippetHeaders = ['Campaign', 'Header', 'Snippet values'];
+    const snippetRows = validSnippetData.map(s => [
+      '[CAMPAIGN_NAME]',
+      s.header,
+      s.values.filter(v => v.length > 0 && v.length <= MAX_SNIPPET_VALUE_LENGTH).join('; '),
+    ]);
+
+    // Build Price Extensions CSV
+    const priceHeaders = ['Campaign', 'Type', 'Header', 'Price', 'Price unit', 'Description', 'Final URL'];
+    const priceRows = validPriceData.map(p => [
+      '[CAMPAIGN_NAME]',
+      'Products', // Default type
+      p.header,
+      p.price,
+      p.unit === 'None' ? '' : p.unit,
+      p.description,
+      'https://example.com',
+    ]);
+
+    // Escape CSV values
+    const escapeCSV = (value: string) => {
+      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return value;
+    };
+
+    const formatCSVRow = (row: string[]) => row.map(escapeCSV).join(',');
+
+    // Combine all sections
+    const csvContent = [
+      '# Responsive Search Ads',
+      formatCSVRow(rsaHeaders),
+      formatCSVRow(rsaRow),
+      '',
+      '# Sitelink Extensions',
+      formatCSVRow(sitelinkHeaders),
+      ...sitelinkRows.map(formatCSVRow),
+      '',
+      '# Callout Extensions',
+      formatCSVRow(calloutHeaders),
+      ...calloutRows.map(formatCSVRow),
+      '',
+      '# Structured Snippet Extensions',
+      formatCSVRow(snippetHeaders),
+      ...snippetRows.map(formatCSVRow),
+      '',
+      '# Price Extensions',
+      formatCSVRow(priceHeaders),
+      ...priceRows.map(formatCSVRow),
+    ].join('\n');
+
+    // Download the file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `google-ads-export-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: 'Exported successfully',
+      description: `RSA with ${validHeadlineTexts.length} headlines, ${validDescriptionTexts.length} descriptions, ${validSitelinkData.length} sitelinks, ${validCalloutTexts.length} callouts, ${validSnippetData.length} snippets, and ${validPriceData.length} prices exported`,
+    });
+  };
+
   if (isLoading) return <AdCopyValidatorSkeleton />;
 
   return (
@@ -884,6 +1005,15 @@ export default function AdCopyValidator() {
             </DialogContent>
           </Dialog>
 
+          <Button 
+            variant="default" 
+            size="sm" 
+            onClick={exportToGoogleAdsCSV}
+            disabled={!stats.isRSAReady}
+          >
+            <Download className="h-4 w-4 mr-1" />
+            Export CSV
+          </Button>
           <Button variant="outline" size="sm" onClick={loadSample}>
             Sample
           </Button>
