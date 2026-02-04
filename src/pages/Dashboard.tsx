@@ -13,7 +13,8 @@ import {
   History,
   ShieldCheck,
   Ban,
-  FileText
+  FileText,
+  Calculator
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -105,6 +106,15 @@ const tools = [
     path: '/ad-copy-validator',
     color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
     features: ['Character Limits', 'RSA Preview', 'Bulk Import'],
+  },
+  {
+    id: 'roas-calculator',
+    title: 'ROAS Calculator',
+    description: 'Calculate Return on Ad Spend, budget estimation, and break-even CPA',
+    icon: Calculator,
+    path: '/roas-calculator',
+    color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
+    features: ['ROAS & ROI', 'Budget Planning', 'Break-even CPA'],
   },
   {
     id: 'url-history',
