@@ -1,0 +1,776 @@
+import { useState, useMemo } from 'react';
+import { Calculator, DollarSign, TrendingUp, Target, Percent, AlertCircle, CheckCircle2, Info, RotateCcw } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { usePageLoading } from '@/hooks/usePageLoading';
+import { ToolPageSkeleton } from '@/components/skeletons';
+
+interface CalculatorResult {
+  value: number | null;
+  label: string;
+  description: string;
+  isPositive?: boolean;
+}
+
+export default function ROASCalculator() {
+  const isLoading = usePageLoading(400);
+
+  // ROAS Calculator state
+  const [roasAdSpend, setRoasAdSpend] = useState('');
+  const [roasRevenue, setRoasRevenue] = useState('');
+
+  // Budget Estimator state
+  const [targetRevenue, setTargetRevenue] = useState('');
+  const [expectedROAS, setExpectedROAS] = useState('');
+
+  // Break-even CPA state
+  const [aov, setAOV] = useState('');
+  const [profitMargin, setProfitMargin] = useState('');
+  const [targetProfit, setTargetProfit] = useState('20');
+
+  // Advanced Calculator state
+  const [monthlyBudget, setMonthlyBudget] = useState('');
+  const [avgCPC, setAvgCPC] = useState('');
+  const [conversionRate, setConversionRate] = useState('');
+  const [avgOrderValue, setAvgOrderValue] = useState('');
+
+  // ROAS Calculation
+  const roasResult = useMemo((): CalculatorResult[] => {
+    const spend = parseFloat(roasAdSpend) || 0;
+    const revenue = parseFloat(roasRevenue) || 0;
+
+    if (spend <= 0 || revenue <= 0) {
+      return [];
+    }
+
+    const roas = revenue / spend;
+    const roasPercent = roas * 100;
+    const profit = revenue - spend;
+    const roi = ((revenue - spend) / spend) * 100;
+
+    return [
+      {
+        value: roas,
+        label: 'ROAS',
+        description: `For every $1 spent, you earn $${roas.toFixed(2)}`,
+        isPositive: roas >= 1,
+      },
+      {
+        value: roasPercent,
+        label: 'ROAS %',
+        description: `${roasPercent.toFixed(0)}% return on ad spend`,
+        isPositive: roasPercent >= 100,
+      },
+      {
+        value: profit,
+        label: 'Profit/Loss',
+        description: profit >= 0 ? 'Net profit from campaign' : 'Net loss from campaign',
+        isPositive: profit >= 0,
+      },
+      {
+        value: roi,
+        label: 'ROI %',
+        description: 'Return on investment percentage',
+        isPositive: roi >= 0,
+      },
+    ];
+  }, [roasAdSpend, roasRevenue]);
+
+  // Budget Estimation
+  const budgetResult = useMemo((): CalculatorResult[] => {
+    const target = parseFloat(targetRevenue) || 0;
+    const roas = parseFloat(expectedROAS) || 0;
+
+    if (target <= 0 || roas <= 0) {
+      return [];
+    }
+
+    const requiredBudget = target / roas;
+    const dailyBudget = requiredBudget / 30;
+    const weeklyBudget = requiredBudget / 4;
+
+    return [
+      {
+        value: requiredBudget,
+        label: 'Monthly Budget',
+        description: 'Required monthly ad spend',
+        isPositive: true,
+      },
+      {
+        value: weeklyBudget,
+        label: 'Weekly Budget',
+        description: 'Required weekly ad spend',
+        isPositive: true,
+      },
+      {
+        value: dailyBudget,
+        label: 'Daily Budget',
+        description: 'Required daily ad spend',
+        isPositive: true,
+      },
+    ];
+  }, [targetRevenue, expectedROAS]);
+
+  // Break-even CPA Calculation
+  const cpaResult = useMemo((): CalculatorResult[] => {
+    const orderValue = parseFloat(aov) || 0;
+    const margin = parseFloat(profitMargin) || 0;
+    const targetProfitPercent = parseFloat(targetProfit) || 0;
+
+    if (orderValue <= 0 || margin <= 0) {
+      return [];
+    }
+
+    const grossProfit = orderValue * (margin / 100);
+    const breakEvenCPA = grossProfit;
+    const maxCPAForProfit = grossProfit * (1 - targetProfitPercent / 100);
+    const profitPerSale = grossProfit - maxCPAForProfit;
+
+    return [
+      {
+        value: breakEvenCPA,
+        label: 'Break-even CPA',
+        description: 'Maximum CPA before losing money',
+        isPositive: true,
+      },
+      {
+        value: maxCPAForProfit,
+        label: `Max CPA (${targetProfitPercent}% profit)`,
+        description: `Maximum CPA to maintain ${targetProfitPercent}% profit`,
+        isPositive: true,
+      },
+      {
+        value: profitPerSale,
+        label: 'Target Profit/Sale',
+        description: `Expected profit per sale at target CPA`,
+        isPositive: true,
+      },
+      {
+        value: grossProfit,
+        label: 'Gross Profit/Sale',
+        description: 'Gross profit per sale before ad costs',
+        isPositive: true,
+      },
+    ];
+  }, [aov, profitMargin, targetProfit]);
+
+  // Advanced Calculator
+  const advancedResult = useMemo((): CalculatorResult[] => {
+    const budget = parseFloat(monthlyBudget) || 0;
+    const cpc = parseFloat(avgCPC) || 0;
+    const cvr = parseFloat(conversionRate) || 0;
+    const orderValue = parseFloat(avgOrderValue) || 0;
+
+    if (budget <= 0 || cpc <= 0 || cvr <= 0 || orderValue <= 0) {
+      return [];
+    }
+
+    const clicks = budget / cpc;
+    const conversions = clicks * (cvr / 100);
+    const revenue = conversions * orderValue;
+    const roas = revenue / budget;
+    const cpa = budget / conversions;
+    const profit = revenue - budget;
+
+    return [
+      {
+        value: clicks,
+        label: 'Est. Clicks',
+        description: 'Estimated monthly clicks',
+        isPositive: true,
+      },
+      {
+        value: conversions,
+        label: 'Est. Conversions',
+        description: 'Estimated monthly conversions',
+        isPositive: true,
+      },
+      {
+        value: revenue,
+        label: 'Est. Revenue',
+        description: 'Estimated monthly revenue',
+        isPositive: true,
+      },
+      {
+        value: cpa,
+        label: 'Est. CPA',
+        description: 'Estimated cost per acquisition',
+        isPositive: true,
+      },
+      {
+        value: roas,
+        label: 'Est. ROAS',
+        description: 'Estimated return on ad spend',
+        isPositive: roas >= 1,
+      },
+      {
+        value: profit,
+        label: 'Est. Profit',
+        description: 'Estimated monthly profit',
+        isPositive: profit >= 0,
+      },
+    ];
+  }, [monthlyBudget, avgCPC, conversionRate, avgOrderValue]);
+
+  const resetAll = () => {
+    setRoasAdSpend('');
+    setRoasRevenue('');
+    setTargetRevenue('');
+    setExpectedROAS('');
+    setAOV('');
+    setProfitMargin('');
+    setTargetProfit('20');
+    setMonthlyBudget('');
+    setAvgCPC('');
+    setConversionRate('');
+    setAvgOrderValue('');
+  };
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
+  const formatNumber = (value: number, decimals = 2) => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(value);
+  };
+
+  if (isLoading) return <ToolPageSkeleton />;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+            <Calculator className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            ROAS & Budget Calculator
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Calculate Return on Ad Spend, estimate budgets, and find break-even CPA
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={resetAll}>
+          <RotateCcw className="h-4 w-4 mr-1" />
+          Reset All
+        </Button>
+      </div>
+
+      <Tabs defaultValue="roas" className="space-y-6">
+        <TabsList className="grid grid-cols-2 lg:grid-cols-4 w-full">
+          <TabsTrigger value="roas" className="flex items-center gap-1.5">
+            <TrendingUp className="h-4 w-4" />
+            <span className="hidden sm:inline">ROAS</span>
+          </TabsTrigger>
+          <TabsTrigger value="budget" className="flex items-center gap-1.5">
+            <DollarSign className="h-4 w-4" />
+            <span className="hidden sm:inline">Budget</span>
+          </TabsTrigger>
+          <TabsTrigger value="cpa" className="flex items-center gap-1.5">
+            <Target className="h-4 w-4" />
+            <span className="hidden sm:inline">Break-even CPA</span>
+          </TabsTrigger>
+          <TabsTrigger value="advanced" className="flex items-center gap-1.5">
+            <Calculator className="h-4 w-4" />
+            <span className="hidden sm:inline">Advanced</span>
+          </TabsTrigger>
+        </TabsList>
+
+        {/* ROAS Calculator */}
+        <TabsContent value="roas" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  ROAS Calculator
+                </CardTitle>
+                <CardDescription>
+                  Calculate your Return on Ad Spend from campaign data
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="adSpend" className="flex items-center gap-2">
+                    Ad Spend ($)
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Total amount spent on advertising
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <Input
+                    id="adSpend"
+                    type="number"
+                    placeholder="e.g., 1000"
+                    value={roasAdSpend}
+                    onChange={(e) => setRoasAdSpend(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="revenue" className="flex items-center gap-2">
+                    Revenue ($)
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Total revenue generated from ads
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <Input
+                    id="revenue"
+                    type="number"
+                    placeholder="e.g., 5000"
+                    value={roasRevenue}
+                    onChange={(e) => setRoasRevenue(e.target.value)}
+                  />
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    A ROAS of 4.0 means you earn $4 for every $1 spent on ads.
+                    Generally, a ROAS above 3.0 is considered good.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Results</CardTitle>
+                <CardDescription>Your calculated metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {roasResult.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+                    <Calculator className="h-12 w-12 mb-4 opacity-50" />
+                    <p>Enter your ad spend and revenue to calculate ROAS</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {roasResult.map((result, index) => (
+                      <div
+                        key={result.label}
+                        className={cn(
+                          "p-4 rounded-lg border bg-card",
+                          result.isPositive ? "border-primary/20" : "border-destructive/20"
+                        )}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {result.label}
+                          </span>
+                          <Badge variant={result.isPositive ? "default" : "destructive"}>
+                            {result.isPositive ? (
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                            ) : (
+                              <AlertCircle className="h-3 w-3 mr-1" />
+                            )}
+                            {result.isPositive ? "Good" : "Warning"}
+                          </Badge>
+                        </div>
+                        <div className={cn(
+                          "text-2xl font-bold",
+                          result.isPositive ? "text-primary" : "text-destructive"
+                        )}>
+                          {result.label.includes('$') || result.label === 'Profit/Loss'
+                            ? formatCurrency(result.value!)
+                            : result.label.includes('%')
+                            ? `${formatNumber(result.value!)}%`
+                            : formatNumber(result.value!)
+                          }
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {result.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Budget Estimator */}
+        <TabsContent value="budget" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                  Budget Estimator
+                </CardTitle>
+                <CardDescription>
+                  Calculate required budget based on revenue goals
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="targetRevenue" className="flex items-center gap-2">
+                    Target Monthly Revenue ($)
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Your desired monthly revenue from ads
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <Input
+                    id="targetRevenue"
+                    type="number"
+                    placeholder="e.g., 50000"
+                    value={targetRevenue}
+                    onChange={(e) => setTargetRevenue(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="expectedROAS" className="flex items-center gap-2">
+                    Expected ROAS
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Your historical or expected ROAS (e.g., 4 = $4 revenue per $1 spent)
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <Input
+                    id="expectedROAS"
+                    type="number"
+                    step="0.1"
+                    placeholder="e.g., 4"
+                    value={expectedROAS}
+                    onChange={(e) => setExpectedROAS(e.target.value)}
+                  />
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Use your historical ROAS data for more accurate budget estimation.
+                    New campaigns may have lower ROAS initially.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Budget Requirements</CardTitle>
+                <CardDescription>Estimated budget needed</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {budgetResult.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+                    <DollarSign className="h-12 w-12 mb-4 opacity-50" />
+                    <p>Enter your target revenue and expected ROAS</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {budgetResult.map((result) => (
+                      <div
+                        key={result.label}
+                        className="p-4 rounded-lg border bg-card border-primary/20"
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {result.label}
+                          </span>
+                        </div>
+                        <div className="text-2xl font-bold text-primary">
+                          {formatCurrency(result.value!)}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {result.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Break-even CPA */}
+        <TabsContent value="cpa" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  Break-even CPA Calculator
+                </CardTitle>
+                <CardDescription>
+                  Find your maximum CPA to stay profitable
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="aov" className="flex items-center gap-2">
+                    Average Order Value ($)
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Average revenue per order/conversion
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <Input
+                    id="aov"
+                    type="number"
+                    placeholder="e.g., 100"
+                    value={aov}
+                    onChange={(e) => setAOV(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="profitMargin" className="flex items-center gap-2">
+                    Profit Margin (%)
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Your gross profit margin before ad costs
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <Input
+                    id="profitMargin"
+                    type="number"
+                    placeholder="e.g., 40"
+                    value={profitMargin}
+                    onChange={(e) => setProfitMargin(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="targetProfit" className="flex items-center gap-2">
+                    Target Profit Margin (%)
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Minimum profit margin you want to maintain
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <Input
+                    id="targetProfit"
+                    type="number"
+                    placeholder="e.g., 20"
+                    value={targetProfit}
+                    onChange={(e) => setTargetProfit(e.target.value)}
+                  />
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Break-even CPA is the maximum you can pay per acquisition
+                    without losing money. Set a lower Max CPA to ensure profit.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>CPA Thresholds</CardTitle>
+                <CardDescription>Your CPA limits for profitability</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {cpaResult.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+                    <Target className="h-12 w-12 mb-4 opacity-50" />
+                    <p>Enter your AOV and profit margin</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {cpaResult.map((result) => (
+                      <div
+                        key={result.label}
+                        className="p-4 rounded-lg border bg-card border-primary/20"
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {result.label}
+                          </span>
+                        </div>
+                        <div className="text-2xl font-bold text-primary">
+                          {formatCurrency(result.value!)}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {result.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Advanced Calculator */}
+        <TabsContent value="advanced" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-5 w-5 text-primary" />
+                  Advanced Campaign Estimator
+                </CardTitle>
+                <CardDescription>
+                  Forecast campaign performance with detailed inputs
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="monthlyBudget" className="flex items-center gap-2">
+                      Monthly Budget ($)
+                    </Label>
+                    <Input
+                      id="monthlyBudget"
+                      type="number"
+                      placeholder="e.g., 5000"
+                      value={monthlyBudget}
+                      onChange={(e) => setMonthlyBudget(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="avgCPC" className="flex items-center gap-2">
+                      Avg. CPC ($)
+                    </Label>
+                    <Input
+                      id="avgCPC"
+                      type="number"
+                      step="0.01"
+                      placeholder="e.g., 2.50"
+                      value={avgCPC}
+                      onChange={(e) => setAvgCPC(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="conversionRate" className="flex items-center gap-2">
+                      Conversion Rate (%)
+                    </Label>
+                    <Input
+                      id="conversionRate"
+                      type="number"
+                      step="0.1"
+                      placeholder="e.g., 3"
+                      value={conversionRate}
+                      onChange={(e) => setConversionRate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="avgOrderValue" className="flex items-center gap-2">
+                      Avg. Order Value ($)
+                    </Label>
+                    <Input
+                      id="avgOrderValue"
+                      type="number"
+                      placeholder="e.g., 150"
+                      value={avgOrderValue}
+                      onChange={(e) => setAvgOrderValue(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <Separator />
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Use historical data for accuracy. Industry benchmarks:
+                    CPC $1-3, CVR 2-5%, AOV varies by industry.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Campaign Forecast</CardTitle>
+                <CardDescription>Estimated monthly performance</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {advancedResult.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+                    <Calculator className="h-12 w-12 mb-4 opacity-50" />
+                    <p>Fill in all fields to see forecast</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {advancedResult.map((result) => (
+                      <div
+                        key={result.label}
+                        className={cn(
+                          "p-3 rounded-lg border bg-card",
+                          result.isPositive ? "border-primary/20" : "border-destructive/20"
+                        )}
+                      >
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {result.label}
+                        </span>
+                        <div className={cn(
+                          "text-lg font-bold",
+                          result.isPositive ? "text-primary" : "text-destructive"
+                        )}>
+                          {result.label.includes('$') || 
+                           result.label.includes('Revenue') || 
+                           result.label.includes('Profit') ||
+                           result.label.includes('CPA')
+                            ? formatCurrency(result.value!)
+                            : result.label.includes('ROAS')
+                            ? formatNumber(result.value!)
+                            : formatNumber(result.value!, 0)
+                          }
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {result.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
