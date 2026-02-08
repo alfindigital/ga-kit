@@ -157,6 +157,18 @@ export function useROASScenarios() {
     setCurrentScenarioId(null);
   }, []);
 
+  const importScenarios = useCallback((items: { name: string; data: ROASScenarioData }[]) => {
+    const now = new Date().toISOString();
+    const newScenarios: ROASScenario[] = items.map((item) => ({
+      id: generateId(),
+      name: item.name,
+      createdAt: now,
+      updatedAt: now,
+      data: item.data,
+    }));
+    setScenarios(prev => [...prev, ...newScenarios]);
+  }, [setScenarios]);
+
   return {
     scenarios,
     currentScenarioId,
@@ -168,5 +180,6 @@ export function useROASScenarios() {
     duplicateScenario,
     renameScenario,
     clearCurrentScenario,
+    importScenarios,
   };
 }
