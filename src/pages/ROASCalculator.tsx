@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Calculator, DollarSign, TrendingUp, Target, Percent, AlertCircle, CheckCircle2, Info, RotateCcw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -73,6 +73,77 @@ export default function ROASCalculator() {
     conversionRate,
     avgOrderValue,
   }), [roasAdSpend, roasRevenue, targetRevenue, expectedROAS, aov, profitMargin, targetProfit, monthlyBudget, avgCPC, conversionRate, avgOrderValue]);
+
+  // Ref to always have latest data for cleanup effects
+  const currentDataRef = useRef(currentData);
+  const currentScenarioIdRef = useRef(currentScenarioId);
+  useEffect(() => { currentDataRef.current = currentData; }, [currentData]);
+  useEffect(() => { currentScenarioIdRef.current = currentScenarioId; }, [currentScenarioId]);
+
+  const hasAnyData = useCallback((data: ROASScenarioData) => {
+    return Object.entries(data).some(([k, v]) => v !== '' && !(k === 'targetProfit' && v === '20'));
+  }, []);
+
+  // Auto-save draft to localStorage on unmount / beforeunload
+  const DRAFT_KEY = 'roas-calculator-draft';
+
+  const saveDraft = useCallback(() => {
+    const data = currentDataRef.current;
+    if (hasAnyData(data)) {
+      const draft = {
+        data,
+        scenarioId: currentScenarioIdRef.current,
+        savedAt: new Date().toISOString(),
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    }
+  }, [hasAnyData]);
+
+  // Save on browser close / tab switch
+  useEffect(() => {
+    const handleBeforeUnload = () => saveDraft();
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') saveDraft();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      // Save on route change (component unmount)
+      saveDraft();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [saveDraft]);
+
+  // Restore draft on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      // Only restore if saved within last 24 hours
+      const savedAt = new Date(draft.savedAt).getTime();
+      if (Date.now() - savedAt > 24 * 60 * 60 * 1000) {
+        localStorage.removeItem(DRAFT_KEY);
+        return;
+      }
+      const d = draft.data as ROASScenarioData;
+      if (d) {
+        setRoasAdSpend(d.roasAdSpend || '');
+        setRoasRevenue(d.roasRevenue || '');
+        setTargetRevenue(d.targetRevenue || '');
+        setExpectedROAS(d.expectedROAS || '');
+        setAOV(d.aov || '');
+        setProfitMargin(d.profitMargin || '');
+        setTargetProfit(d.targetProfit || '20');
+        setMonthlyBudget(d.monthlyBudget || '');
+        setAvgCPC(d.avgCPC || '');
+        setConversionRate(d.conversionRate || '');
+        setAvgOrderValue(d.avgOrderValue || '');
+      }
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {}
+  }, []);
 
   // Load scenario data into form
   const handleLoadScenario = useCallback((id: string) => {
@@ -284,6 +355,7 @@ export default function ROASCalculator() {
     setConversionRate('');
     setAvgOrderValue('');
     clearCurrentScenario();
+    localStorage.removeItem(DRAFT_KEY);
   };
 
   const formatCurrency = (value: number) => {
