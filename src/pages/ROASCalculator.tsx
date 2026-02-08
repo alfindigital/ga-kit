@@ -15,6 +15,7 @@ import { ToolPageSkeleton } from '@/components/skeletons';
 import { useROASScenarios, ROASScenarioData } from '@/hooks/useROASScenarios';
 import { ScenarioManager } from '@/components/roas/ScenarioManager';
 import { ScenarioCompare } from '@/components/roas/ScenarioCompare';
+import { ScenarioExport } from '@/components/roas/ScenarioExport';
 
 interface CalculatorResult {
   value: number | null;
@@ -38,6 +39,7 @@ export default function ROASCalculator() {
     duplicateScenario,
     renameScenario,
     clearCurrentScenario,
+    importScenarios,
   } = useROASScenarios();
 
   // ROAS Calculator state
@@ -407,6 +409,7 @@ export default function ROASCalculator() {
             onUpdate={updateScenario}
           />
           <ScenarioCompare scenarios={scenarios} />
+          <ScenarioExport scenarios={scenarios} onImport={importScenarios} />
           <Button variant="outline" size="sm" onClick={resetAll}>
             <RotateCcw className="h-4 w-4 mr-1" />
             Reset All
