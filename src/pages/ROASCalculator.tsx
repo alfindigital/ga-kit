@@ -14,6 +14,7 @@ import { usePageLoading } from '@/hooks/usePageLoading';
 import { ToolPageSkeleton } from '@/components/skeletons';
 import { useROASScenarios, ROASScenarioData } from '@/hooks/useROASScenarios';
 import { ScenarioManager } from '@/components/roas/ScenarioManager';
+import { ScenarioCompare } from '@/components/roas/ScenarioCompare';
 
 interface CalculatorResult {
   value: number | null;
@@ -333,6 +334,7 @@ export default function ROASCalculator() {
             onRename={renameScenario}
             onUpdate={updateScenario}
           />
+          <ScenarioCompare scenarios={scenarios} />
           <Button variant="outline" size="sm" onClick={resetAll}>
             <RotateCcw className="h-4 w-4 mr-1" />
             Reset All
