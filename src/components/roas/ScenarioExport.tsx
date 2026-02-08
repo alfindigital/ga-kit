@@ -136,7 +136,6 @@ export function ScenarioExport({ scenarios, onImport }: ScenarioExportProps) {
         }
 
         const items: { name: string; data: ROASScenarioData }[] = [];
-        // Skip header row
         for (let i = 1; i < lines.length; i++) {
           const cols = lines[i].split(',').map((c) => c.replace(/^"|"$/g, '').trim());
           if (cols.length < 12) continue;
@@ -165,8 +164,54 @@ export function ScenarioExport({ scenarios, onImport }: ScenarioExportProps) {
 
         onImport(items);
         toast({ title: 'Imported from CSV', description: `${items.length} scenario(s) imported successfully.` });
+      } else if (file.name.endsWith('.xlsx')) {
+        try {
+          const ExcelJS = await import('exceljs');
+          const workbook = new ExcelJS.Workbook();
+          const buffer = await file.arrayBuffer();
+          await workbook.xlsx.load(buffer);
+
+          const worksheet = workbook.worksheets[0];
+          if (!worksheet || worksheet.rowCount < 2) {
+            toast({ title: 'Import failed', description: 'Excel file is empty or has no data rows.', variant: 'destructive' });
+            return;
+          }
+
+          const items: { name: string; data: ROASScenarioData }[] = [];
+          worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) return; // skip header
+            const cell = (idx: number) => String(row.getCell(idx).value ?? '').trim();
+            if (!cell(1) && !cell(2)) return;
+            items.push({
+              name: cell(1) || `Imported ${rowNumber - 1}`,
+              data: {
+                roasAdSpend: cell(2),
+                roasRevenue: cell(3),
+                targetRevenue: cell(4),
+                expectedROAS: cell(5),
+                aov: cell(6),
+                profitMargin: cell(7),
+                targetProfit: cell(8) || '20',
+                monthlyBudget: cell(9),
+                avgCPC: cell(10),
+                conversionRate: cell(11),
+                avgOrderValue: cell(12),
+              },
+            });
+          });
+
+          if (items.length === 0) {
+            toast({ title: 'Import failed', description: 'No valid rows found in the Excel file.', variant: 'destructive' });
+            return;
+          }
+
+          onImport(items);
+          toast({ title: 'Imported from Excel', description: `${items.length} scenario(s) imported successfully.` });
+        } catch {
+          toast({ title: 'Import failed', description: 'Could not parse the Excel file.', variant: 'destructive' });
+        }
       } else {
-        toast({ title: 'Unsupported file', description: 'Please upload a .json or .csv file.', variant: 'destructive' });
+        toast({ title: 'Unsupported file', description: 'Please upload a .json, .csv, or .xlsx file.', variant: 'destructive' });
       }
     } catch (err) {
       toast({ title: 'Import failed', description: 'Could not parse the file. Please check the format.', variant: 'destructive' });
@@ -181,7 +226,7 @@ export function ScenarioExport({ scenarios, onImport }: ScenarioExportProps) {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".json,.csv"
+        accept=".json,.csv,.xlsx"
         className="hidden"
         onChange={handleFileChange}
       />
