@@ -99,6 +99,74 @@ export function ScenarioExport({ scenarios, onImport }: ScenarioExportProps) {
     });
   };
 
+  const handleExportExcel = async () => {
+    try {
+      const ExcelJS = await import('exceljs');
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('ROAS Scenarios');
+
+      worksheet.columns = CSV_HEADERS.map((header) => ({
+        header,
+        key: header,
+        width: 18,
+      }));
+
+      // Style header row
+      const headerRow = worksheet.getRow(1);
+      headerRow.font = { bold: true };
+      headerRow.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF4F46E5' },
+      };
+      headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+
+      scenarios.forEach((s) => {
+        worksheet.addRow([
+          s.name,
+          s.data.roasAdSpend,
+          s.data.roasRevenue,
+          s.data.targetRevenue,
+          s.data.expectedROAS,
+          s.data.aov,
+          s.data.profitMargin,
+          s.data.targetProfit,
+          s.data.monthlyBudget,
+          s.data.avgCPC,
+          s.data.conversionRate,
+          s.data.avgOrderValue,
+          s.createdAt,
+          s.updatedAt,
+        ]);
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const date = new Date().toISOString().slice(0, 10);
+      a.download = `roas-scenarios-${date}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: 'Exported to Excel',
+        description: `${scenarios.length} scenario(s) exported successfully.`,
+      });
+    } catch {
+      toast({
+        title: 'Export failed',
+        description: 'Could not generate the Excel file.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleImportClick = () => {
     fileInputRef.current?.click();
   };
@@ -251,6 +319,13 @@ export function ScenarioExport({ scenarios, onImport }: ScenarioExportProps) {
           >
             <FileSpreadsheet className="h-4 w-4 mr-2" />
             Export as CSV
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={handleExportExcel}
+            disabled={scenarios.length === 0}
+          >
+            <FileSpreadsheet className="h-4 w-4 mr-2" />
+            Export as Excel (.xlsx)
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleImportClick}>
