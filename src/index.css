@@ -75,61 +75,69 @@
   }
 
   .dark {
-    /* Base */
-    --background: 222 25% 7%;
-    --foreground: 220 20% 95%;
+    /* Brand Gradient Stops - brighter for dark bg */
+    --ga-blue: 217 91% 62%;
+    --ga-green: 160 60% 52%;
+    --ga-yellow: 43 96% 62%;
+    --ga-red: 4 84% 62%;
+    --ga-indigo: 238 66% 65%;
+    --ga-teal: 172 66% 55%;
 
-    /* Cards & Surfaces */
-    --card: 222 25% 11%;
-    --card-foreground: 220 20% 95%;
+    /* Base - deep navy with subtle blue tint */
+    --background: 225 30% 6%;
+    --foreground: 220 20% 93%;
 
-    --popover: 222 25% 11%;
-    --popover-foreground: 220 20% 95%;
+    /* Cards & Surfaces - lifted from bg with subtle warmth */
+    --card: 225 25% 10%;
+    --card-foreground: 220 20% 93%;
 
-    /* Primary */
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 25% 7%;
+    --popover: 225 25% 12%;
+    --popover-foreground: 220 20% 93%;
 
-    /* Secondary */
-    --secondary: 222 20% 18%;
-    --secondary-foreground: 220 20% 95%;
+    /* Primary - luminous blue */
+    --primary: 217 92% 65%;
+    --primary-foreground: 225 30% 6%;
 
-    /* Muted */
-    --muted: 222 20% 16%;
-    --muted-foreground: 220 14% 60%;
+    /* Secondary - subtle surface lift */
+    --secondary: 225 22% 16%;
+    --secondary-foreground: 220 20% 90%;
 
-    /* Accent */
-    --accent: 160 60% 50%;
-    --accent-foreground: 222 25% 7%;
+    /* Muted - readable but soft */
+    --muted: 225 20% 14%;
+    --muted-foreground: 220 14% 58%;
+
+    /* Accent - glowing teal */
+    --accent: 160 65% 48%;
+    --accent-foreground: 225 30% 6%;
 
     /* Destructive */
-    --destructive: 4 84% 60%;
+    --destructive: 4 84% 62%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Warning */
-    --warning: 43 96% 56%;
-    --warning-foreground: 222 25% 7%;
+    /* Warning - warmer glow */
+    --warning: 43 96% 58%;
+    --warning-foreground: 225 30% 6%;
 
-    /* Borders & Inputs */
-    --border: 222 20% 20%;
-    --input: 222 20% 20%;
-    --ring: 217 91% 60%;
+    /* Borders & Inputs - subtle glow edges */
+    --border: 225 18% 18%;
+    --input: 225 18% 18%;
+    --ring: 217 92% 65%;
 
     /* Sidebar */
-    --sidebar-background: 222 25% 9%;
-    --sidebar-foreground: 220 20% 95%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 25% 7%;
-    --sidebar-accent: 222 20% 18%;
-    --sidebar-accent-foreground: 220 20% 95%;
-    --sidebar-border: 222 20% 20%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 225 28% 8%;
+    --sidebar-foreground: 220 20% 93%;
+    --sidebar-primary: 217 92% 65%;
+    --sidebar-primary-foreground: 225 30% 6%;
+    --sidebar-accent: 225 22% 16%;
+    --sidebar-accent-foreground: 220 20% 90%;
+    --sidebar-border: 225 18% 18%;
+    --sidebar-ring: 217 92% 65%;
 
-    /* Tool-specific colors */
-    --tool-utm: 217 91% 60%;
-    --tool-keyword: 160 60% 50%;
-    --tool-youtube: 4 84% 60%;
-    --tool-qr: 270 60% 60%;
+    /* Tool-specific colors - brighter for dark */
+    --tool-utm: 217 92% 65%;
+    --tool-keyword: 160 65% 52%;
+    --tool-youtube: 4 84% 62%;
+    --tool-qr: 270 65% 65%;
   }
 
   /* Font size variants */
@@ -219,9 +227,14 @@
     @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }
 
-  /* Glass effect */
+  /* Glass effect - adaptive for dark */
   .glass {
     @apply backdrop-blur-xl bg-card/70 border border-border/50;
+  }
+
+  .dark .glass {
+    @apply bg-card/60 border-border/30;
+    box-shadow: 0 1px 0 0 hsl(var(--primary) / 0.05) inset;
   }
 
   /* Card glow on hover */
@@ -235,8 +248,30 @@
     background: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--accent) / 0.15));
   }
 
+  .dark .card-glow::before {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2));
+  }
+
   .card-glow:hover::before {
     @apply opacity-100;
+  }
+
+  /* Dark mode card surface shimmer */
+  .dark .tool-card {
+    @apply border-border/40;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--card)),
+      hsl(var(--card)) 80%,
+      hsl(var(--primary) / 0.03)
+    );
+  }
+
+  .dark .tool-card:hover {
+    @apply border-primary/20;
+    box-shadow: 
+      0 8px 30px -8px hsl(var(--primary) / 0.15),
+      0 0 0 1px hsl(var(--primary) / 0.08);
   }
 
   /* Gradient border */
@@ -259,6 +294,24 @@
     );
     background-size: 200% 100%;
     animation: gradient-shift 4s ease infinite;
+  }
+
+  .dark .gradient-border::after {
+    height: 1px;
+    opacity: 0.7;
+  }
+
+  /* Dark mode gradient text glow */
+  .dark .gradient-text {
+    filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.3));
+  }
+
+  /* Dark mode decorative blobs - more vivid */
+  .dark .bg-primary\/5 {
+    background-color: hsl(var(--primary) / 0.08) !important;
+  }
+  .dark .bg-accent\/5 {
+    background-color: hsl(var(--accent) / 0.08) !important;
   }
 
   @keyframes gradient-shift {
