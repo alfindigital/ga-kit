@@ -79,35 +79,38 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 w-full glass gradient-border">
       <div className="container px-3 sm:px-4 lg:px-6 flex h-12 sm:h-14 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-bold text-base sm:text-lg active:scale-95 transition-transform" data-tour="command-palette">
-          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary shadow-md">
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-ga-indigo shadow-glow-primary">
             <span className="text-primary-foreground text-xs sm:text-sm font-bold">GA</span>
           </div>
           <span className="hidden xs:inline">
-            GA <span className="text-primary italic">Toolkit</span>
+            <span className="gradient-text font-extrabold">GA</span> <span className="text-foreground/80">Toolkit</span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav data-tour="navigation" className="hidden lg:flex items-center gap-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                location.pathname === item.path
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              <span>{item.label}</span>
-            </Link>
-          ))}
+        <nav data-tour="navigation" className="hidden lg:flex items-center gap-0.5">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-200",
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-glow-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary active:scale-95"
+                )}
+              >
+                <item.icon className="h-3.5 w-3.5" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Settings & Mobile Menu */}
@@ -122,7 +125,7 @@ export function Header() {
               >
                 <History className="h-4 w-4" />
                 {stats.total > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-[10px] text-primary-foreground flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-gradient-to-r from-primary to-accent text-[10px] text-primary-foreground flex items-center justify-center">
                     {stats.total > 99 ? '99+' : stats.total}
                   </span>
                 )}
@@ -239,7 +242,7 @@ export function Header() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-background/98 backdrop-blur-lg animate-fade-in">
+        <div className="lg:hidden border-t border-border/50 bg-card/98 backdrop-blur-xl animate-fade-in">
           <nav className="container px-3 sm:px-4 py-2 space-y-1">
             {navItems.map((item, index) => (
               <Link
@@ -247,10 +250,10 @@ export function Header() {
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 animate-fade-in active:scale-[0.98]",
+                  "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 animate-fade-in active:scale-[0.98]",
                   location.pathname === item.path
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-glow-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 )}
                 style={{ animationDelay: `${index * 30}ms` }}
               >
@@ -263,10 +266,10 @@ export function Header() {
               to="/settings"
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 animate-fade-in active:scale-[0.98]",
+                "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 animate-fade-in active:scale-[0.98]",
                 location.pathname === '/settings'
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-glow-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
               )}
               style={{ animationDelay: `${navItems.length * 30}ms` }}
             >
