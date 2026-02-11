@@ -1,190 +1,76 @@
 
 
-# Negative Keyword Manager
+# Rombak Branding & UI/UX - Buat Lebih Hidup
 
-## Deskripsi
-Tool untuk mengelola negative keywords Google Ads dengan fitur deduplikasi, konversi match types, dan **deteksi konflik** terhadap positive keywords.
+## Ringkasan
 
----
+Merombak tampilan visual GA Toolkit agar lebih modern, colorful, dan terasa "hidup" dengan default **light theme**. Perubahan mencakup color palette baru, gradient backgrounds, card styling yang lebih menarik, header/footer redesign, dan micro-interactions.
 
-## Fitur Utama
+## Perubahan Utama
 
-### 1. Input Areas
-- **Negative Keywords Input**: Textarea untuk paste/input negative keywords (satu per baris)
-- **Positive Keywords Input** (opsional): Textarea untuk paste positive keywords yang akan dibandingkan
-- Support input dalam berbagai format: `keyword`, `"keyword"`, `[keyword]`
+### 1. Default Theme ke Light
+- Ubah default value di `ThemeContext.tsx` dari `'system'` ke `'light'`
 
-### 2. Processing Options
+### 2. Color Palette Baru (index.css)
+- Background light: gradient putih ke soft blue-gray (`220 25% 98%`)
+- Primary color: vibrant blue dengan gradient support
+- Accent: teal/emerald yang lebih fresh
+- Tambah CSS custom properties untuk gradient stops
+- Card: pure white dengan shadow lebih pronounced
+- Dark mode: tetap ada tapi disesuaikan agar kontras lebih baik
 
-#### Match Type Conversion
-- **Strip All**: Hapus semua formatting `"` dan `[]` → output sebagai plain text
-- **Convert to Broad**: Semua keyword tanpa wrapper
-- **Convert to Phrase**: Semua keyword dalam `"quotes"`
-- **Convert to Exact**: Semua keyword dalam `[brackets]`
-- **Keep Original**: Pertahankan format input
+### 3. Header Redesign (Header.tsx)
+- Logo "GA" badge dengan gradient background (blue to indigo)
+- Active nav item dengan pill-shaped highlight + subtle glow
+- Glassmorphism effect yang lebih terlihat pada header
+- Tambah subtle bottom shadow/gradient border
 
-#### Deduplicate Options
-- **Case Insensitive**: `Shoes` = `shoes` = `SHOES`
-- **Ignore Match Type**: `shoes` = `"shoes"` = `[shoes]` (dianggap sama)
-- **Trim Whitespace**: Hapus spasi di awal/akhir
+### 4. Dashboard Makeover (Dashboard.tsx)
+- Hero section: gradient text heading + animated gradient background blob
+- Tool cards: colorful left border accent per tool, hover shadow yang lebih dramatis dengan warna tool
+- Hover state: card lift + colored shadow glow effect
+- Feature bullets: colored dots per tool theme
+- "Launch" button: gradient background per tool color
+- Quick Access section: colored pill badges
 
-### 3. Conflict Detection
-Deteksi konflik antara negative dan positive keywords:
+### 5. QuickStats Upgrade (QuickStats.tsx)
+- Stat cards dengan gradient icon backgrounds
+- Angka dengan warna gradient
+- Subtle progress bar di bawah setiap stat
 
-| Conflict Type | Contoh | Severity |
-|--------------|--------|----------|
-| **Exact Match** | Negative: `shoes` vs Positive: `shoes` | 🔴 Critical |
-| **Phrase Contained** | Negative: `"running shoes"` blocks Positive: `buy running shoes online` | 🟡 Warning |
-| **Broad Block** | Negative: `shoes` blocks semua positive dengan "shoes" | 🟠 Caution |
+### 6. Footer Redesign (Footer.tsx)
+- Gradient top border (multi-color)
+- Tambah social/branding elements yang lebih menarik
 
-### 4. Output & Actions
-- **Clean Keywords List**: Hasil setelah proses
-- **Conflicts Report**: Daftar konflik yang ditemukan
-- **Statistics**: Total input, unique, duplicates removed, conflicts found
-- **Export Options**: TXT, CSV (dengan atau tanpa conflicts)
+### 7. Bottom Tab Nav (BottomTabNav.tsx)
+- Active tab: filled icon dengan colored pill background
+- Subtle gradient indicator bar di atas active tab
 
----
+### 8. Global CSS Enhancements (index.css)
+- Tambah decorative gradient blobs (CSS pseudo-elements)
+- Card hover glow effect utility class
+- Gradient border utility
+- Smoother transition defaults
 
-## Struktur UI
+### 9. Tailwind Config Updates (tailwind.config.ts)
+- Tambah gradient color stops
+- Tambah glow/colored shadow utilities
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  Negative Keyword Manager                    [Sample] [Reset] │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─ Processing Options ─────────────────────────────┐  │
-│  │ Output Format: ○ Broad  ○ Phrase  ○ Exact  ○ Keep │  │
-│  │ ☑ Case insensitive  ☑ Ignore match type          │  │
-│  └──────────────────────────────────────────────────┘  │
-│                                                         │
-│  ┌─────────────────┬─────────────────────────────────┐ │
-│  │ Negative KWs    │ Positive KWs (optional)         │ │
-│  │ ┌─────────────┐ │ ┌─────────────────────────────┐ │ │
-│  │ │ running     │ │ │ buy running shoes          │ │ │
-│  │ │ "free"      │ │ │ best sneakers online       │ │ │
-│  │ │ [cheap]     │ │ │ cheap running gear         │ │ │
-│  │ └─────────────┘ │ └─────────────────────────────┘ │ │
-│  │   📊 3 keywords │   📊 3 keywords                 │ │
-│  └─────────────────┴─────────────────────────────────┘ │
-│                                                         │
-│  ┌─ Results ────────────────────────────────────────┐  │
-│  │                                      [Copy] [Export]│ │
-│  │  Clean Keywords (2 unique)                        │  │
-│  │  ┌────────────────────────────────────────────┐  │  │
-│  │  │ running                                     │  │  │
-│  │  │ free                                        │  │  │
-│  │  │ cheap                                       │  │  │
-│  │  └────────────────────────────────────────────┘  │  │
-│  │                                                   │  │
-│  │  ⚠️ Conflicts Detected (2)                       │  │
-│  │  ┌────────────────────────────────────────────┐  │  │
-│  │  │ 🔴 "running" conflicts with "buy running..."│  │  │
-│  │  │ 🟠 "cheap" may block "cheap running gear"  │  │  │
-│  │  └────────────────────────────────────────────┘  │  │
-│  └──────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────┘
-```
+## Detail Teknis
 
----
+### Files yang diubah:
+1. **`src/contexts/ThemeContext.tsx`** - Default `'light'`
+2. **`src/index.css`** - Palette baru, gradient utilities, decorative elements
+3. **`tailwind.config.ts`** - Extended colors & shadow utilities
+4. **`src/components/layout/Header.tsx`** - Visual redesign
+5. **`src/components/layout/Footer.tsx`** - Gradient border, richer styling
+6. **`src/components/layout/BottomTabNav.tsx`** - Colored active states
+7. **`src/pages/Dashboard.tsx`** - Hero gradient, card redesign, colored accents
+8. **`src/components/QuickStats.tsx`** - Gradient stat cards
 
-## Langkah Implementasi
-
-### 1. Buat File Baru `src/pages/NegativeKeywords.tsx`
-
-**State Management:**
-```typescript
-// Input states
-const [negativeInput, setNegativeInput] = useState('');
-const [positiveInput, setPositiveInput] = useState('');
-
-// Options
-const [outputFormat, setOutputFormat] = useState<'broad'|'phrase'|'exact'|'keep'>('broad');
-const [caseInsensitive, setCaseInsensitive] = useState(true);
-const [ignoreMatchType, setIgnoreMatchType] = useState(true);
-
-// Results computed
-const processedKeywords = useMemo(() => {...}, [negativeInput, options]);
-const conflicts = useMemo(() => {...}, [negativeInput, positiveInput]);
-```
-
-**Core Functions:**
-- `parseKeyword(input: string)`: Extract keyword dan match type
-- `normalizeKeyword(kw: string, options)`: Normalize untuk perbandingan
-- `formatKeyword(kw: string, format)`: Apply output format
-- `detectConflicts(negatives, positives)`: Cari konflik
-- `removeDuplicates(keywords, options)`: Deduplikasi
-
-### 2. Skeleton Component
-Buat `src/components/skeletons/NegativeKeywordsSkeleton.tsx` mengikuti pola yang ada.
-
-### 3. Update Routing (`src/App.tsx`)
-```typescript
-import NegativeKeywords from "./pages/NegativeKeywords";
-// ...
-<Route path="/negative-keywords" element={<NegativeKeywords />} />
-```
-
-### 4. Update Navigation
-- `src/components/layout/Header.tsx`: Tambah ke `navItems`
-- `src/pages/Dashboard.tsx`: Tambah ke array `tools`
-
-### 5. Conflict Detection Algorithm
-
-```typescript
-interface Conflict {
-  negativeKeyword: string;
-  positiveKeyword: string;
-  type: 'exact' | 'phrase' | 'broad';
-  severity: 'critical' | 'warning' | 'caution';
-  message: string;
-}
-
-function detectConflicts(negatives: ParsedKW[], positives: ParsedKW[]): Conflict[] {
-  const conflicts: Conflict[] = [];
-  
-  for (const neg of negatives) {
-    for (const pos of positives) {
-      // Exact match check
-      if (neg.normalized === pos.normalized) {
-        conflicts.push({...});
-      }
-      // Phrase contained check
-      else if (neg.matchType === 'phrase' && pos.normalized.includes(neg.normalized)) {
-        conflicts.push({...});
-      }
-      // Broad match check (any word match)
-      else if (neg.matchType === 'broad') {
-        const negWords = neg.normalized.split(' ');
-        if (negWords.some(w => pos.normalized.includes(w))) {
-          conflicts.push({...});
-        }
-      }
-    }
-  }
-  return conflicts;
-}
-```
-
----
-
-## File yang Akan Dibuat/Dimodifikasi
-
-| File | Action |
-|------|--------|
-| `src/pages/NegativeKeywords.tsx` | **CREATE** - Halaman utama tool |
-| `src/components/skeletons/NegativeKeywordsSkeleton.tsx` | **CREATE** - Loading skeleton |
-| `src/components/skeletons/index.ts` | **MODIFY** - Export skeleton baru |
-| `src/App.tsx` | **MODIFY** - Tambah route |
-| `src/components/layout/Header.tsx` | **MODIFY** - Tambah nav item |
-| `src/pages/Dashboard.tsx` | **MODIFY** - Tambah ke tools grid |
-
----
-
-## Dependencies
-Tidak memerlukan package baru - menggunakan komponen UI yang sudah ada:
-- `Card`, `Textarea`, `Button`, `Checkbox`
-- `RadioGroup` untuk output format
-- `Badge` untuk conflict severity
-- `Alert` untuk conflict warnings
-- Hooks: `useClipboard`, `useExport`, `useToast`, `usePageLoading`
+### Pendekatan:
+- Tidak mengubah struktur komponen, hanya styling
+- Semua perubahan backward-compatible dengan dark mode
+- Menggunakan CSS variables agar mudah di-maintain
+- Fokus pada: gradients, colored shadows, micro-animations, depth
 
