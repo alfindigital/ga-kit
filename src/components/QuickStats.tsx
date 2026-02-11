@@ -143,18 +143,17 @@ export function QuickStats() {
             <Card 
               key={item.key}
               className={cn(
-                "overflow-hidden opacity-0 animate-fade-in",
-                "hover:shadow-elevated transition-all duration-300"
+                "stat-card overflow-hidden stagger-enter"
               )}
-              style={{ animationDelay: `${index * 50}ms` }}
+              style={{ animationDelay: `${index * 60}ms` }}
             >
               <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className={cn("p-1.5 sm:p-2 rounded-xl bg-gradient-to-br text-primary-foreground", item.gradient)}>
+                  <div className={cn("stat-icon p-1.5 sm:p-2 rounded-xl bg-gradient-to-br text-primary-foreground", item.gradient)}>
                     <item.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className={cn("text-lg sm:text-xl font-bold tabular-nums", item.textColor)}>
+                    <div className={cn("stat-value text-lg sm:text-xl font-bold tabular-nums", item.textColor)}>
                       <AnimatedCounter value={value} />
                     </div>
                     <div className="text-[10px] sm:text-xs text-muted-foreground truncate">

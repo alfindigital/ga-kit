@@ -173,20 +173,20 @@ export default function Dashboard() {
                   key={tool.id} 
                   to={tool.path}
                   className={cn(
-                    "flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border bg-card shadow-sm",
-                    "hover:shadow-elevated hover:border-primary/30 transition-all duration-300",
-                    "opacity-0 animate-fade-in group",
+                    "quick-access-pill flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border bg-card shadow-sm",
+                    "hover:border-primary/30",
+                    "stagger-enter group",
                     colors?.shadow
                   )}
-                  style={{ animationDelay: `${index * 50}ms` }}
+                  style={{ animationDelay: `${index * 60}ms` }}
                 >
-                  <div className={cn("p-1.5 sm:p-2 rounded-lg flex-shrink-0", tool.color)}>
+                  <div className={cn("quick-access-icon p-1.5 sm:p-2 rounded-lg flex-shrink-0", tool.color)}>
                     <tool.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                   <span className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors">
                     {tool.title}
                   </span>
-                  <ArrowRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
+                  <ArrowRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-0.5 text-primary" />
                 </Link>
               );
             })}
@@ -227,31 +227,30 @@ export default function Dashboard() {
               key={tool.id} 
               className={cn(
                 "tool-card group relative overflow-hidden border-l-4",
-                "opacity-0 animate-fade-in shadow-sm",
+                "stagger-enter shadow-sm",
                 colors?.border,
-                colors?.shadow,
                 starred && "ring-1 ring-primary/20"
               )}
-              style={{ animationDelay: `${index * 75}ms` }}
+              style={{ animationDelay: `${index * 70}ms` }}
             >
               <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
                 <div className="flex items-start justify-between">
-                  <div className={cn("p-1.5 sm:p-2 rounded-xl w-fit", tool.color)}>
+                  <div className={cn("tool-icon p-1.5 sm:p-2 rounded-xl w-fit", tool.color)}>
                     <tool.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <Button
                     variant="ghost"
                     size="icon"
                     className={cn(
-                      "h-7 w-7 sm:h-8 sm:w-8 -mt-1 -mr-1",
-                      starred ? "text-yellow-500" : "text-muted-foreground opacity-0 group-hover:opacity-100"
+                      "h-7 w-7 sm:h-8 sm:w-8 -mt-1 -mr-1 transition-all duration-200",
+                      starred ? "text-yellow-500 scale-100" : "text-muted-foreground opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
                     )}
                     onClick={(e) => {
                       e.preventDefault();
                       toggleFavorite(tool.id);
                     }}
                   >
-                    <Star className={cn("h-4 w-4", starred && "fill-current")} />
+                    <Star className={cn("h-4 w-4 transition-transform duration-200", starred && "fill-current")} />
                   </Button>
                 </div>
                 <CardTitle className="text-sm sm:text-base lg:text-lg">{tool.title}</CardTitle>
@@ -269,13 +268,13 @@ export default function Dashboard() {
                   ))}
                 </ul>
                 <Button asChild size="sm" className={cn(
-                  "w-full text-xs sm:text-sm active:scale-[0.98] transition-all",
+                  "tool-launch-btn w-full text-xs sm:text-sm active:scale-[0.98] transition-all",
                   "bg-gradient-to-r text-primary-foreground hover:opacity-90",
                   colors?.gradient
                 )}>
                   <Link to={tool.path} className="flex items-center justify-center gap-1.5 sm:gap-2">
                     Launch
-                    <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="tool-arrow h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Link>
                 </Button>
               </CardContent>

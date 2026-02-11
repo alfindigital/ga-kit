@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState, ReactNode } from 'react';
+import { useEffect, useState, useRef, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 interface PageTransitionProps {
@@ -8,35 +8,44 @@ interface PageTransitionProps {
 
 export function PageTransition({ children }: PageTransitionProps) {
   const location = useLocation();
-  const [isVisible, setIsVisible] = useState(false);
+  const [phase, setPhase] = useState<'enter' | 'exit' | 'idle'>('enter');
   const [displayedChildren, setDisplayedChildren] = useState(children);
+  const prevPath = useRef(location.pathname);
 
   useEffect(() => {
-    // Start exit animation
-    setIsVisible(false);
-    
-    // After exit animation, update content and start enter animation
-    const timer = setTimeout(() => {
+    if (location.pathname === prevPath.current) {
       setDisplayedChildren(children);
-      setIsVisible(true);
-    }, 150);
+      return;
+    }
 
-    return () => clearTimeout(timer);
+    // Exit phase
+    setPhase('exit');
+
+    const exitTimer = setTimeout(() => {
+      setDisplayedChildren(children);
+      prevPath.current = location.pathname;
+      setPhase('enter');
+
+      const idleTimer = setTimeout(() => setPhase('idle'), 400);
+      return () => clearTimeout(idleTimer);
+    }, 180);
+
+    return () => clearTimeout(exitTimer);
   }, [location.pathname, children]);
 
   // Initial mount
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 50);
+    const timer = setTimeout(() => setPhase('idle'), 400);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div
       className={cn(
-        "transition-all duration-300 ease-out",
-        isVisible 
-          ? "opacity-100 translate-y-0" 
-          : "opacity-0 translate-y-2"
+        "page-transition",
+        phase === 'enter' && "page-enter",
+        phase === 'exit' && "page-exit",
+        phase === 'idle' && "page-idle"
       )}
     >
       {displayedChildren}
