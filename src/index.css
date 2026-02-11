@@ -217,17 +217,168 @@
 }
 
 @layer components {
-  /* Tool card hover effect */
-  .tool-card {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5;
+  /* ===== PAGE TRANSITIONS ===== */
+  .page-transition {
+    will-change: transform, opacity;
   }
 
-  /* Gradient text */
+  .page-enter {
+    animation: page-enter 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .page-exit {
+    animation: page-exit 0.18s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  .page-idle {
+    opacity: 1;
+    transform: none;
+  }
+
+  @keyframes page-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+      filter: blur(4px);
+    }
+    60% {
+      opacity: 1;
+      filter: blur(0px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0px);
+    }
+  }
+
+  @keyframes page-exit {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.99);
+    }
+  }
+
+  /* ===== TOOL CARD MICRO-INTERACTIONS ===== */
+  .tool-card {
+    @apply transition-all duration-300;
+    transform-style: preserve-3d;
+    perspective: 800px;
+  }
+
+  .tool-card:hover {
+    @apply shadow-xl;
+    transform: translateY(-6px);
+  }
+
+  .tool-card:active {
+    transform: translateY(-2px) scale(0.98);
+    transition-duration: 100ms;
+  }
+
+  /* Icon bounce on card hover */
+  .tool-card .tool-icon {
+    @apply transition-all duration-300;
+  }
+
+  .tool-card:hover .tool-icon {
+    transform: scale(1.15) rotate(-3deg);
+  }
+
+  /* Arrow slide on card hover */
+  .tool-card .tool-arrow {
+    @apply transition-all duration-300 opacity-0;
+    transform: translateX(-8px);
+  }
+
+  .tool-card:hover .tool-arrow {
+    @apply opacity-100;
+    transform: translateX(0);
+  }
+
+  /* Launch button glow pulse on card hover */
+  .tool-card:hover .tool-launch-btn {
+    box-shadow: 0 4px 16px -4px currentColor;
+  }
+
+  /* ===== STAT CARD INTERACTIONS ===== */
+  .stat-card {
+    @apply transition-all duration-300;
+  }
+
+  .stat-card:hover {
+    @apply shadow-elevated;
+    transform: translateY(-3px);
+  }
+
+  .stat-card:hover .stat-icon {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px -4px currentColor;
+  }
+
+  .stat-card .stat-icon {
+    @apply transition-all duration-300;
+  }
+
+  .stat-card:hover .stat-value {
+    transform: scale(1.05);
+  }
+
+  .stat-card .stat-value {
+    @apply transition-transform duration-300;
+    transform-origin: left center;
+  }
+
+  /* ===== QUICK ACCESS PILL INTERACTIONS ===== */
+  .quick-access-pill {
+    @apply transition-all duration-200;
+  }
+
+  .quick-access-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px -4px hsl(var(--primary) / 0.2);
+  }
+
+  .quick-access-pill:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 100ms;
+  }
+
+  .quick-access-pill:hover .quick-access-icon {
+    transform: scale(1.1) rotate(-5deg);
+  }
+
+  .quick-access-pill .quick-access-icon {
+    @apply transition-transform duration-200;
+  }
+
+  /* ===== STAGGERED ENTRANCE ===== */
+  .stagger-enter {
+    opacity: 0;
+    animation: stagger-item-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes stagger-item-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* ===== GRADIENT TEXT ===== */
   .gradient-text {
     @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }
 
-  /* Glass effect - adaptive for dark */
+  /* ===== GLASS EFFECT ===== */
   .glass {
     @apply backdrop-blur-xl bg-card/70 border border-border/50;
   }
