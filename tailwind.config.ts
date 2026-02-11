@@ -71,6 +71,8 @@ export default {
           green: "hsl(var(--ga-green))",
           yellow: "hsl(var(--ga-yellow))",
           red: "hsl(var(--ga-red))",
+          indigo: "hsl(var(--ga-indigo))",
+          teal: "hsl(var(--ga-teal))",
         },
         // Tool-specific colors
         tool: {
@@ -84,6 +86,14 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        'glow-primary': '0 0 20px -5px hsl(var(--primary) / 0.3)',
+        'glow-accent': '0 0 20px -5px hsl(var(--accent) / 0.3)',
+        'glow-destructive': '0 0 20px -5px hsl(var(--destructive) / 0.3)',
+        'glow-purple': '0 0 20px -5px hsl(270 60% 55% / 0.3)',
+        'elevated': '0 8px 30px -8px hsl(var(--foreground) / 0.08), 0 2px 8px -2px hsl(var(--foreground) / 0.04)',
+        'elevated-lg': '0 16px 50px -12px hsl(var(--foreground) / 0.12), 0 4px 16px -4px hsl(var(--foreground) / 0.06)',
       },
       keyframes: {
         "accordion-down": {
@@ -130,6 +140,11 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-5px)" },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
+          "33%": { transform: "translateY(-8px) rotate(1deg)" },
+          "66%": { transform: "translateY(4px) rotate(-1deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -143,6 +158,7 @@ export default {
         "scale-in": "scale-in 0.2s ease-out forwards",
         "pulse-gentle": "pulse-gentle 2s ease-in-out infinite",
         "bounce-subtle": "bounce-subtle 2s ease-in-out infinite",
+        "float": "float 6s ease-in-out infinite",
       },
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],

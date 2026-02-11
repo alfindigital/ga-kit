@@ -2,130 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-/* GA Toolkit Design System - Google Ads inspired colors */
+/* GA Toolkit Design System - Vibrant & Alive */
 /* All colors MUST be HSL */
 
 @layer base {
   :root {
-    /* Google Ads Primary Colors */
+    /* Brand Gradient Stops */
     --ga-blue: 217 91% 50%;
-    --ga-green: 142 53% 43%;
+    --ga-green: 160 60% 45%;
     --ga-yellow: 43 96% 56%;
     --ga-red: 4 84% 57%;
-    
+    --ga-indigo: 238 66% 55%;
+    --ga-teal: 172 66% 50%;
+
     /* Base */
-    --background: 220 20% 97%;
-    --foreground: 220 20% 10%;
+    --background: 220 30% 97%;
+    --foreground: 222 25% 12%;
 
     /* Cards & Surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 222 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 222 25% 12%;
 
-    /* Primary - Google Blue */
+    /* Primary - Vibrant Blue */
     --primary: 217 91% 50%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary */
-    --secondary: 220 14% 92%;
-    --secondary-foreground: 220 20% 10%;
+    --secondary: 220 20% 93%;
+    --secondary-foreground: 222 25% 12%;
 
     /* Muted */
-    --muted: 220 14% 94%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 12% 46%;
 
-    /* Accent - Google Green */
-    --accent: 142 53% 43%;
+    /* Accent - Fresh Teal */
+    --accent: 160 60% 45%;
     --accent-foreground: 0 0% 100%;
 
-    /* Destructive - Google Red */
+    /* Destructive */
     --destructive: 4 84% 57%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Warning - Google Yellow */
+    /* Warning */
     --warning: 43 96% 56%;
-    --warning-foreground: 220 20% 10%;
+    --warning-foreground: 222 25% 12%;
 
     /* Borders & Inputs */
-    --border: 220 14% 88%;
-    --input: 220 14% 88%;
+    --border: 220 18% 90%;
+    --input: 220 18% 90%;
     --ring: 217 91% 50%;
 
     --radius: 0.75rem;
 
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 20% 10%;
+    --sidebar-foreground: 222 25% 12%;
     --sidebar-primary: 217 91% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 94%;
-    --sidebar-accent-foreground: 220 20% 10%;
-    --sidebar-border: 220 14% 88%;
+    --sidebar-accent: 220 20% 94%;
+    --sidebar-accent-foreground: 222 25% 12%;
+    --sidebar-border: 220 18% 90%;
     --sidebar-ring: 217 91% 50%;
 
     /* Tool-specific colors */
     --tool-utm: 217 91% 50%;
-    --tool-keyword: 142 53% 43%;
+    --tool-keyword: 160 60% 45%;
     --tool-youtube: 4 84% 57%;
     --tool-qr: 270 60% 55%;
   }
 
   .dark {
     /* Base */
-    --background: 220 20% 8%;
-    --foreground: 220 14% 95%;
+    --background: 222 25% 7%;
+    --foreground: 220 20% 95%;
 
     /* Cards & Surfaces */
-    --card: 220 20% 12%;
-    --card-foreground: 220 14% 95%;
+    --card: 222 25% 11%;
+    --card-foreground: 220 20% 95%;
 
-    --popover: 220 20% 12%;
-    --popover-foreground: 220 14% 95%;
+    --popover: 222 25% 11%;
+    --popover-foreground: 220 20% 95%;
 
-    /* Primary - Google Blue (brighter in dark) */
+    /* Primary */
     --primary: 217 91% 60%;
-    --primary-foreground: 220 20% 8%;
+    --primary-foreground: 222 25% 7%;
 
     /* Secondary */
-    --secondary: 220 20% 18%;
-    --secondary-foreground: 220 14% 95%;
+    --secondary: 222 20% 18%;
+    --secondary-foreground: 220 20% 95%;
 
     /* Muted */
-    --muted: 220 20% 16%;
+    --muted: 222 20% 16%;
     --muted-foreground: 220 14% 60%;
 
-    /* Accent - Google Green */
-    --accent: 142 53% 50%;
-    --accent-foreground: 220 20% 8%;
+    /* Accent */
+    --accent: 160 60% 50%;
+    --accent-foreground: 222 25% 7%;
 
-    /* Destructive - Google Red */
+    /* Destructive */
     --destructive: 4 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Warning - Google Yellow */
+    /* Warning */
     --warning: 43 96% 56%;
-    --warning-foreground: 220 20% 8%;
+    --warning-foreground: 222 25% 7%;
 
     /* Borders & Inputs */
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
+    --border: 222 20% 20%;
+    --input: 222 20% 20%;
     --ring: 217 91% 60%;
 
     /* Sidebar */
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 220 14% 95%;
+    --sidebar-background: 222 25% 9%;
+    --sidebar-foreground: 220 20% 95%;
     --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 220 20% 8%;
-    --sidebar-accent: 220 20% 18%;
-    --sidebar-accent-foreground: 220 14% 95%;
-    --sidebar-border: 220 20% 20%;
+    --sidebar-primary-foreground: 222 25% 7%;
+    --sidebar-accent: 222 20% 18%;
+    --sidebar-accent-foreground: 220 20% 95%;
+    --sidebar-border: 222 20% 20%;
     --sidebar-ring: 217 91% 60%;
 
     /* Tool-specific colors */
     --tool-utm: 217 91% 60%;
-    --tool-keyword: 142 53% 50%;
+    --tool-keyword: 160 60% 50%;
     --tool-youtube: 4 84% 60%;
     --tool-qr: 270 60% 60%;
   }
@@ -209,17 +211,59 @@
 @layer components {
   /* Tool card hover effect */
   .tool-card {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5;
   }
 
   /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }
 
   /* Glass effect */
   .glass {
-    @apply backdrop-blur-md bg-card/80;
+    @apply backdrop-blur-xl bg-card/70 border border-border/50;
+  }
+
+  /* Card glow on hover */
+  .card-glow {
+    @apply relative overflow-hidden;
+  }
+
+  .card-glow::before {
+    content: '';
+    @apply absolute -inset-1 rounded-xl opacity-0 transition-opacity duration-500 blur-xl;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--accent) / 0.15));
+  }
+
+  .card-glow:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Gradient border */
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      hsl(var(--primary)), 
+      hsl(var(--accent)), 
+      hsl(var(--tool-qr)), 
+      hsl(var(--primary))
+    );
+    background-size: 200% 100%;
+    animation: gradient-shift 4s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 }
 

@@ -35,7 +35,6 @@ function AnimatedCounter({ value, duration = 1000 }: AnimatedCounterProps) {
       const now = Date.now();
       const progress = Math.min((now - startTime) / duration, 1);
       
-      // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const current = Math.round(start + (end - start) * easeOutQuart);
       
@@ -59,36 +58,36 @@ const statItems = [
     key: 'utmsCreated' as const,
     label: 'UTMs Created',
     icon: Link2,
-    color: 'text-primary',
-    bgColor: 'bg-primary/10',
+    gradient: 'from-primary to-primary/60',
+    textColor: 'text-primary',
   },
   {
     key: 'keywordsCombined' as const,
     label: 'Keywords Combined',
     icon: Combine,
-    color: 'text-accent',
-    bgColor: 'bg-accent/10',
+    gradient: 'from-accent to-accent/60',
+    textColor: 'text-accent',
   },
   {
     key: 'keywordsMixed' as const,
     label: 'Keywords Mixed',
     icon: Shuffle,
-    color: 'text-accent',
-    bgColor: 'bg-accent/10',
+    gradient: 'from-accent to-accent/60',
+    textColor: 'text-accent',
   },
   {
     key: 'qrCodesGenerated' as const,
     label: 'QR Codes',
     icon: QrCode,
-    color: 'text-purple-600 dark:text-purple-400',
-    bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+    gradient: 'from-tool-qr to-tool-qr/60',
+    textColor: 'text-tool-qr',
   },
   {
     key: 'videosAnalyzed' as const,
     label: 'Videos Analyzed',
     icon: Youtube,
-    color: 'text-destructive',
-    bgColor: 'bg-destructive/10',
+    gradient: 'from-destructive to-destructive/60',
+    textColor: 'text-destructive',
   },
 ];
 
@@ -145,17 +144,17 @@ export function QuickStats() {
               key={item.key}
               className={cn(
                 "overflow-hidden opacity-0 animate-fade-in",
-                "hover:shadow-md transition-shadow"
+                "hover:shadow-elevated transition-all duration-300"
               )}
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className={cn("p-1.5 sm:p-2 rounded-lg", item.bgColor)}>
-                    <item.icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", item.color)} />
+                  <div className={cn("p-1.5 sm:p-2 rounded-xl bg-gradient-to-br text-primary-foreground", item.gradient)}>
+                    <item.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className={cn("text-lg sm:text-xl font-bold tabular-nums", item.color)}>
+                    <div className={cn("text-lg sm:text-xl font-bold tabular-nums", item.textColor)}>
                       <AnimatedCounter value={value} />
                     </div>
                     <div className="text-[10px] sm:text-xs text-muted-foreground truncate">
