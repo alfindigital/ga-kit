@@ -146,6 +146,10 @@ export default {
           "33%": { transform: "translateY(-8px) rotate(1deg)" },
           "66%": { transform: "translateY(4px) rotate(-1deg)" },
         },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -160,6 +164,7 @@ export default {
         "pulse-gentle": "pulse-gentle 2s ease-in-out infinite",
         "bounce-subtle": "bounce-subtle 2s ease-in-out infinite",
         "float": "float 6s ease-in-out infinite",
+        "shimmer": "shimmer 2s ease-in-out infinite",
       },
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
