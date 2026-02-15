@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Download, Copy, RotateCcw, X, QrCode, AlertCircle, Beaker } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,8 +68,6 @@ export default function QRGenerator() {
     touch(field);
     validate(field, value);
   };
-
-  if (isLoading) return <QRGeneratorSkeleton />;
 
   useEffect(() => {
     if (!text) {
@@ -206,24 +205,26 @@ export default function QRGenerator() {
     { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
   ]);
 
+  if (isLoading) return <QRGeneratorSkeleton />;
+
   const hasColorError = fgColorState.hasError || bgColorState.hasError;
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold">QR Generator</h1>
-          <p className="text-sm text-muted-foreground">Generate QR codes with custom colors</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-            <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
-          </Button>
-        </div>
-      </div>
+      <ToolPageHeader
+        icon={QrCode}
+        title="QR Generator"
+        description="Generate QR codes with custom colors and logo"
+        iconColor="bg-tool-qr/10 text-tool-qr"
+        accentGradient="from-tool-qr to-tool-qr/40"
+      >
+        <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
+          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+        </Button>
+      </ToolPageHeader>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4">

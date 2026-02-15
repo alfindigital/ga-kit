@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Copy, RotateCcw, FileText, ArrowRightLeft, CaseSensitive, Beaker } from 'lucide-react';
+import { Copy, RotateCcw, FileText, ArrowRightLeft, CaseSensitive, Beaker, Wrench } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -72,15 +73,17 @@ export default function KeywordTools() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold">Keyword Tools</h1>
-          <p className="text-sm text-muted-foreground">Remove duplicates, convert case, and bulk replace</p>
-        </div>
+      <ToolPageHeader
+        icon={Wrench}
+        title="Keyword Tools"
+        description="Remove duplicates, convert case, and bulk replace"
+        iconColor="bg-warning/10 text-warning-foreground"
+        accentGradient="from-warning to-warning/40"
+      >
         <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
           <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
         </Button>
-      </div>
+      </ToolPageHeader>
 
       <Tabs defaultValue="duplicates" className="w-full">
         <TabsList className="grid w-full grid-cols-3 h-auto">

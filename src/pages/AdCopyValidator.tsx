@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Plus, Trash2, Copy, RotateCcw, AlertCircle, CheckCircle2, FileText, AlertTriangle, Link, MessageSquare, List, DollarSign, Save, FolderOpen, X, Clock, Loader2, Download } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -874,155 +875,146 @@ export default function AdCopyValidator() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
-            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-            Ad Copy Validator
-          </h1>
-          <div className="flex items-center gap-3 mt-1">
-            <p className="text-muted-foreground">
-              Validate character limits for Google Ads RSA headlines and descriptions
-            </p>
-            {/* Auto-save indicator */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleAutoSave}
-                className={cn(
-                  "h-7 px-2 text-xs",
-                  autoSaveEnabled ? "text-primary" : "text-muted-foreground"
-                )}
-              >
-                {isAutoSaving ? (
-                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                ) : (
-                  <Clock className="h-3 w-3 mr-1" />
-                )}
-                {autoSaveEnabled ? "Auto-save ON" : "Auto-save OFF"}
-              </Button>
-              {lastAutoSave && autoSaveEnabled && (
-                <span className="text-xs text-muted-foreground hidden sm:inline">
-                  Last saved: {lastAutoSave.toLocaleTimeString()}
-                </span>
+      <ToolPageHeader
+        icon={FileText}
+        title="Ad Copy Validator"
+        description="Validate character limits for Google Ads RSA headlines and descriptions"
+        iconColor="bg-primary/10 text-primary"
+        accentGradient="from-primary to-primary/40"
+      >
+        {/* Auto-save indicator */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleAutoSave}
+          className={cn(
+            "h-7 px-2 text-xs",
+            autoSaveEnabled ? "text-primary" : "text-muted-foreground"
+          )}
+        >
+          {isAutoSaving ? (
+            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+          ) : (
+            <Clock className="h-3 w-3 mr-1" />
+          )}
+          {autoSaveEnabled ? "Auto-save ON" : "Auto-save OFF"}
+        </Button>
+        {lastAutoSave && autoSaveEnabled && (
+          <span className="text-xs text-muted-foreground hidden sm:inline">
+            Last saved: {lastAutoSave.toLocaleTimeString()}
+          </span>
+        )}
+        <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Save className="h-4 w-4 mr-1" />
+              Save Draft
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Save Draft</DialogTitle>
+              <DialogDescription>
+                Save your current ad copy as a draft for later use.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <Input
+                placeholder="Enter draft name..."
+                value={draftName}
+                onChange={(e) => setDraftName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && saveDraft()}
+              />
+              {drafts.length > 0 && (
+                <div className="text-sm text-muted-foreground">
+                  Existing drafts: {drafts.map(d => d.name).join(', ')}
+                </div>
               )}
             </div>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={saveDraft}>
                 <Save className="h-4 w-4 mr-1" />
-                Save Draft
+                Save
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Save Draft</DialogTitle>
-                <DialogDescription>
-                  Save your current ad copy as a draft for later use.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <Input
-                  placeholder="Enter draft name..."
-                  value={draftName}
-                  onChange={(e) => setDraftName(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && saveDraft()}
-                />
-                {drafts.length > 0 && (
-                  <div className="text-sm text-muted-foreground">
-                    Existing drafts: {drafts.map(d => d.name).join(', ')}
-                  </div>
-                )}
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={saveDraft}>
-                  <Save className="h-4 w-4 mr-1" />
-                  Save
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-          <Dialog open={loadDialogOpen} onOpenChange={setLoadDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <FolderOpen className="h-4 w-4 mr-1" />
-                Load Draft
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Load Draft</DialogTitle>
-                <DialogDescription>
-                  Select a saved draft to load.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-2 py-4 max-h-[300px] overflow-y-auto">
-                {drafts.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">
-                    No saved drafts yet.
-                  </div>
-                ) : (
-                  drafts.map(draft => (
+        <Dialog open={loadDialogOpen} onOpenChange={setLoadDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              <FolderOpen className="h-4 w-4 mr-1" />
+              Load Draft
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Load Draft</DialogTitle>
+              <DialogDescription>
+                Select a saved draft to load.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2 py-4 max-h-[300px] overflow-y-auto">
+              {drafts.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  No saved drafts yet.
+                </div>
+              ) : (
+                drafts.map(draft => (
+                  <div
+                    key={draft.id}
+                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
                     <div
-                      key={draft.id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex-1 cursor-pointer"
+                      onClick={() => loadDraft(draft)}
                     >
-                      <div
-                        className="flex-1 cursor-pointer"
-                        onClick={() => loadDraft(draft)}
-                      >
-                        <div className="font-medium">{draft.name}</div>
-                        <div className="text-xs text-muted-foreground">
-                          Updated: {new Date(draft.updatedAt).toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {draft.headlines.filter(h => h.text).length} headlines, {draft.descriptions.filter(d => d.text).length} descriptions
-                        </div>
+                      <div className="font-medium">{draft.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        Updated: {new Date(draft.updatedAt).toLocaleString()}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive hover:text-destructive"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteDraft(draft.id);
-                        }}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      <div className="text-xs text-muted-foreground">
+                        {draft.headlines.filter(h => h.text).length} headlines, {draft.descriptions.filter(d => d.text).length} descriptions
+                      </div>
                     </div>
-                  ))
-                )}
-              </div>
-            </DialogContent>
-          </Dialog>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteDraft(draft.id);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
-          <Button 
-            variant="default" 
-            size="sm" 
-            onClick={exportToGoogleAdsCSV}
-            disabled={!stats.isRSAReady}
-          >
-            <Download className="h-4 w-4 mr-1" />
-            Export CSV
-          </Button>
-          <Button variant="outline" size="sm" onClick={loadSample}>
-            Sample
-          </Button>
-          <Button variant="outline" size="sm" onClick={reset}>
-            <RotateCcw className="h-4 w-4 mr-1" />
-            Reset
-          </Button>
-        </div>
-      </div>
+        <Button 
+          variant="default" 
+          size="sm" 
+          onClick={exportToGoogleAdsCSV}
+          disabled={!stats.isRSAReady}
+        >
+          <Download className="h-4 w-4 mr-1" />
+          Export CSV
+        </Button>
+        <Button variant="outline" size="sm" onClick={loadSample}>
+          Sample
+        </Button>
+        <Button variant="outline" size="sm" onClick={reset}>
+          <RotateCcw className="h-4 w-4 mr-1" />
+          Reset
+        </Button>
+      </ToolPageHeader>
 
       {/* Stats Bar */}
       <Card className="bg-muted/30">

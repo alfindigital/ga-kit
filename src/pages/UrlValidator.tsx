@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -1067,17 +1068,13 @@ export default function UrlValidator() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <ShieldCheck className="h-5 w-5 text-primary" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold">URL Validator</h1>
-        </div>
-        <p className="text-muted-foreground">
-          Validate URL format before using in campaigns. Check protocol, domain, and structure.
-        </p>
-      </div>
+      <ToolPageHeader
+        icon={ShieldCheck}
+        title="URL Validator"
+        description="Validate URL format before using in campaigns. Check protocol, domain, and structure."
+        iconColor="bg-accent/10 text-accent"
+        accentGradient="from-accent to-accent/40"
+      />
       
       <Tabs defaultValue="single" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 max-w-lg">
