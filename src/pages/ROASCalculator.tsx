@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Calculator, DollarSign, TrendingUp, Target, Percent, AlertCircle, CheckCircle2, Info, RotateCcw } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -381,41 +382,36 @@ export default function ROASCalculator() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
-            <Calculator className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-            ROAS & Budget Calculator
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Calculate Return on Ad Spend, estimate budgets, and find break-even CPA
-          </p>
-          {currentScenario && (
-            <Badge variant="outline" className="mt-2">
-              Editing: {currentScenario.name}
-            </Badge>
-          )}
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <ScenarioManager
-            scenarios={scenarios}
-            currentScenarioId={currentScenarioId}
-            currentData={currentData}
-            onSave={saveScenario}
-            onLoad={handleLoadScenario}
-            onDelete={deleteScenario}
-            onDuplicate={duplicateScenario}
-            onRename={renameScenario}
-            onUpdate={updateScenario}
-          />
-          <ScenarioCompare scenarios={scenarios} />
-          <ScenarioExport scenarios={scenarios} onImport={importScenarios} />
-          <Button variant="outline" size="sm" onClick={resetAll}>
-            <RotateCcw className="h-4 w-4 mr-1" />
-            Reset All
-          </Button>
-        </div>
-      </div>
+      <ToolPageHeader
+        icon={Calculator}
+        title="ROAS & Budget Calculator"
+        description="Calculate Return on Ad Spend, estimate budgets, and find break-even CPA"
+        iconColor="bg-accent/10 text-accent"
+        accentGradient="from-accent to-accent/40"
+      >
+        {currentScenario && (
+          <Badge variant="outline">
+            Editing: {currentScenario.name}
+          </Badge>
+        )}
+        <ScenarioManager
+          scenarios={scenarios}
+          currentScenarioId={currentScenarioId}
+          currentData={currentData}
+          onSave={saveScenario}
+          onLoad={handleLoadScenario}
+          onDelete={deleteScenario}
+          onDuplicate={duplicateScenario}
+          onRename={renameScenario}
+          onUpdate={updateScenario}
+        />
+        <ScenarioCompare scenarios={scenarios} />
+        <ScenarioExport scenarios={scenarios} onImport={importScenarios} />
+        <Button variant="outline" size="sm" onClick={resetAll}>
+          <RotateCcw className="h-4 w-4 mr-1" />
+          Reset All
+        </Button>
+      </ToolPageHeader>
 
       <Tabs defaultValue="roas" className="space-y-6">
         <TabsList className="grid grid-cols-2 lg:grid-cols-4 w-full">

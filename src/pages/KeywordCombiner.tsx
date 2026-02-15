@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Copy, Plus, Trash2, RotateCcw, Sparkles, AlertTriangle, Beaker } from 'lucide-react';
+import { Copy, Plus, Trash2, RotateCcw, Sparkles, AlertTriangle, Beaker, Combine } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,8 +31,6 @@ export default function KeywordCombiner() {
   const { exportCsv, exportTxt } = useExport();
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
-
-  if (isLoading) return <KeywordCombinerSkeleton />;
 
   const toggleMatchType = (type: MatchType) => {
     setMatchTypes(prev => 
@@ -99,22 +98,24 @@ export default function KeywordCombiner() {
     { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
   ]);
 
+  if (isLoading) return <KeywordCombinerSkeleton />;
+
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold">Keyword Combiner</h1>
-          <p className="text-sm text-muted-foreground">Combine keyword lists into combinations</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-            <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
-          </Button>
-        </div>
-      </div>
+      <ToolPageHeader
+        icon={Combine}
+        title="Keyword Combiner"
+        description="Combine keyword lists into combinations"
+        iconColor="bg-accent/10 text-accent"
+        accentGradient="from-accent to-accent/40"
+      >
+        <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
+          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+        </Button>
+      </ToolPageHeader>
 
       {/* Match Types with validation indicator */}
       <div className="flex flex-wrap items-center gap-3 sm:gap-4">

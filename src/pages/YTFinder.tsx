@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useMemo } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useUrlHistory } from '@/hooks/useUrlHistory';
 import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard, BarChart3, Users, TrendingUp, FileText } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -442,11 +443,13 @@ export default function YTFinder() {
           </div>
         </div>
       )}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold">YT Channel Finder</h1>
-          <p className="text-sm text-muted-foreground">Extract channel info from YouTube URLs</p>
-        </div>
+      <ToolPageHeader
+        icon={Youtube}
+        title="YT Channel Finder"
+        description="Extract channel info from YouTube URLs"
+        iconColor="bg-destructive/10 text-destructive"
+        accentGradient="from-destructive to-destructive/40"
+      >
         <div className="flex gap-2 self-start sm:self-auto">
           <TooltipProvider>
             <Tooltip>
@@ -689,7 +692,7 @@ export default function YTFinder() {
             <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
           </Button>
         </div>
-      </div>
+      </ToolPageHeader>
 
       {/* Channel Analytics Summary */}
       {successResults.length > 0 && (

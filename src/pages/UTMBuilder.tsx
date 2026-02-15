@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download, QrCode, Beaker, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -452,11 +453,13 @@ export default function UTMBuilder() {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold">UTM Builder</h1>
-          <p className="text-sm text-muted-foreground">Build campaign URLs with UTM parameters</p>
-        </div>
+      <ToolPageHeader
+        icon={Link2}
+        title="UTM Builder"
+        description="Build campaign URLs with UTM parameters"
+        iconColor="bg-primary/10 text-primary"
+        accentGradient="from-primary to-primary/40"
+      >
         <div className="flex items-center gap-2 flex-wrap">
           <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
             <Beaker className="h-3.5 w-3.5 mr-1" />
@@ -607,7 +610,7 @@ export default function UTMBuilder() {
             </DialogContent>
           </Dialog>
         </div>
-      </div>
+      </ToolPageHeader>
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-5">
         {/* Input Section - 60% */}

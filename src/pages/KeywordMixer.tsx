@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Copy, RotateCcw, Sparkles, AlertTriangle, Beaker } from 'lucide-react';
+import { Copy, RotateCcw, Sparkles, AlertTriangle, Beaker, Shuffle } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,8 +29,6 @@ export default function KeywordMixer() {
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
 
-  if (isLoading) return <ToolPageSkeleton />;
-
   const toggleMatchType = (type: MatchType) => {
     setMatchTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
   };
@@ -46,20 +45,13 @@ export default function KeywordMixer() {
     const pres = prefixes.split('\n').map(k => k.trim()).filter(Boolean);
     const sufs = suffixes.split('\n').map(k => k.trim()).filter(Boolean);
     if (bases.length === 0) return [];
-
     const combined: string[] = [];
     bases.forEach(b => {
-      if (pres.length === 0 && sufs.length === 0) {
-        combined.push(b);
-      } else if (pres.length === 0) {
-        sufs.forEach(s => combined.push(`${b} ${s}`));
-      } else if (sufs.length === 0) {
-        pres.forEach(p => combined.push(`${p} ${b}`));
-      } else {
-        pres.forEach(p => sufs.forEach(s => combined.push(`${p} ${b} ${s}`)));
-      }
+      if (pres.length === 0 && sufs.length === 0) { combined.push(b); }
+      else if (pres.length === 0) { sufs.forEach(s => combined.push(`${b} ${s}`)); }
+      else if (sufs.length === 0) { pres.forEach(p => combined.push(`${p} ${b}`)); }
+      else { pres.forEach(p => sufs.forEach(s => combined.push(`${p} ${b} ${s}`))); }
     });
-
     const unique = [...new Set(combined)];
     const final: string[] = [];
     unique.forEach(kw => {
@@ -70,7 +62,6 @@ export default function KeywordMixer() {
     return final;
   })();
 
-  // Load sample data for demo
   const loadSampleData = () => {
     setBase('shoes\nbags\nwatches');
     setPrefixes('best\ncheap\nluxury');
@@ -78,32 +69,32 @@ export default function KeywordMixer() {
     toast({ title: 'Sample loaded!', description: 'Demo keywords have been added' });
   };
 
-  // Reset function
   const handleReset = () => { setBase(''); setPrefixes(''); setSuffixes(''); };
 
-  // Keyboard shortcuts
   useKeyboardShortcuts([
     { key: 'c', shift: true, action: () => results.length > 0 && copy(results.join('\n')), description: 'Copy results' },
     { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
     { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
   ]);
 
+  if (isLoading) return <ToolPageSkeleton />;
+
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold">Keyword Mixer</h1>
-          <p className="text-sm text-muted-foreground">Mix base keywords with prefixes and suffixes</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-            <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
-          </Button>
-        </div>
-      </div>
+      <ToolPageHeader
+        icon={Shuffle}
+        title="Keyword Mixer"
+        description="Mix base keywords with prefixes and suffixes"
+        iconColor="bg-accent/10 text-accent"
+        accentGradient="from-accent to-accent/40"
+      >
+        <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
+          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+        </Button>
+      </ToolPageHeader>
 
       {/* Match Types with validation */}
       <div className="flex flex-wrap items-center gap-3 sm:gap-4">

@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   Info
 } from 'lucide-react';
+import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -272,29 +273,22 @@ export default function NegativeKeywords() {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2 sm:p-2.5 rounded-xl bg-destructive/10 text-destructive">
-            <Ban className="h-5 w-5 sm:h-6 sm:w-6" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold">Negative Keyword Manager</h1>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Organize, deduplicate, and detect conflicts
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleLoadSample}>
-            <Lightbulb className="h-4 w-4 mr-1.5" />
-            Sample
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleReset}>
-            <RotateCcw className="h-4 w-4 mr-1.5" />
-            Reset
-          </Button>
-        </div>
-      </div>
+      <ToolPageHeader
+        icon={Ban}
+        title="Negative Keyword Manager"
+        description="Organize, deduplicate, and detect conflicts"
+        iconColor="bg-destructive/10 text-destructive"
+        accentGradient="from-destructive to-destructive/40"
+      >
+        <Button variant="outline" size="sm" onClick={handleLoadSample}>
+          <Lightbulb className="h-4 w-4 mr-1.5" />
+          Sample
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleReset}>
+          <RotateCcw className="h-4 w-4 mr-1.5" />
+          Reset
+        </Button>
+      </ToolPageHeader>
       
       {/* Processing Options */}
       <Card>
