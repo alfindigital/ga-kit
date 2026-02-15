@@ -1,20 +1,16 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton, SkeletonHeader } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export default function KeywordCombinerSkeleton() {
   return (
-    <div className="space-y-4 sm:space-y-6 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <Skeleton className="h-7 sm:h-8 w-40 sm:w-48" />
-          <Skeleton className="h-4 w-56 mt-1" />
-        </div>
-        <Skeleton className="h-8 w-16 self-start sm:self-auto" />
-      </div>
+    <div className="space-y-4 sm:space-y-6">
+      <SkeletonHeader>
+        <Skeleton className="h-8 w-16" />
+        <Skeleton className="h-8 w-16" />
+      </SkeletonHeader>
 
       {/* Match Types */}
-      <div className="flex flex-wrap gap-3 sm:gap-4">
+      <div className="flex flex-wrap gap-3 sm:gap-4 opacity-0 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
         {[...Array(3)].map((_, i) => (
           <div key={i} className="flex items-center gap-2">
             <Skeleton className="h-4 w-4 rounded" />
@@ -24,10 +20,9 @@ export default function KeywordCombinerSkeleton() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        {/* Input Lists */}
         <div className="space-y-3">
           {[...Array(3)].map((_, i) => (
-            <Card key={i}>
+            <Card key={i} className="opacity-0 animate-fade-in" style={{ animationDelay: `${200 + i * 80}ms`, animationFillMode: 'forwards' }}>
               <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between">
                 <Skeleton className="h-4 w-14" />
                 <Skeleton className="h-7 w-7" />
@@ -37,11 +32,9 @@ export default function KeywordCombinerSkeleton() {
               </CardContent>
             </Card>
           ))}
-          <Skeleton className="h-8 w-24" />
         </div>
 
-        {/* Results */}
-        <Card className="border-2 border-muted">
+        <Card className="border-2 border-muted opacity-0 animate-fade-in" style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}>
           <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between gap-2">
             <Skeleton className="h-4 w-24" />
             <div className="flex gap-2">

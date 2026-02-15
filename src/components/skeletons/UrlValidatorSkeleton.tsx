@@ -1,23 +1,16 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton, SkeletonHeader } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export default function UrlValidatorSkeleton() {
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-9 rounded-lg" />
-          <Skeleton className="h-8 w-48" />
-        </div>
-        <Skeleton className="h-5 w-80" />
-      </div>
-      
+      <SkeletonHeader />
+
       {/* Tabs */}
-      <Skeleton className="h-10 w-64" />
-      
+      <Skeleton className="h-10 w-64 opacity-0 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }} />
+
       {/* Main Card */}
-      <Card>
+      <Card className="opacity-0 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
         <CardHeader className="pb-3">
           <Skeleton className="h-6 w-32" />
           <Skeleton className="h-4 w-64" />
@@ -27,35 +20,25 @@ export default function UrlValidatorSkeleton() {
             <Skeleton className="h-10 flex-1" />
             <Skeleton className="h-10 w-24" />
           </div>
-          
-          {/* Result skeleton */}
           <Card className="border-2 border-muted">
             <CardContent className="pt-4 space-y-4">
               <div className="flex items-center gap-2">
                 <Skeleton className="h-5 w-5 rounded-full" />
                 <Skeleton className="h-5 w-24" />
               </div>
-              <div className="space-y-3">
-                <div className="flex justify-between py-2">
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-6 w-16" />
-                </div>
-                <div className="flex justify-between py-2">
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-6 w-32" />
-                </div>
-                <div className="flex justify-between py-2">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex justify-between py-2">
                   <Skeleton className="h-4 w-20" />
                   <Skeleton className="h-6 w-24" />
                 </div>
-              </div>
+              ))}
             </CardContent>
           </Card>
         </CardContent>
       </Card>
-      
+
       {/* Info Card */}
-      <Card className="bg-muted/30">
+      <Card className="bg-muted/30 opacity-0 animate-fade-in" style={{ animationDelay: '350ms', animationFillMode: 'forwards' }}>
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
             <Skeleton className="h-5 w-5" />
