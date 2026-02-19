@@ -14,7 +14,7 @@ import { useExport } from '@/hooks/useExport';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useUsageStats } from '@/hooks/useUsageStats';
-import { ToolPageSkeleton } from '@/components/skeletons';
+import { YTFinderSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
 import { BulkUrlImport } from '@/components/BulkUrlImport';
@@ -172,7 +172,29 @@ export default function YTFinder() {
     { key: 'x', shift: true, action: handleCancelShortcut, description: 'Cancel ongoing request' },
   ]);
 
-  if (isLoading) return <ToolPageSkeleton />;
+  // Moved above early return to comply with Rules of Hooks
+  const successResults = results.filter(r => r.status === 'success');
+  const videoCountByChannel = successResults.reduce((acc, r) => {
+    acc[r.channelUrl] = (acc[r.channelUrl] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const pieChartData = useMemo(() => {
+    if (successResults.length === 0) return [];
+    const sortedChannels = Object.entries(videoCountByChannel)
+      .map(([url, count]) => ({
+        name: successResults.find(r => r.channelUrl === url)?.channelName || 'Unknown',
+        value: count,
+        url
+      }))
+      .sort((a, b) => b.value - a.value);
+    if (sortedChannels.length <= 6) return sortedChannels;
+    const top5 = sortedChannels.slice(0, 5);
+    const othersCount = sortedChannels.slice(5).reduce((sum, c) => sum + c.value, 0);
+    return [...top5, { name: 'Others', value: othersCount, url: '' }];
+  }, [successResults, videoCountByChannel]);
+
+  if (isLoading) return <YTFinderSkeleton />;
 
   // Updated regex to support /shorts/ and /embed/
   const extractVideoIds = (text: string): string[] => {
@@ -339,13 +361,6 @@ export default function YTFinder() {
   const validVideoIds = extractVideoIds(urls);
   const hasValidUrls = validVideoIds.length > 0;
   const hasError = touched && !!error;
-  const successResults = results.filter(r => r.status === 'success');
-  
-  // Calculate video count per channel
-  const videoCountByChannel = successResults.reduce((acc, r) => {
-    acc[r.channelUrl] = (acc[r.channelUrl] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
 
   // Filter to unique channels if enabled
   const uniqueResults = successResults.filter((r, index, self) => 
@@ -381,25 +396,6 @@ export default function YTFinder() {
   const topChannelData = mostFrequentChannel 
     ? successResults.find(r => r.channelUrl === mostFrequentChannel[0])
     : null;
-
-  // Pie chart data - top 5 channels + "Others"
-  const pieChartData = useMemo(() => {
-    if (successResults.length === 0) return [];
-    
-    const sortedChannels = Object.entries(videoCountByChannel)
-      .map(([url, count]) => ({
-        name: successResults.find(r => r.channelUrl === url)?.channelName || 'Unknown',
-        value: count,
-        url
-      }))
-      .sort((a, b) => b.value - a.value);
-    
-    if (sortedChannels.length <= 6) return sortedChannels;
-    
-    const top5 = sortedChannels.slice(0, 5);
-    const othersCount = sortedChannels.slice(5).reduce((sum, c) => sum + c.value, 0);
-    return [...top5, { name: 'Others', value: othersCount, url: '' }];
-  }, [successResults, videoCountByChannel]);
 
   const CHART_COLORS = [
     'hsl(var(--primary))',

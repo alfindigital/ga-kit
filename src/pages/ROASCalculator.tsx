@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
-import { ToolPageSkeleton } from '@/components/skeletons';
+import { ROASCalculatorSkeleton } from '@/components/skeletons';
 import { useROASScenarios, ROASScenarioData } from '@/hooks/useROASScenarios';
 import { ScenarioManager } from '@/components/roas/ScenarioManager';
 import { ScenarioCompare } from '@/components/roas/ScenarioCompare';
@@ -377,7 +377,7 @@ export default function ROASCalculator() {
     }).format(value);
   };
 
-  if (isLoading) return <ToolPageSkeleton />;
+  if (isLoading) return <ROASCalculatorSkeleton />;
 
   return (
     <div className="space-y-6">
