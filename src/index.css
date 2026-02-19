@@ -102,8 +102,8 @@
     --secondary: 225 22% 16%;
     --secondary-foreground: 220 20% 90%;
 
-    /* Muted - readable but soft */
-    --muted: 225 20% 14%;
+    /* Muted - noticeably brighter for skeleton contrast in dark mode */
+    --muted: 225 18% 28%;
     --muted-foreground: 220 14% 58%;
 
     /* Accent - glowing teal */
