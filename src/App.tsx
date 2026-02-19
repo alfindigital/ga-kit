@@ -48,6 +48,7 @@ const App = () => (
                 <Route path="/roas-calculator" element={<ROASCalculator />} />
                 <Route path="/history" element={<UrlHistory />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/__skeleton-preview" element={<SkeletonPreview />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
