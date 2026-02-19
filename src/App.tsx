@@ -21,6 +21,7 @@ import AdCopyValidator from "./pages/AdCopyValidator";
 import ROASCalculator from "./pages/ROASCalculator";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import SkeletonPreview from "./pages/SkeletonPreview";
 
 const queryClient = new QueryClient();
 
