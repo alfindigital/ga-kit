@@ -7,8 +7,8 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
         "rounded-md bg-muted relative overflow-hidden",
         // Light mode: subtle shimmer. Dark mode: brighter shimmer with more contrast
         "before:absolute before:inset-0 before:animate-shimmer before:bg-[length:200%_100%]",
-        "before:bg-gradient-to-r before:from-transparent before:via-foreground/[0.07] before:to-transparent",
-        "dark:before:via-white/[0.12]",
+        "before:bg-gradient-to-r before:from-transparent before:via-foreground/[0.08] before:to-transparent",
+        "dark:before:via-white/[0.18]",
         className
       )}
       {...props}
