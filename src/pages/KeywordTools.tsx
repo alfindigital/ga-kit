@@ -19,25 +19,47 @@ export default function KeywordTools() {
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
 
-  // Remove Duplicates
+  // Remove Duplicates state
   const [dupeInput, setDupeInput] = useState('');
-  // Case Conversion
+  // Case Conversion state
   const [caseInput, setCaseInput] = useState('');
   const [caseMode, setCaseMode] = useState<'lower' | 'upper' | 'title' | 'sentence' | 'kebab' | 'snake'>('lower');
-  // Bulk Replace
+  // Bulk Replace state
   const [replaceInput, setReplaceInput] = useState('');
   const [findText, setFindText] = useState('');
   const [replaceText, setReplaceText] = useState('');
   const [caseSensitive, setCaseSensitive] = useState(false);
 
-  if (isLoading) return <KeywordToolsSkeleton />;
+  // Load sample data for demo
+  const loadSampleData = () => {
+    setDupeInput('running shoes\nbasketball shoes\nrunning shoes\ntennis shoes\nbasketball shoes');
+    setCaseInput('Hello World Example Text');
+    setReplaceInput('The quick brown fox jumps over the lazy dog');
+    setFindText('fox');
+    setReplaceText('cat');
+    toast({ title: 'Sample loaded!', description: 'Demo data has been added to all tabs' });
+  };
 
   // Remove Duplicates derived values
   const dupeResult = [...new Set(dupeInput.split('\n').map(k => k.trim().toLowerCase()).filter(Boolean))];
   const dupeInputCount = dupeInput.split('\n').filter(l => l.trim()).length;
   const duplicatesRemoved = dupeInputCount - dupeResult.length;
 
-  // Case Conversion
+  // Bulk Replace derived values
+  const replaceResult = findText
+    ? (caseSensitive ? replaceInput.split(findText).join(replaceText) : replaceInput.replace(new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), replaceText))
+    : replaceInput;
+  const replaceCount = findText ? (replaceInput.split(caseSensitive ? findText : new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')).length - 1) : 0;
+
+  // Keyboard shortcuts — must be called before any early return
+  useKeyboardShortcuts([
+    { key: 'c', shift: true, action: () => dupeResult.length > 0 && copy(dupeResult.join('\n')), description: 'Copy results' },
+    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
+  ]);
+
+  if (isLoading) return <KeywordToolsSkeleton />;
+
+  // Case Conversion helper (non-hook, safe after early return)
   const convertCase = (text: string, mode: typeof caseMode) => {
     const lines = text.split('\n');
     return lines.map(line => {
@@ -52,28 +74,6 @@ export default function KeywordTools() {
       }
     }).join('\n');
   };
-
-  // Bulk Replace derived values
-  const replaceResult = findText ? 
-    (caseSensitive ? replaceInput.split(findText).join(replaceText) : replaceInput.replace(new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), replaceText)) 
-    : replaceInput;
-  const replaceCount = findText ? (replaceInput.split(caseSensitive ? findText : new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')).length - 1) : 0;
-
-  // Load sample data for demo
-  const loadSampleData = () => {
-    setDupeInput('running shoes\nbasketball shoes\nrunning shoes\ntennis shoes\nbasketball shoes');
-    setCaseInput('Hello World Example Text');
-    setReplaceInput('The quick brown fox jumps over the lazy dog');
-    setFindText('fox');
-    setReplaceText('cat');
-    toast({ title: 'Sample loaded!', description: 'Demo data has been added to all tabs' });
-  };
-
-  // Keyboard shortcuts
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: () => dupeResult.length > 0 && copy(dupeResult.join('\n')), description: 'Copy results' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
