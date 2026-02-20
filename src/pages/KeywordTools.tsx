@@ -11,7 +11,7 @@ import { useClipboard } from '@/hooks/useClipboard';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
-import { ToolPageSkeleton } from '@/components/skeletons';
+import { KeywordToolsSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 
 export default function KeywordTools() {
@@ -19,17 +19,25 @@ export default function KeywordTools() {
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
 
-  if (isLoading) return <ToolPageSkeleton />;
-
   // Remove Duplicates
   const [dupeInput, setDupeInput] = useState('');
+  // Case Conversion
+  const [caseInput, setCaseInput] = useState('');
+  const [caseMode, setCaseMode] = useState<'lower' | 'upper' | 'title' | 'sentence' | 'kebab' | 'snake'>('lower');
+  // Bulk Replace
+  const [replaceInput, setReplaceInput] = useState('');
+  const [findText, setFindText] = useState('');
+  const [replaceText, setReplaceText] = useState('');
+  const [caseSensitive, setCaseSensitive] = useState(false);
+
+  if (isLoading) return <KeywordToolsSkeleton />;
+
+  // Remove Duplicates derived values
   const dupeResult = [...new Set(dupeInput.split('\n').map(k => k.trim().toLowerCase()).filter(Boolean))];
   const dupeInputCount = dupeInput.split('\n').filter(l => l.trim()).length;
   const duplicatesRemoved = dupeInputCount - dupeResult.length;
 
   // Case Conversion
-  const [caseInput, setCaseInput] = useState('');
-  const [caseMode, setCaseMode] = useState<'lower' | 'upper' | 'title' | 'sentence' | 'kebab' | 'snake'>('lower');
   const convertCase = (text: string, mode: typeof caseMode) => {
     const lines = text.split('\n');
     return lines.map(line => {
@@ -45,11 +53,7 @@ export default function KeywordTools() {
     }).join('\n');
   };
 
-  // Bulk Replace
-  const [replaceInput, setReplaceInput] = useState('');
-  const [findText, setFindText] = useState('');
-  const [replaceText, setReplaceText] = useState('');
-  const [caseSensitive, setCaseSensitive] = useState(false);
+  // Bulk Replace derived values
   const replaceResult = findText ? 
     (caseSensitive ? replaceInput.split(findText).join(replaceText) : replaceInput.replace(new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), replaceText)) 
     : replaceInput;

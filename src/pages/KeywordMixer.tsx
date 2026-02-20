@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useUsageStats } from '@/hooks/useUsageStats';
-import { ToolPageSkeleton } from '@/components/skeletons';
+import { KeywordMixerSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -77,7 +77,7 @@ export default function KeywordMixer() {
     { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
   ]);
 
-  if (isLoading) return <ToolPageSkeleton />;
+  if (isLoading) return <KeywordMixerSkeleton />;
 
   return (
     <div className="space-y-4 sm:space-y-6">
