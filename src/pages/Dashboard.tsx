@@ -10,20 +10,23 @@ import {
   Sparkles,
   Star,
   Pin,
+  PinOff,
   History,
   ShieldCheck,
   Ban,
   FileText,
-  Calculator
+  Calculator,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { DashboardSkeleton } from '@/components/skeletons';
 import { WelcomeBanner } from '@/components/OnboardingTour';
 import { QuickStats } from '@/components/QuickStats';
 import { useFavoriteTools } from '@/hooks/useFavoriteTools';
+import { toast } from 'sonner';
 
 const toolColors: Record<string, { border: string; shadow: string; gradient: string; dot: string }> = {
   'utm-builder':       { border: 'border-l-primary',       shadow: 'hover:shadow-glow-primary',      gradient: 'from-primary to-primary/70',      dot: 'bg-primary' },
@@ -150,6 +153,19 @@ export default function Dashboard() {
   const favoriteTools = tools.filter(tool => favorites.includes(tool.id));
   const hasFavorites = favoriteTools.length > 0;
 
+  const handleToggleFavorite = (e: React.MouseEvent, tool: typeof tools[0], starred: boolean) => {
+    e.preventDefault();
+    toggleFavorite(tool.id);
+    if (!starred) {
+      toast.success(`${tool.title} pinned to Quick Access`, {
+        description: 'Find it at the top of your dashboard.',
+        icon: '📌',
+      });
+    } else {
+      toast(`${tool.title} unpinned`, { icon: '🗑️' });
+    }
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Welcome Banner */}
@@ -158,38 +174,63 @@ export default function Dashboard() {
       {/* Quick Stats */}
       <QuickStats />
 
-      {/* Pinned Tools */}
-      {hasFavorites && (
-        <section className="space-y-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Pin className="h-4 w-4" />
-            <span className="font-medium">Quick Access</span>
+      {/* ── Pinned / Quick Access ── */}
+      {hasFavorites ? (
+        <section className="space-y-3 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+              <Pin className="h-4 w-4 text-primary" />
+              Quick Access
+              <span className="text-xs font-normal text-muted-foreground ml-1">
+                ({favoriteTools.length})
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground hidden sm:block">
+              Click ⭐ on any tool to pin or unpin
+            </p>
           </div>
           <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
             {favoriteTools.map((tool, index) => {
               const colors = toolColors[tool.id];
               return (
-                <Link 
-                  key={tool.id} 
+                <Link
+                  key={tool.id}
                   to={tool.path}
                   className={cn(
-                    "quick-access-pill flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border bg-card shadow-sm",
-                    "hover:border-primary/30",
-                    "stagger-enter group",
+                    "group relative flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border bg-card shadow-sm",
+                    "transition-all duration-200 hover:border-primary/40 hover:shadow-elevated",
                     colors?.shadow
                   )}
                   style={{ animationDelay: `${index * 60}ms` }}
                 >
-                  <div className={cn("quick-access-icon p-1.5 sm:p-2 rounded-lg flex-shrink-0", tool.color)}>
+                  <div className={cn("p-1.5 sm:p-2 rounded-lg flex-shrink-0", tool.color)}>
                     <tool.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
-                  <span className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors">
+                  <span className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors flex-1">
                     {tool.title}
                   </span>
-                  <ArrowRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-0.5 text-primary" />
+                  {/* Unpin button visible on hover */}
+                  <button
+                    onClick={(e) => handleToggleFavorite(e, tool, true)}
+                    className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
+                    title="Unpin"
+                  >
+                    <PinOff className="h-3 w-3 text-muted-foreground" />
+                  </button>
                 </Link>
               );
             })}
+          </div>
+        </section>
+      ) : (
+        /* Empty-state hint — shown once, before any tools are starred */
+        <section className="rounded-xl border border-dashed border-muted p-4 sm:p-5 flex items-start gap-3 animate-fade-in bg-muted/20">
+          <Star className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-foreground">Pin your favourite tools</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Click the ⭐ icon on any tool card below to add it to Quick Access here.
+            </p>
           </div>
         </section>
       )}
@@ -238,20 +279,27 @@ export default function Dashboard() {
                   <div className={cn("tool-icon p-1.5 sm:p-2 rounded-xl w-fit", tool.color)}>
                     <tool.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={cn(
-                      "h-7 w-7 sm:h-8 sm:w-8 -mt-1 -mr-1 transition-all duration-200",
-                      starred ? "text-yellow-500 scale-100" : "text-muted-foreground opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
-                    )}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleFavorite(tool.id);
-                    }}
-                  >
-                    <Star className={cn("h-4 w-4 transition-transform duration-200", starred && "fill-current")} />
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className={cn(
+                          "h-7 w-7 sm:h-8 sm:w-8 -mt-1 -mr-1 transition-all duration-200",
+                          starred
+                            ? "text-warning scale-100 opacity-100"
+                            : "text-muted-foreground opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
+                        )}
+                        onClick={(e) => handleToggleFavorite(e, tool, starred)}
+                        aria-label={starred ? 'Unpin tool' : 'Pin to Quick Access'}
+                      >
+                        <Star className={cn("h-4 w-4 transition-all duration-200", starred && "fill-current")} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      {starred ? 'Remove from Quick Access' : 'Pin to Quick Access'}
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <CardTitle className="text-sm sm:text-base lg:text-lg">{tool.title}</CardTitle>
                 <CardDescription className="text-xs sm:text-sm line-clamp-2">
