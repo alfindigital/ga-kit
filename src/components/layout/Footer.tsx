@@ -1,4 +1,8 @@
+import { useTranslation } from '@/hooks/useTranslation';
+
 export function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="mt-auto gradient-border">
       <div className="container py-5 flex items-center justify-center gap-3">
@@ -6,7 +10,7 @@ export function Footer() {
           <span className="text-primary-foreground text-[10px] font-bold">GA</span>
         </div>
         <span className="text-sm text-muted-foreground">
-          GAtool.site – concept v1
+          {t('footer.tagline')}
         </span>
       </div>
     </footer>

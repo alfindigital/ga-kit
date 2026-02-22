@@ -376,6 +376,25 @@ const en = {
   'header.urlHistory': 'URL History',
   'header.keyboardShortcuts': 'Keyboard shortcuts',
   'header.settings': 'Settings',
+
+  // ── Navigation Labels ──
+  'nav.dashboard': 'Dashboard',
+  'nav.utmBuilder': 'UTM Builder',
+  'nav.combiner': 'Combiner',
+  'nav.mixer': 'Mixer',
+  'nav.tools': 'Tools',
+  'nav.negatives': 'Negatives',
+  'nav.adCopy': 'Ad Copy',
+  'nav.roas': 'ROAS',
+  'nav.ytFinder': 'YT Finder',
+  'nav.qrCode': 'QR Code',
+  'nav.validator': 'Validator',
+  'nav.settings': 'Settings',
+  'nav.home': 'Home',
+  'nav.combine': 'Combine',
+
+  // ── Footer ──
+  'footer.tagline': 'GAtool.site – concept v1',
 } as const;
 
 const id: Record<string, string> = {
@@ -751,6 +770,25 @@ const id: Record<string, string> = {
   'header.urlHistory': 'Riwayat URL',
   'header.keyboardShortcuts': 'Pintasan keyboard',
   'header.settings': 'Pengaturan',
+
+  // ── Label Navigasi ──
+  'nav.dashboard': 'Dasbor',
+  'nav.utmBuilder': 'UTM Builder',
+  'nav.combiner': 'Kombinator',
+  'nav.mixer': 'Mixer',
+  'nav.tools': 'Alat',
+  'nav.negatives': 'Negatif',
+  'nav.adCopy': 'Ad Copy',
+  'nav.roas': 'ROAS',
+  'nav.ytFinder': 'YT Finder',
+  'nav.qrCode': 'Kode QR',
+  'nav.validator': 'Validator',
+  'nav.settings': 'Pengaturan',
+  'nav.home': 'Beranda',
+  'nav.combine': 'Kombinasi',
+
+  // ── Footer ──
+  'footer.tagline': 'GAtool.site – konsep v1',
 };
 
 export const translations: Record<string, Record<string, string>> = { en, id };
