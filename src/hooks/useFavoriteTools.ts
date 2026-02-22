@@ -16,9 +16,19 @@ export function useFavoriteTools() {
     return favorites.includes(toolId);
   }, [favorites]);
 
+  const reorderFavorites = useCallback((fromIndex: number, toIndex: number) => {
+    setFavorites(prev => {
+      const next = [...prev];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
+  }, [setFavorites]);
+
   return {
     favorites,
     toggleFavorite,
     isFavorite,
+    reorderFavorites,
   };
 }

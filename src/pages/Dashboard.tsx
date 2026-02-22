@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useState, useRef } from 'react';
 import { 
   Link2, 
   Combine, 
@@ -11,6 +12,7 @@ import {
   Star,
   Pin,
   PinOff,
+  GripVertical,
   History,
   ShieldCheck,
   Ban,
@@ -146,11 +148,18 @@ const tools = [
 
 export default function Dashboard() {
   const isLoading = usePageLoading(400);
-  const { favorites, toggleFavorite, isFavorite } = useFavoriteTools();
+  const { favorites, toggleFavorite, isFavorite, reorderFavorites } = useFavoriteTools();
+
+  // Drag-and-drop state for Quick Access reorder
+  const dragItem = useRef<number | null>(null);
+  const dragOverItem = useRef<number | null>(null);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
 
   if (isLoading) return <DashboardSkeleton />;
 
   const favoriteTools = tools.filter(tool => favorites.includes(tool.id));
+  // Sort by favorites order
+  favoriteTools.sort((a, b) => favorites.indexOf(a.id) - favorites.indexOf(b.id));
   const hasFavorites = favoriteTools.length > 0;
 
   const handleToggleFavorite = (e: React.MouseEvent, tool: typeof tools[0], starred: boolean) => {
@@ -164,6 +173,24 @@ export default function Dashboard() {
     } else {
       toast(`${tool.title} unpinned`, { icon: '🗑️' });
     }
+  };
+
+  const handleDragStart = (index: number) => {
+    dragItem.current = index;
+    setDraggingIndex(index);
+  };
+
+  const handleDragEnter = (index: number) => {
+    dragOverItem.current = index;
+  };
+
+  const handleDragEnd = () => {
+    if (dragItem.current !== null && dragOverItem.current !== null && dragItem.current !== dragOverItem.current) {
+      reorderFavorites(dragItem.current, dragOverItem.current);
+    }
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setDraggingIndex(null);
   };
 
   return (
@@ -186,38 +213,51 @@ export default function Dashboard() {
               </span>
             </div>
             <p className="text-xs text-muted-foreground hidden sm:block">
-              Click ⭐ on any tool to pin or unpin
+              Drag to reorder · Click ⭐ to pin/unpin
             </p>
           </div>
           <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
             {favoriteTools.map((tool, index) => {
               const colors = toolColors[tool.id];
               return (
-                <Link
+                <div
                   key={tool.id}
-                  to={tool.path}
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragEnter={() => handleDragEnter(index)}
+                  onDragEnd={handleDragEnd}
+                  onDragOver={(e) => e.preventDefault()}
                   className={cn(
-                    "group relative flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border bg-card shadow-sm",
-                    "transition-all duration-200 hover:border-primary/40 hover:shadow-elevated",
-                    colors?.shadow
+                    "transition-all duration-200",
+                    draggingIndex === index && "opacity-40 scale-95"
                   )}
                   style={{ animationDelay: `${index * 60}ms` }}
                 >
-                  <div className={cn("p-1.5 sm:p-2 rounded-lg flex-shrink-0", tool.color)}>
-                    <tool.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </div>
-                  <span className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors flex-1">
-                    {tool.title}
-                  </span>
-                  {/* Unpin button visible on hover */}
-                  <button
-                    onClick={(e) => handleToggleFavorite(e, tool, true)}
-                    className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
-                    title="Unpin"
+                  <Link
+                    to={tool.path}
+                    className={cn(
+                      "group relative flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border bg-card shadow-sm",
+                      "transition-all duration-200 hover:border-primary/40 hover:shadow-elevated",
+                      colors?.shadow
+                    )}
                   >
-                    <PinOff className="h-3 w-3 text-muted-foreground" />
-                  </button>
-                </Link>
+                    <GripVertical className="h-3.5 w-3.5 text-muted-foreground/50 cursor-grab active:cursor-grabbing flex-shrink-0 hidden sm:block" />
+                    <div className={cn("p-1.5 sm:p-2 rounded-lg flex-shrink-0", tool.color)}>
+                      <tool.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors flex-1">
+                      {tool.title}
+                    </span>
+                    {/* Unpin button visible on hover */}
+                    <button
+                      onClick={(e) => handleToggleFavorite(e, tool, true)}
+                      className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
+                      title="Unpin"
+                    >
+                      <PinOff className="h-3 w-3 text-muted-foreground" />
+                    </button>
+                  </Link>
+                </div>
               );
             })}
           </div>
