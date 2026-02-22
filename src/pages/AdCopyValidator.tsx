@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useClipboard } from '@/hooks/useClipboard';
 import { AdCopyValidatorSkeleton } from '@/components/skeletons';
@@ -129,6 +130,7 @@ const SAMPLE_DESCRIPTIONS: Description[] = [
 export default function AdCopyValidator() {
   const isLoading = usePageLoading(400);
   const { copy } = useClipboard();
+  const { t } = useTranslation();
   
   const [headlines, setHeadlines] = useState<Headline[]>([
     { id: '1', text: '' },
