@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useFontSize } from '@/contexts/FontSizeContext';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTranslation } from '@/hooks/useTranslation';
 import { 
   Sun, 
   Moon, 
@@ -46,19 +47,20 @@ import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { UrlHistoryPanel } from '@/components/UrlHistoryPanel';
 import { useUrlHistory } from '@/hooks/useUrlHistory';
+import { TranslationKey } from '@/i18n/translations';
 
-const navItems = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/utm-builder', label: 'UTM Builder', icon: Link2 },
-  { path: '/keyword-combiner', label: 'Combiner', icon: Combine },
-  { path: '/keyword-mixer', label: 'Mixer', icon: Shuffle },
-  { path: '/keyword-tools', label: 'Tools', icon: Wrench },
-  { path: '/negative-keywords', label: 'Negatives', icon: Ban },
-  { path: '/ad-copy-validator', label: 'Ad Copy', icon: FileText },
-  { path: '/roas-calculator', label: 'ROAS', icon: Calculator },
-  { path: '/yt-finder', label: 'YT Finder', icon: Youtube },
-  { path: '/qr-generator', label: 'QR Code', icon: QrCode },
-  { path: '/url-validator', label: 'Validator', icon: ShieldCheck },
+const navItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDashboard }[] = [
+  { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
+  { path: '/utm-builder', labelKey: 'nav.utmBuilder', icon: Link2 },
+  { path: '/keyword-combiner', labelKey: 'nav.combiner', icon: Combine },
+  { path: '/keyword-mixer', labelKey: 'nav.mixer', icon: Shuffle },
+  { path: '/keyword-tools', labelKey: 'nav.tools', icon: Wrench },
+  { path: '/negative-keywords', labelKey: 'nav.negatives', icon: Ban },
+  { path: '/ad-copy-validator', labelKey: 'nav.adCopy', icon: FileText },
+  { path: '/roas-calculator', labelKey: 'nav.roas', icon: Calculator },
+  { path: '/yt-finder', labelKey: 'nav.ytFinder', icon: Youtube },
+  { path: '/qr-generator', labelKey: 'nav.qrCode', icon: QrCode },
+  { path: '/url-validator', labelKey: 'nav.validator', icon: ShieldCheck },
 ];
 
 export function Header() {
@@ -70,6 +72,7 @@ export function Header() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const { stats } = useUrlHistory();
+  const { t } = useTranslation();
 
   const handleRestartTour = () => {
     setHasSeenTour(false);
@@ -107,7 +110,7 @@ export function Header() {
                 )}
               >
                 <item.icon className="h-3.5 w-3.5" />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </Link>
             );
           })}
@@ -135,7 +138,7 @@ export function Header() {
               <SheetHeader className="p-4 border-b">
                 <SheetTitle className="flex items-center gap-2">
                   <History className="h-5 w-5" />
-                  URL History
+                  {t('header.urlHistory')}
                 </SheetTitle>
               </SheetHeader>
               <UrlHistoryPanel 
@@ -160,7 +163,7 @@ export function Header() {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Keyboard shortcuts <kbd className="ml-1 px-1 py-0.5 text-xs bg-muted rounded">?</kbd></p>
+              <p>{t('header.keyboardShortcuts')} <kbd className="ml-1 px-1 py-0.5 text-xs bg-muted rounded">?</kbd></p>
             </TooltipContent>
           </Tooltip>
 
@@ -178,7 +181,7 @@ export function Header() {
               </Link>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Settings</p>
+              <p>{t('header.settings')}</p>
             </TooltipContent>
           </Tooltip>
           
@@ -194,36 +197,36 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Theme</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('header.theme')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setTheme('light')}>
                 <Sun className="h-4 w-4 mr-2" />
-                Light
+                {t('settings.light')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setTheme('dark')}>
                 <Moon className="h-4 w-4 mr-2" />
-                Dark
+                {t('settings.dark')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setTheme('system')}>
                 <Monitor className="h-4 w-4 mr-2" />
-                System
+                {t('settings.system')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>Font Size</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('header.fontSize')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setFontSize('sm')}>
-                <span className="text-xs mr-2">A</span> Small
+                <span className="text-xs mr-2">A</span> {t('common.small')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setFontSize('md')}>
-                <span className="text-sm mr-2">A</span> Medium
+                <span className="text-sm mr-2">A</span> {t('common.medium')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setFontSize('lg')}>
-                <span className="text-base mr-2">A</span> Large
+                <span className="text-base mr-2">A</span> {t('common.large')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleRestartTour}>
                 <RotateCcw className="h-4 w-4 mr-2" />
-                Restart Tour
+                {t('header.restartTour')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -258,7 +261,7 @@ export function Header() {
                 style={{ animationDelay: `${index * 30}ms` }}
               >
                 <item.icon className="h-4 w-4" />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </Link>
             ))}
             {/* Settings link in mobile menu */}
@@ -274,7 +277,7 @@ export function Header() {
               style={{ animationDelay: `${navItems.length * 30}ms` }}
             >
               <Settings className="h-4 w-4" />
-              <span>Settings</span>
+              <span>{t('nav.settings')}</span>
             </Link>
           </nav>
         </div>

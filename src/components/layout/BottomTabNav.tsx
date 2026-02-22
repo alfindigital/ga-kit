@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
+import { TranslationKey } from '@/i18n/translations';
 import { 
   LayoutDashboard,
   Link2,
@@ -8,16 +10,17 @@ import {
   Settings,
 } from 'lucide-react';
 
-const tabItems = [
-  { path: '/', label: 'Home', icon: LayoutDashboard },
-  { path: '/utm-builder', label: 'UTM', icon: Link2 },
-  { path: '/keyword-combiner', label: 'Combine', icon: Combine },
-  { path: '/keyword-tools', label: 'Tools', icon: Wrench },
-  { path: '/settings', label: 'Settings', icon: Settings },
+const tabItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDashboard }[] = [
+  { path: '/', labelKey: 'nav.home', icon: LayoutDashboard },
+  { path: '/utm-builder', labelKey: 'nav.utmBuilder', icon: Link2 },
+  { path: '/keyword-combiner', labelKey: 'nav.combine', icon: Combine },
+  { path: '/keyword-tools', labelKey: 'nav.tools', icon: Wrench },
+  { path: '/settings', labelKey: 'nav.settings', icon: Settings },
 ];
 
 export function BottomTabNav() {
   const location = useLocation();
+  const { t } = useTranslation();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden border-t border-border/50 bg-card/90 backdrop-blur-xl safe-area-bottom animate-slide-up">
@@ -51,7 +54,7 @@ export function BottomTabNav() {
                 "text-[10px] font-medium transition-all duration-200",
                 isActive && "font-semibold"
               )}>
-                {item.label}
+                {t(item.labelKey)}
               </span>
             </Link>
           );
