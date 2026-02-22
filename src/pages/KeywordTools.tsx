@@ -11,6 +11,7 @@ import { useClipboard } from '@/hooks/useClipboard';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useTranslation } from '@/hooks/useTranslation';
 import { KeywordToolsSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 
@@ -18,6 +19,7 @@ export default function KeywordTools() {
   const { copy } = useClipboard();
   const { toast } = useToast();
   const isLoading = usePageLoading(400);
+  const { t } = useTranslation();
 
   // Remove Duplicates state
   const [dupeInput, setDupeInput] = useState('');
@@ -37,7 +39,7 @@ export default function KeywordTools() {
     setReplaceInput('The quick brown fox jumps over the lazy dog');
     setFindText('fox');
     setReplaceText('cat');
-    toast({ title: 'Sample loaded!', description: 'Demo data has been added to all tabs' });
+    toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
   };
 
   // Remove Duplicates derived values
@@ -79,21 +81,21 @@ export default function KeywordTools() {
     <div className="space-y-4 sm:space-y-6">
       <ToolPageHeader
         icon={Wrench}
-        title="Keyword Tools"
-        description="Remove duplicates, convert case, and bulk replace"
+        title={t('tool.keywordTools')}
+        description={t('tool.keywordTools.desc')}
         iconColor="bg-warning/10 text-warning-foreground"
         accentGradient="from-warning to-warning/40"
       >
         <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+          <Beaker className="h-3.5 w-3.5 mr-1" /> {t('common.sample')}
         </Button>
       </ToolPageHeader>
 
       <Tabs defaultValue="duplicates" className="w-full">
         <TabsList className="grid w-full grid-cols-3 h-auto">
-          <TabsTrigger value="duplicates" className="text-xs sm:text-sm py-2">Duplicates</TabsTrigger>
-          <TabsTrigger value="case" className="text-xs sm:text-sm py-2">Case</TabsTrigger>
-          <TabsTrigger value="replace" className="text-xs sm:text-sm py-2">Replace</TabsTrigger>
+          <TabsTrigger value="duplicates" className="text-xs sm:text-sm py-2">{t('ktools.duplicates')}</TabsTrigger>
+          <TabsTrigger value="case" className="text-xs sm:text-sm py-2">{t('ktools.case')}</TabsTrigger>
+          <TabsTrigger value="replace" className="text-xs sm:text-sm py-2">{t('ktools.replace')}</TabsTrigger>
         </TabsList>
 
         {/* Duplicates Tab */}
@@ -102,30 +104,30 @@ export default function KeywordTools() {
             <Card>
               <CardHeader className="p-3">
                 <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
-                  Input
+                  {t('common.input')}
                   {dupeInputCount > 0 && (
                     <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                      {dupeInputCount} lines
+                      {dupeInputCount} {t('common.lines')}
                     </span>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0">
-                <Textarea placeholder="Paste keywords here, one per line..." value={dupeInput} onChange={(e) => setDupeInput(e.target.value)} rows={8} className="text-sm" />
+                <Textarea placeholder={t('ktools.pasteKeywords')} value={dupeInput} onChange={(e) => setDupeInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
             </Card>
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
                 <CardTitle className="text-xs sm:text-sm flex items-center gap-2">
-                  Result
+                  {t('common.result')}
                   {dupeResult.length > 0 && (
                     <>
                       <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                        {dupeResult.length} unique
+                        {dupeResult.length} {t('common.unique')}
                       </span>
                       {duplicatesRemoved > 0 && (
                         <span className="text-xs font-normal text-accent bg-accent/10 px-1.5 py-0.5 rounded">
-                          -{duplicatesRemoved} removed
+                          -{duplicatesRemoved} {t('common.removed')}
                         </span>
                       )}
                     </>
@@ -138,15 +140,15 @@ export default function KeywordTools() {
                   className="h-7 text-xs"
                   disabled={dupeResult.length === 0}
                 >
-                  <Copy className="h-3 w-3 mr-1" /> Copy
+                  <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
                 </Button>
               </CardHeader>
               <CardContent className="p-3 pt-0">
                 {dupeResult.length === 0 ? (
                   <EmptyState
                     icon={FileText}
-                    title="Paste keywords to start"
-                    description="Enter your keywords in the input area. Duplicates will be removed automatically."
+                    title={t('ktools.pasteToStart')}
+                    description={t('ktools.pasteToStartDesc')}
                     className="py-6"
                   />
                 ) : (
@@ -169,15 +171,15 @@ export default function KeywordTools() {
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader className="p-3">
-                <CardTitle className="text-xs sm:text-sm">Input</CardTitle>
+                <CardTitle className="text-xs sm:text-sm">{t('common.input')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0">
-                <Textarea placeholder="Enter text to convert..." value={caseInput} onChange={(e) => setCaseInput(e.target.value)} rows={8} className="text-sm" />
+                <Textarea placeholder={t('ktools.enterTextToConvert')} value={caseInput} onChange={(e) => setCaseInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
             </Card>
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm">Result</CardTitle>
+                <CardTitle className="text-xs sm:text-sm">{t('common.result')}</CardTitle>
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -185,15 +187,15 @@ export default function KeywordTools() {
                   className="h-7 text-xs"
                   disabled={!caseInput.trim()}
                 >
-                  <Copy className="h-3 w-3 mr-1" /> Copy
+                  <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
                 </Button>
               </CardHeader>
               <CardContent className="p-3 pt-0">
                 {!caseInput.trim() ? (
                   <EmptyState
                     icon={CaseSensitive}
-                    title="Enter text to convert"
-                    description="Type or paste text and select a conversion mode above."
+                    title={t('ktools.enterToConvert')}
+                    description={t('ktools.enterToConvertDesc')}
                     className="py-6"
                   />
                 ) : (
@@ -209,7 +211,7 @@ export default function KeywordTools() {
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <div className="flex-1 sm:max-w-[180px]">
               <Input 
-                placeholder="Find..." 
+                placeholder={t('ktools.find')}
                 value={findText} 
                 onChange={(e) => setFindText(e.target.value)} 
                 className="text-sm" 
@@ -217,7 +219,7 @@ export default function KeywordTools() {
             </div>
             <div className="flex-1 sm:max-w-[180px]">
               <Input 
-                placeholder="Replace with..." 
+                placeholder={t('ktools.replaceWith')}
                 value={replaceText} 
                 onChange={(e) => setReplaceText(e.target.value)} 
                 className="text-sm" 
@@ -225,26 +227,26 @@ export default function KeywordTools() {
             </div>
             <label className="flex items-center gap-2 text-sm">
               <Checkbox checked={caseSensitive} onCheckedChange={(v) => setCaseSensitive(!!v)} /> 
-              Case sensitive
+              {t('ktools.caseSensitive')}
             </label>
             {findText && replaceInput && (
               <span className="text-xs text-muted-foreground flex items-center">
-                {replaceCount} match{replaceCount !== 1 ? 'es' : ''} found
+                {replaceCount} {replaceCount !== 1 ? t('ktools.matchesFound') : t('ktools.matchFound')} {t('ktools.found')}
               </span>
             )}
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader className="p-3">
-                <CardTitle className="text-xs sm:text-sm">Input</CardTitle>
+                <CardTitle className="text-xs sm:text-sm">{t('common.input')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0">
-                <Textarea placeholder="Enter text..." value={replaceInput} onChange={(e) => setReplaceInput(e.target.value)} rows={8} className="text-sm" />
+                <Textarea placeholder={t('ktools.enterText')} value={replaceInput} onChange={(e) => setReplaceInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
             </Card>
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm">Result</CardTitle>
+                <CardTitle className="text-xs sm:text-sm">{t('common.result')}</CardTitle>
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -252,15 +254,15 @@ export default function KeywordTools() {
                   className="h-7 text-xs"
                   disabled={!replaceInput.trim()}
                 >
-                  <Copy className="h-3 w-3 mr-1" /> Copy
+                  <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
                 </Button>
               </CardHeader>
               <CardContent className="p-3 pt-0">
                 {!replaceInput.trim() ? (
                   <EmptyState
                     icon={ArrowRightLeft}
-                    title="Enter text to replace"
-                    description="Type or paste text, then specify what to find and replace."
+                    title={t('ktools.enterToReplace')}
+                    description={t('ktools.enterToReplaceDesc')}
                     className="py-6"
                   />
                 ) : (

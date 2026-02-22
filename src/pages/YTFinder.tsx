@@ -19,6 +19,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
 import { BulkUrlImport } from '@/components/BulkUrlImport';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -83,6 +84,7 @@ export default function YTFinder() {
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { 
     history: urlHistory, 
     addToHistory, 
@@ -441,8 +443,8 @@ export default function YTFinder() {
       )}
       <ToolPageHeader
         icon={Youtube}
-        title="YT Channel Finder"
-        description="Extract channel info from YouTube URLs"
+        title={t('tool.ytFinder')}
+        description={t('tool.ytFinder.desc')}
         iconColor="bg-destructive/10 text-destructive"
         accentGradient="from-destructive to-destructive/40"
       >

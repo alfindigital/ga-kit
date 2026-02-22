@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { ROASCalculatorSkeleton } from '@/components/skeletons';
 import { useROASScenarios, ROASScenarioData } from '@/hooks/useROASScenarios';
@@ -27,6 +28,7 @@ interface CalculatorResult {
 
 export default function ROASCalculator() {
   const isLoading = usePageLoading(400);
+  const { t } = useTranslation();
   
   // Scenario management
   const {
@@ -384,8 +386,8 @@ export default function ROASCalculator() {
       {/* Header */}
       <ToolPageHeader
         icon={Calculator}
-        title="ROAS & Budget Calculator"
-        description="Calculate Return on Ad Spend, estimate budgets, and find break-even CPA"
+        title={t('roas.title')}
+        description={t('roas.desc')}
         iconColor="bg-accent/10 text-accent"
         accentGradient="from-accent to-accent/40"
       >
@@ -409,7 +411,7 @@ export default function ROASCalculator() {
         <ScenarioExport scenarios={scenarios} onImport={importScenarios} />
         <Button variant="outline" size="sm" onClick={resetAll}>
           <RotateCcw className="h-4 w-4 mr-1" />
-          Reset All
+          {t('roas.resetAll')}
         </Button>
       </ToolPageHeader>
 

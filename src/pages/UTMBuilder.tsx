@@ -22,6 +22,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
 import { BulkUrlImport } from '@/components/BulkUrlImport';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 import {
   Dialog,
   DialogContent,
@@ -123,6 +124,7 @@ export default function UTMBuilder() {
   const { addToHistory, history: urlHistory, filters, setFilters } = useUrlHistory();
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
+  const { t } = useTranslation();
 
   const { validate, touch, getFieldState, clearErrors } = useValidation({
     url: [validators.url('Please enter a valid URL')],
@@ -148,12 +150,12 @@ export default function UTMBuilder() {
       const text = await navigator.clipboard.readText();
       if (text) {
         handleUrlChange(text.trim());
-        toast({ title: 'Pasted!', description: 'URL pasted from clipboard' });
+        toast({ title: t('common.pasted'), description: t('toast.pasteFromClipboard') });
       }
     } catch {
       toast({ 
-        title: 'Cannot access clipboard', 
-        description: 'Please paste manually using Ctrl+V',
+        title: t('toast.cannotAccessClipboard'), 
+        description: t('toast.pasteManually'),
         variant: 'destructive'
       });
     }
@@ -172,7 +174,7 @@ export default function UTMBuilder() {
       source: preset.source,
       medium: preset.medium,
     }));
-    toast({ title: 'Applied!', description: `${preset.label} preset applied` });
+    toast({ title: t('toast.applied'), description: `${preset.label} ${t('toast.presetApplied')}` });
   }, [toast]);
 
 
@@ -349,16 +351,16 @@ export default function UTMBuilder() {
         await navigator.clipboard.writeText(queryStringOnly);
         setCopiedQuery(true);
         setTimeout(() => setCopiedQuery(false), 2000);
-        toast({ title: 'Copied!', description: 'Query string copied to clipboard' });
+        toast({ title: t('common.copied'), description: t('toast.queryCopied') });
       } catch {
-        toast({ title: 'Failed to copy', variant: 'destructive' });
+        toast({ title: t('toast.copyFailed'), variant: 'destructive' });
       }
     }
   };
 
   const handleSavePreset = () => {
     if (!presetName.trim()) {
-      toast({ title: 'Error', description: 'Please enter a preset name', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: t('toast.presetNameRequired'), variant: 'destructive' });
       return;
     }
     
@@ -371,14 +373,14 @@ export default function UTMBuilder() {
     
     setPresets(prev => [...prev, newPreset]);
     setPresetName('');
-    toast({ title: 'Saved!', description: `Preset "${presetName}" saved` });
+    toast({ title: t('toast.saved'), description: `Preset "${presetName}" saved` });
   };
 
   const loadPreset = (preset: Preset) => {
     setParams(preset.params);
     setSelectedValueTrack(preset.valueTrack);
     clearErrors();
-    toast({ title: 'Loaded', description: `Preset "${preset.name}" loaded` });
+    toast({ title: t('toast.loaded'), description: `Preset "${preset.name}" loaded` });
   };
 
   const deletePreset = (id: string) => {
@@ -438,7 +440,7 @@ export default function UTMBuilder() {
       content: 'hero-banner',
       customParams: [],
     });
-    toast({ title: 'Sample loaded!', description: 'Demo data has been added' });
+    toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
   };
 
   // Keyboard shortcuts
@@ -455,19 +457,19 @@ export default function UTMBuilder() {
       {/* Header */}
       <ToolPageHeader
         icon={Link2}
-        title="UTM Builder"
-        description="Build campaign URLs with UTM parameters"
+        title={t('tool.utmBuilder')}
+        description={t('tool.utmBuilder.desc')}
         iconColor="bg-primary/10 text-primary"
         accentGradient="from-primary to-primary/40"
       >
         <div className="flex items-center gap-2 flex-wrap">
           <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
             <Beaker className="h-3.5 w-3.5 mr-1" />
-            Sample
+            {t('common.sample')}
           </Button>
           <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
             <RotateCcw className="h-3.5 w-3.5 mr-1" />
-            Reset
+            {t('common.reset')}
           </Button>
           
           {/* Quick Presets Dropdown */}
@@ -475,12 +477,12 @@ export default function UTMBuilder() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8 text-xs">
                 <Zap className="h-3.5 w-3.5 mr-1" />
-                Quick Fill
+                {t('common.quickFill')}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel className="text-xs text-muted-foreground">
-                Popular Platforms
+                {t('utm.popularPlatforms')}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               {QUICK_PRESETS.map((preset) => (
@@ -501,14 +503,14 @@ export default function UTMBuilder() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8 text-xs">
                 <Save className="h-3.5 w-3.5 mr-1" />
-                Presets
+                {t('common.presets')}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <div className="p-2">
                 <div className="flex gap-2">
                   <Input 
-                    placeholder="Preset name" 
+                    placeholder={t('utm.presetName')} 
                     value={presetName}
                     onChange={(e) => setPresetName(e.target.value)}
                     className="h-8 text-sm"
@@ -549,7 +551,7 @@ export default function UTMBuilder() {
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="h-8 text-xs">
                 <History className="h-3.5 w-3.5 mr-1" />
-                History
+                {t('common.history')}
                 {utmHistory.length > 0 && (
                   <span className="ml-1 text-muted-foreground">({utmHistory.length})</span>
                 )}
@@ -558,7 +560,7 @@ export default function UTMBuilder() {
             <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[70vh] overflow-y-auto">
               <DialogHeader>
                 <div className="flex items-center justify-between">
-                  <DialogTitle>Recent UTM URLs</DialogTitle>
+                  <DialogTitle>{t('utm.recentUrls')}</DialogTitle>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -568,7 +570,7 @@ export default function UTMBuilder() {
                       navigate('/history');
                     }}
                   >
-                    View All
+                    {t('common.viewAll')}
                   </Button>
                 </div>
               </DialogHeader>
@@ -620,12 +622,12 @@ export default function UTMBuilder() {
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm flex items-center gap-2">
-                  Target URL{!bulkMode && <span className="text-destructive">*</span>}
+                  {t('utm.targetUrl')}{!bulkMode && <span className="text-destructive">*</span>}
                 </CardTitle>
                 <Tabs value={bulkMode ? 'bulk' : 'single'} onValueChange={(v) => setBulkMode(v === 'bulk')}>
                   <TabsList className="h-7">
-                    <TabsTrigger value="single" className="text-xs h-5 px-2">Single</TabsTrigger>
-                    <TabsTrigger value="bulk" className="text-xs h-5 px-2">Bulk Import</TabsTrigger>
+                    <TabsTrigger value="single" className="text-xs h-5 px-2">{t('utm.single')}</TabsTrigger>
+                    <TabsTrigger value="bulk" className="text-xs h-5 px-2">{t('utm.bulkImport')}</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
@@ -702,8 +704,8 @@ export default function UTMBuilder() {
           {/* UTM Parameters */}
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <CardTitle className="text-sm">UTM Parameters</CardTitle>
-              <CardDescription className="text-xs">Auto-formatted: lowercase, spaces → hyphens</CardDescription>
+              <CardTitle className="text-sm">{t('utm.utmParams')}</CardTitle>
+              <CardDescription className="text-xs">{t('utm.autoFormat')}</CardDescription>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
               {[
@@ -764,7 +766,7 @@ export default function UTMBuilder() {
               
               <Button variant="outline" size="sm" onClick={addCustomParam} className="text-xs">
                 <Plus className="h-3.5 w-3.5 mr-1" />
-                Add Custom Parameter
+                {t('utm.addCustomParam')}
               </Button>
             </CardContent>
           </Card>
@@ -772,8 +774,8 @@ export default function UTMBuilder() {
           {/* ValueTrack Macros */}
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <CardTitle className="text-sm">Google Ads ValueTrack</CardTitle>
-              <CardDescription className="text-xs">Select macros to include</CardDescription>
+              <CardTitle className="text-sm">{t('utm.valueTrack')}</CardTitle>
+              <CardDescription className="text-xs">{t('utm.selectMacros')}</CardDescription>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
@@ -799,7 +801,7 @@ export default function UTMBuilder() {
           <Card className="lg:sticky lg:top-20 border-2 border-primary/20">
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                {bulkMode ? 'Generated URLs' : 'Live Preview'}
+                {bulkMode ? t('utm.generatedUrls') : t('utm.livePreview')}
                 {bulkMode && bulkGeneratedUrls.length > 0 && (
                   <span className="text-xs font-normal text-muted-foreground">({bulkGeneratedUrls.length})</span>
                 )}
@@ -811,8 +813,8 @@ export default function UTMBuilder() {
                 bulkGeneratedUrls.length === 0 ? (
                   <EmptyState
                     icon={Upload}
-                    title="Import URLs to start"
-                    description="Drop a CSV or TXT file above to generate UTM URLs in bulk"
+                    title={t('utm.importUrls')}
+                    description={t('utm.importUrlsDesc')}
                     className="py-6"
                   />
                 ) : (
@@ -830,7 +832,7 @@ export default function UTMBuilder() {
                         className="flex-1 text-sm"
                       >
                         <Copy className="h-4 w-4 mr-2" />
-                        Copy All ({bulkGeneratedUrls.length})
+                        {t('utm.copyAll')} ({bulkGeneratedUrls.length})
                       </Button>
                       <Button
                         variant="outline"
@@ -846,15 +848,15 @@ export default function UTMBuilder() {
               ) : !params.url ? (
                 <EmptyState
                   icon={Link2}
-                  title="Enter a URL to start"
-                  description="Type or paste your target URL above to generate UTM parameters"
+                  title={t('utm.enterUrl')}
+                  description={t('utm.enterUrlDesc')}
                   className="py-6"
                 />
               ) : urlState.hasError ? (
                 <EmptyState
                   icon={AlertCircle}
-                  title="Invalid URL"
-                  description="Please correct the URL format to see the preview"
+                  title={t('utm.invalidUrl')}
+                  description={t('utm.invalidUrlDesc')}
                   variant="error"
                   className="py-6"
                 />
@@ -867,7 +869,7 @@ export default function UTMBuilder() {
                   {/* Query String Only Preview */}
                   {queryStringOnly && (
                     <div className="p-2 bg-muted/50 rounded-md">
-                      <p className="text-xs text-muted-foreground mb-1">Query string only:</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t('utm.queryStringOnly')}</p>
                       <code className="text-xs break-all">{queryStringOnly}</code>
                     </div>
                   )}
@@ -881,12 +883,12 @@ export default function UTMBuilder() {
                       {copied ? (
                         <>
                           <Check className="h-4 w-4 mr-2" />
-                          Copied!
+                          {t('common.copied')}
                         </>
                       ) : (
                         <>
                           <Copy className="h-4 w-4 mr-2" />
-                          Copy URL
+                          {t('utm.copyUrl')}
                         </>
                       )}
                     </Button>
@@ -903,7 +905,7 @@ export default function UTMBuilder() {
                       ) : (
                         <>
                           <Copy className="h-4 w-4 mr-1" />
-                          Query
+                          {t('utm.copyQuery')}
                         </>
                       )}
                     </Button>

@@ -18,6 +18,7 @@ import { QRGeneratorSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InputError } from '@/components/ui/input-error';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function QRGenerator() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,6 +37,7 @@ export default function QRGenerator() {
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
   const { addToHistory } = useUrlHistory();
+  const { t } = useTranslation();
   
   // Clear URL param after reading it
   useEffect(() => {
@@ -162,7 +164,7 @@ export default function QRGenerator() {
       metadata: { qrContent: text },
     });
     
-    toast({ title: 'Downloaded!', description: 'QR code saved as PNG' });
+    toast({ title: t('toast.downloaded'), description: t('qr.savedPng') });
   };
 
   const downloadSVG = async () => {
@@ -178,9 +180,9 @@ export default function QRGenerator() {
       a.click();
       URL.revokeObjectURL(url);
       incrementStat('qrCodesGenerated');
-      toast({ title: 'Downloaded!', description: 'QR code saved as SVG' });
+      toast({ title: t('toast.downloaded'), description: t('qr.savedSvg') });
     } catch (error) {
-      toast({ title: 'Error', description: 'Failed to generate SVG', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: 'Failed to generate SVG', variant: 'destructive' });
     }
   };
 
@@ -195,7 +197,7 @@ export default function QRGenerator() {
   // Load sample data for demo
   const loadSampleData = () => {
     setText('https://example.com/my-awesome-page?utm_source=qr&utm_medium=print');
-    toast({ title: 'Sample loaded!', description: 'Demo URL has been added' });
+    toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
   };
 
   // Keyboard shortcuts
@@ -213,27 +215,27 @@ export default function QRGenerator() {
     <div className="space-y-4 sm:space-y-6">
       <ToolPageHeader
         icon={QrCode}
-        title="QR Generator"
-        description="Generate QR codes with custom colors and logo"
+        title={t('tool.qrGenerator')}
+        description={t('tool.qrGenerator.desc')}
         iconColor="bg-tool-qr/10 text-tool-qr"
         accentGradient="from-tool-qr to-tool-qr/40"
       >
         <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+          <Beaker className="h-3.5 w-3.5 mr-1" /> {t('common.sample')}
         </Button>
         <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> {t('common.reset')}
         </Button>
       </ToolPageHeader>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4">
           <Card>
-            <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">Content</CardTitle></CardHeader>
+            <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">{t('qr.content')}</CardTitle></CardHeader>
             <CardContent className="p-3 pt-0 space-y-4">
               <div>
                 <Label className="text-xs sm:text-sm">
-                  Text or URL
+                  {t('qr.textOrUrl')}
                   <span className="text-destructive ml-1">*</span>
                 </Label>
                 <Input 
@@ -242,12 +244,12 @@ export default function QRGenerator() {
                   onChange={(e) => setText(e.target.value)} 
                   className="text-sm" 
                 />
-                <p className="text-xs text-muted-foreground mt-1">{text.length} characters</p>
+                <p className="text-xs text-muted-foreground mt-1">{text.length} {t('common.characters')}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-xs sm:text-sm">Size</Label>
+                  <Label className="text-xs sm:text-sm">{t('qr.size')}</Label>
                   <Select value={size} onValueChange={setSize}>
                     <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -259,14 +261,14 @@ export default function QRGenerator() {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-xs sm:text-sm">Margin</Label>
+                  <Label className="text-xs sm:text-sm">{t('qr.margin')}</Label>
                   <Select value={margin} onValueChange={setMargin}>
                     <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="0">None</SelectItem>
-                      <SelectItem value="1">Small</SelectItem>
-                      <SelectItem value="2">Medium</SelectItem>
-                      <SelectItem value="4">Large</SelectItem>
+                      <SelectItem value="0">{t('common.none')}</SelectItem>
+                      <SelectItem value="1">{t('common.small')}</SelectItem>
+                      <SelectItem value="2">{t('common.medium')}</SelectItem>
+                      <SelectItem value="4">{t('common.large')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -274,7 +276,7 @@ export default function QRGenerator() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-xs sm:text-sm">QR Color</Label>
+                  <Label className="text-xs sm:text-sm">{t('qr.qrColor')}</Label>
                   <div className="flex gap-2">
                     <Input 
                       type="color" 
@@ -295,7 +297,7 @@ export default function QRGenerator() {
                   <InputError message={fgColorState.error} />
                 </div>
                 <div>
-                  <Label className="text-xs sm:text-sm">Background</Label>
+                  <Label className="text-xs sm:text-sm">{t('qr.background')}</Label>
                   <div className="flex gap-2">
                     <Input 
                       type="color" 
@@ -318,7 +320,7 @@ export default function QRGenerator() {
               </div>
 
               <div>
-                <Label className="text-xs sm:text-sm">Logo (optional)</Label>
+                <Label className="text-xs sm:text-sm">{t('qr.logo')}</Label>
                 <div className="flex gap-2">
                   <Input type="file" accept="image/*" onChange={handleLogoUpload} className="flex-1 text-sm" />
                   {logo && (
@@ -333,7 +335,7 @@ export default function QRGenerator() {
         </div>
 
         <Card className="border-2 border-primary/20">
-          <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">Preview</CardTitle></CardHeader>
+          <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">{t('common.preview')}</CardTitle></CardHeader>
           <CardContent className="p-3 pt-0 flex flex-col items-center gap-4">
             <canvas ref={canvasRef} className="hidden" />
             
@@ -341,22 +343,22 @@ export default function QRGenerator() {
               {!text ? (
                 <EmptyState
                   icon={QrCode}
-                  title="Enter content"
-                  description="Type text or URL to generate QR code"
+                  title={t('qr.enterContent')}
+                  description={t('qr.enterContentDesc')}
                   className="py-0"
                 />
               ) : hasColorError ? (
                 <EmptyState
                   icon={AlertCircle}
-                  title="Invalid colors"
-                  description="Please fix the color values"
+                  title={t('qr.invalidColors')}
+                  description={t('qr.invalidColorsDesc')}
                   variant="error"
                   className="py-0"
                 />
               ) : qrDataUrl ? (
                 <img src={qrDataUrl} alt="QR Code" className="max-w-full max-h-full" />
               ) : (
-                <p className="text-muted-foreground text-xs sm:text-sm text-center px-4">Generating...</p>
+                <p className="text-muted-foreground text-xs sm:text-sm text-center px-4">{t('qr.generating')}</p>
               )}
             </div>
 

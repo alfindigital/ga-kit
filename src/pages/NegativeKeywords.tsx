@@ -21,6 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useClipboard } from '@/hooks/useClipboard';
 import { useExport } from '@/hooks/useExport';
 import { useToast } from '@/hooks/use-toast';
@@ -173,7 +174,7 @@ export default function NegativeKeywords() {
   const { copy } = useClipboard();
   const { exportTxt, exportCsv } = useExport();
   const { toast } = useToast();
-  
+  const { t } = useTranslation();
   // Input states
   const [negativeInput, setNegativeInput] = useState('');
   const [positiveInput, setPositiveInput] = useState('');
@@ -275,18 +276,18 @@ export default function NegativeKeywords() {
       {/* Header */}
       <ToolPageHeader
         icon={Ban}
-        title="Negative Keyword Manager"
-        description="Organize, deduplicate, and detect conflicts"
+        title={t('neg.title')}
+        description={t('neg.desc')}
         iconColor="bg-destructive/10 text-destructive"
         accentGradient="from-destructive to-destructive/40"
       >
         <Button variant="outline" size="sm" onClick={handleLoadSample}>
           <Lightbulb className="h-4 w-4 mr-1.5" />
-          Sample
+          {t('common.sample')}
         </Button>
         <Button variant="outline" size="sm" onClick={handleReset}>
           <RotateCcw className="h-4 w-4 mr-1.5" />
-          Reset
+          {t('common.reset')}
         </Button>
       </ToolPageHeader>
       

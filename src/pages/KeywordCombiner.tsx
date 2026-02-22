@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useUsageStats } from '@/hooks/useUsageStats';
+import { useTranslation } from '@/hooks/useTranslation';
 import { KeywordCombinerSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ export default function KeywordCombiner() {
   const { exportCsv, exportTxt } = useExport();
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
+  const { t } = useTranslation();
 
   const toggleMatchType = (type: MatchType) => {
     setMatchTypes(prev => 
@@ -85,7 +87,7 @@ export default function KeywordCombiner() {
       'running\nbasketball\ntennis',
       'shoes\nsneakers'
     ]);
-    toast({ title: 'Sample loaded!', description: 'Demo keywords have been added' });
+    toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
   };
 
   // Reset function
@@ -104,16 +106,16 @@ export default function KeywordCombiner() {
     <div className="space-y-4 sm:space-y-6">
       <ToolPageHeader
         icon={Combine}
-        title="Keyword Combiner"
-        description="Combine keyword lists into combinations"
+        title={t('tool.keywordCombiner')}
+        description={t('tool.keywordCombiner.desc')}
         iconColor="bg-accent/10 text-accent"
         accentGradient="from-accent to-accent/40"
       >
         <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+          <Beaker className="h-3.5 w-3.5 mr-1" /> {t('common.sample')}
         </Button>
         <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> {t('common.reset')}
         </Button>
       </ToolPageHeader>
 
@@ -122,13 +124,13 @@ export default function KeywordCombiner() {
         {(['broad', 'phrase', 'exact'] as MatchType[]).map(type => (
           <label key={type} className="flex items-center gap-2 cursor-pointer text-sm">
             <Checkbox checked={matchTypes.includes(type)} onCheckedChange={() => toggleMatchType(type)} />
-            <span className="capitalize">{type}</span>
+            <span className="capitalize">{t(`combiner.${type}` as any)}</span>
           </label>
         ))}
         {matchTypes.length === 0 && (
           <span className="text-xs text-destructive flex items-center gap-1">
             <AlertTriangle className="h-3 w-3" />
-            Select at least one match type
+            {t('combiner.selectMatchType')}
           </span>
         )}
       </div>
@@ -147,10 +149,10 @@ export default function KeywordCombiner() {
               )}>
                 <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between">
                   <CardTitle className="text-xs sm:text-sm flex items-center gap-2">
-                    List {i + 1}
+                    {t('combiner.list')} {i + 1}
                     {lineCount > 0 && (
                       <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                        {lineCount} keywords
+                        {lineCount} {t('common.keywords')}
                       </span>
                     )}
                   </CardTitle>
@@ -162,7 +164,7 @@ export default function KeywordCombiner() {
                 </CardHeader>
                 <CardContent className="p-3 sm:p-4 pt-0">
                   <Textarea
-                    placeholder="Enter keywords, one per line"
+                    placeholder={t('combiner.enterKeywords')}
                     value={list}
                     onChange={(e) => updateList(i, e.target.value)}
                     rows={4}
@@ -176,14 +178,14 @@ export default function KeywordCombiner() {
             );
           })}
           <Button variant="outline" size="sm" onClick={addList} className="text-xs">
-            <Plus className="h-3.5 w-3.5 mr-1" /> Add List
+            <Plus className="h-3.5 w-3.5 mr-1" /> {t('common.addList')}
           </Button>
         </div>
 
         {/* Results */}
         <Card className="border-2 border-primary/20">
           <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between gap-2">
-            <CardTitle className="text-xs sm:text-sm">Results ({combinations.length})</CardTitle>
+            <CardTitle className="text-xs sm:text-sm">{t('common.results')} ({combinations.length})</CardTitle>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
@@ -192,12 +194,12 @@ export default function KeywordCombiner() {
                 className="h-7 text-xs"
                 disabled={combinations.length === 0}
               >
-                <Copy className="h-3 w-3 mr-1" /> Copy
+                <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="h-7 text-xs" disabled={combinations.length === 0}>
-                    Export
+                    {t('common.export')}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -211,15 +213,15 @@ export default function KeywordCombiner() {
             {combinations.length === 0 ? (
               <EmptyState
                 icon={Sparkles}
-                title={!hasAnyContent ? "Enter keywords to start" : matchTypes.length === 0 ? "Select a match type" : !hasMultipleLists ? "Add keywords to multiple lists" : "No combinations generated"}
+                title={!hasAnyContent ? t('combiner.enterToStart') : matchTypes.length === 0 ? t('combiner.selectMatchTypeMsg') : !hasMultipleLists ? t('combiner.addMultipleLists') : t('combiner.noCombinations')}
                 description={
                   !hasAnyContent 
-                    ? "Add keywords to your lists and they will be combined automatically"
+                    ? t('combiner.enterToStartDesc')
                     : matchTypes.length === 0
-                    ? "Choose at least one match type above to generate combinations"
+                    ? t('combiner.selectMatchTypeDesc')
                     : !hasMultipleLists
-                    ? "Fill at least two lists to create keyword combinations"
-                    : "Check your input and try again"
+                    ? t('combiner.addMultipleListsDesc')
+                    : t('combiner.noCombinationsDesc')
                 }
                 className="py-8"
               />

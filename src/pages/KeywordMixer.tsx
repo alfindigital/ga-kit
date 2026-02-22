@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useUsageStats } from '@/hooks/useUsageStats';
+import { useTranslation } from '@/hooks/useTranslation';
 import { KeywordMixerSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ export default function KeywordMixer() {
   const { exportCsv, exportTxt } = useExport();
   const isLoading = usePageLoading(400);
   const { incrementStat } = useUsageStats();
+  const { t } = useTranslation();
 
   const toggleMatchType = (type: MatchType) => {
     setMatchTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
@@ -66,7 +68,7 @@ export default function KeywordMixer() {
     setBase('shoes\nbags\nwatches');
     setPrefixes('best\ncheap\nluxury');
     setSuffixes('online\nnear me\n2024');
-    toast({ title: 'Sample loaded!', description: 'Demo keywords have been added' });
+    toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
   };
 
   const handleReset = () => { setBase(''); setPrefixes(''); setSuffixes(''); };
@@ -83,16 +85,16 @@ export default function KeywordMixer() {
     <div className="space-y-4 sm:space-y-6">
       <ToolPageHeader
         icon={Shuffle}
-        title="Keyword Mixer"
-        description="Mix base keywords with prefixes and suffixes"
+        title={t('tool.keywordMixer')}
+        description={t('tool.keywordMixer.desc')}
         iconColor="bg-accent/10 text-accent"
         accentGradient="from-accent to-accent/40"
       >
         <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-          <Beaker className="h-3.5 w-3.5 mr-1" /> Sample
+          <Beaker className="h-3.5 w-3.5 mr-1" /> {t('common.sample')}
         </Button>
         <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs self-start sm:self-auto">
-          <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+          <RotateCcw className="h-3.5 w-3.5 mr-1" /> {t('common.reset')}
         </Button>
       </ToolPageHeader>
 
@@ -101,13 +103,13 @@ export default function KeywordMixer() {
         {(['broad', 'phrase', 'exact'] as MatchType[]).map(type => (
           <label key={type} className="flex items-center gap-2 cursor-pointer text-sm">
             <Checkbox checked={matchTypes.includes(type)} onCheckedChange={() => toggleMatchType(type)} />
-            <span className="capitalize">{type}</span>
+            <span className="capitalize">{t(`combiner.${type}` as any)}</span>
           </label>
         ))}
         {matchTypes.length === 0 && (
           <span className="text-xs text-destructive flex items-center gap-1">
             <AlertTriangle className="h-3 w-3" />
-            Select at least one match type
+            {t('combiner.selectMatchType')}
           </span>
         )}
       </div>
@@ -121,7 +123,7 @@ export default function KeywordMixer() {
           )}>
             <CardHeader className="p-3">
               <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
-                Prefixes
+                {t('mixer.prefixes')}
                 {prefixCount > 0 && (
                   <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                     {prefixCount}
@@ -151,7 +153,7 @@ export default function KeywordMixer() {
             <CardHeader className="p-3">
               <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
                 <span>
-                  Base Keywords
+                  {t('mixer.baseKeywords')}
                   <span className="text-destructive ml-1">*</span>
                 </span>
                 {baseCount > 0 && (
@@ -175,7 +177,7 @@ export default function KeywordMixer() {
               {!hasBaseKeywords && (prefixCount > 0 || suffixCount > 0) && (
                 <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                   <AlertTriangle className="h-3 w-3" />
-                  Base keywords are required
+                  {t('mixer.baseRequired')}
                 </p>
               )}
             </CardContent>
@@ -188,7 +190,7 @@ export default function KeywordMixer() {
           )}>
             <CardHeader className="p-3">
               <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
-                Suffixes
+                {t('mixer.suffixes')}
                 {suffixCount > 0 && (
                   <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                     {suffixCount}
@@ -214,7 +216,7 @@ export default function KeywordMixer() {
         {/* Results */}
         <Card className="border-2 border-primary/20">
           <CardHeader className="p-3 flex-row items-center justify-between gap-2">
-            <CardTitle className="text-xs sm:text-sm">Results ({results.length})</CardTitle>
+            <CardTitle className="text-xs sm:text-sm">{t('common.results')} ({results.length})</CardTitle>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
@@ -223,12 +225,12 @@ export default function KeywordMixer() {
                 className="h-7 text-xs"
                 disabled={results.length === 0}
               >
-                <Copy className="h-3 w-3 mr-1" /> Copy
+                <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="h-7 text-xs" disabled={results.length === 0}>
-                    Export
+                    {t('common.export')}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -244,17 +246,17 @@ export default function KeywordMixer() {
                 icon={Sparkles}
                 title={
                   !hasBaseKeywords 
-                    ? "Enter base keywords to start" 
+                    ? t('mixer.enterBase')
                     : matchTypes.length === 0 
-                    ? "Select a match type"
-                    : "Add prefixes or suffixes"
+                    ? t('combiner.selectMatchTypeMsg')
+                    : t('mixer.addModifiers')
                 }
                 description={
                   !hasBaseKeywords
-                    ? "Base keywords are required. Add prefixes and suffixes to create variations."
+                    ? t('mixer.enterBaseDesc')
                     : matchTypes.length === 0
-                    ? "Choose at least one match type above to generate results"
-                    : "Add prefixes and/or suffixes to mix with your base keywords"
+                    ? t('combiner.selectMatchTypeDesc')
+                    : t('mixer.addModifiersDesc')
                 }
                 className="py-8"
               />

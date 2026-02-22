@@ -37,6 +37,7 @@ import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/hooks/useTranslation';
 import { UrlValidatorSkeleton } from '@/components/skeletons';
 
 interface ValidationResult {
@@ -115,6 +116,7 @@ export default function UrlValidator() {
   const isLoading = usePageLoading(400);
   const { toast } = useToast();
   const { exportCsv } = useExport();
+  const { t } = useTranslation();
   
   // Single URL mode
   const [singleUrl, setSingleUrl] = useState('');
