@@ -60,7 +60,7 @@ const fetchSingleVideo = async (id: string, signal: AbortSignal): Promise<VideoD
     }
     return {
       videoUrl: `https://www.youtube.com/watch?v=${id}`,
-      title: 'Failed to fetch',
+      title: 'Failed to fetch', // kept as data, not UI label
       channelName: '-',
       channelUrl: '',
       status: 'error',
@@ -137,20 +137,20 @@ export default function YTFinder() {
     const jsonFile = files.find(f => f.name.endsWith('.json'));
 
     if (!jsonFile) {
-      toast({ title: 'Invalid file', description: 'Please drop a JSON history file', variant: 'destructive' });
+      toast({ title: t('yt.invalidFile'), description: t('yt.dropJsonFile'), variant: 'destructive' });
       return;
     }
 
     try {
       await importHistory(jsonFile);
       toast({ 
-        title: 'Imported!', 
-        description: 'History imported successfully'
+        title: t('yt.imported'), 
+        description: t('yt.importedDesc')
       });
     } catch {
-      toast({ title: 'Import failed', description: 'Invalid file format', variant: 'destructive' });
+      toast({ title: t('yt.importFailed'), description: t('yt.invalidFileFormat'), variant: 'destructive' });
     }
-  }, [importHistory, toast]);
+  }, [importHistory, toast, t]);
 
   // Keyboard shortcuts: Shift+F to fetch, Shift+X to cancel
   const handleFetchShortcut = useCallback(() => {
@@ -165,9 +165,9 @@ export default function YTFinder() {
       abortControllerRef.current = null;
       setLoading(false);
       setProgress(null);
-      toast({ title: 'Cancelled', description: 'Fetch operation was cancelled (Shift+X)' });
+      toast({ title: t('yt.cancelled'), description: t('yt.fetchCancelled') });
     }
-  }, [loading, toast]);
+  }, [loading, toast, t]);
 
   useKeyboardShortcuts([
     { key: 'f', shift: true, action: handleFetchShortcut, description: 'Fetch video data' },
@@ -191,6 +191,7 @@ export default function YTFinder() {
       }))
       .sort((a, b) => b.value - a.value);
     if (sortedChannels.length <= 6) return sortedChannels;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const top5 = sortedChannels.slice(0, 5);
     const othersCount = sortedChannels.slice(5).reduce((sum, c) => sum + c.value, 0);
     return [...top5, { name: 'Others', value: othersCount, url: '' }];
@@ -211,11 +212,11 @@ export default function YTFinder() {
 
   const validateUrls = (text: string): string => {
     if (!text.trim()) {
-      return 'Please enter at least one YouTube URL';
+      return t('yt.enterAtLeast');
     }
     const videoIds = extractVideoIds(text);
     if (videoIds.length === 0) {
-      return 'No valid YouTube URLs found. Please check the format.';
+      return t('yt.noValidUrls');
     }
     return '';
   };
@@ -240,7 +241,7 @@ export default function YTFinder() {
       abortControllerRef.current = null;
       setLoading(false);
       setProgress(null);
-      toast({ title: 'Cancelled', description: 'Fetch operation was cancelled' });
+      toast({ title: t('yt.cancelled'), description: t('yt.fetchCancelled') });
     }
   };
 
@@ -250,7 +251,7 @@ export default function YTFinder() {
     
     if (validationError) {
       setError(validationError);
-      toast({ title: 'Validation Error', description: validationError, variant: 'destructive' });
+      toast({ title: t('yt.validationError'), description: validationError, variant: 'destructive' });
       return;
     }
 
@@ -311,17 +312,17 @@ export default function YTFinder() {
 
       if (failedCount > 0 && successCount > 0) {
         toast({ 
-          title: 'Partially Complete', 
-          description: `Found ${successCount} channels. ${failedCount} video(s) failed.` 
+          title: t('yt.partiallyComplete', { success: successCount, failed: failedCount }), 
+          description: t('yt.foundChannels', { count: successCount })
         });
       } else if (successCount > 0) {
-        toast({ title: 'Done!', description: `Found ${successCount} channels` });
+        toast({ title: t('yt.done'), description: t('yt.foundChannels', { count: successCount }) });
       } else {
-        toast({ title: 'No Results', description: 'Could not fetch any channel data. The videos may be private or deleted.', variant: 'destructive' });
+        toast({ title: t('yt.noResultsToast'), description: t('yt.noResultsDesc'), variant: 'destructive' });
       }
     } catch (e) {
       if ((e as Error).name !== 'AbortError') {
-        toast({ title: 'Error', description: 'An error occurred while fetching data', variant: 'destructive' });
+        toast({ title: t('yt.error'), description: t('yt.errorFetching'), variant: 'destructive' });
       }
     } finally {
       setLoading(false);
@@ -337,7 +338,7 @@ export default function YTFinder() {
     setTouched(false);
     setError('');
     setHistoryOpen(false);
-    toast({ title: 'Loaded', description: 'URLs loaded from history' });
+    toast({ title: t('yt.loaded'), description: t('yt.urlsLoaded') });
   };
 
   const formatTimeAgo = (timestamp: number): string => {
@@ -436,8 +437,8 @@ export default function YTFinder() {
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm border-2 border-dashed border-primary rounded-lg">
           <div className="text-center">
             <Upload className="h-12 w-12 mx-auto mb-3 text-primary animate-bounce" />
-            <p className="text-lg font-medium">Drop JSON file to import history</p>
-            <p className="text-sm text-muted-foreground">Release to import your search history</p>
+            <p className="text-lg font-medium">{t('yt.dropToImport')}</p>
+            <p className="text-sm text-muted-foreground">{t('yt.dropRelease')}</p>
           </div>
         </div>
       )}
@@ -458,13 +459,13 @@ export default function YTFinder() {
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-xs">
                 <div className="space-y-1.5 text-xs">
-                  <p className="font-medium mb-2">Keyboard Shortcuts</p>
+                  <p className="font-medium mb-2">{t('yt.keyboardShortcuts')}</p>
                   <div className="flex justify-between gap-4">
-                    <span className="text-muted-foreground">Fetch video data</span>
+                    <span className="text-muted-foreground">{t('yt.fetchVideoData')}</span>
                     <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+F</kbd>
                   </div>
                   <div className="flex justify-between gap-4">
-                    <span className="text-muted-foreground">Cancel request</span>
+                    <span className="text-muted-foreground">{t('yt.cancelRequest')}</span>
                     <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+X</kbd>
                   </div>
                 </div>
@@ -480,7 +481,7 @@ export default function YTFinder() {
                   disabled={ytHistory.length === 0}
                 >
                   <History className="h-3.5 w-3.5 mr-1" /> 
-                  History
+                  {t('yt.history')}
                   {ytHistory.length > 0 && (
                     <span className="ml-1 text-muted-foreground">({ytHistory.length})</span>
                   )}
@@ -488,7 +489,7 @@ export default function YTFinder() {
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0" align="end">
               <div className="flex items-center justify-between p-3 border-b">
-                <h4 className="text-sm font-medium">Search History</h4>
+                <h4 className="text-sm font-medium">{t('yt.searchHistory')}</h4>
                 <div className="flex items-center gap-1">
                   <input
                     ref={fileInputRef}
@@ -501,11 +502,11 @@ export default function YTFinder() {
                         try {
                           await importHistory(file);
                           toast({ 
-                            title: 'Imported!', 
-                            description: 'History imported successfully'
+                            title: t('yt.imported'), 
+                            description: t('yt.importedDesc')
                           });
                         } catch {
-                          toast({ title: 'Import failed', description: 'Invalid file format', variant: 'destructive' });
+                          toast({ title: t('yt.importFailed'), description: t('yt.invalidFileFormat'), variant: 'destructive' });
                         }
                         e.target.value = '';
                       }
@@ -523,7 +524,7 @@ export default function YTFinder() {
                           <Upload className="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent><p>Import history</p></TooltipContent>
+                      <TooltipContent><p>{t('yt.importHistory')}</p></TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   <TooltipProvider>
@@ -535,14 +536,14 @@ export default function YTFinder() {
                           className="h-7 w-7"
                           onClick={() => {
                             exportHistory('yt-finder');
-                            toast({ title: 'Exported!', description: 'History saved to file' });
+                            toast({ title: t('yt.exported'), description: t('yt.historySavedToFile') });
                           }}
                           disabled={ytHistory.length === 0}
                         >
                           <Download className="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent><p>Export history</p></TooltipContent>
+                      <TooltipContent><p>{t('yt.exportHistory')}</p></TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   <Button 
@@ -552,17 +553,17 @@ export default function YTFinder() {
                     onClick={() => {
                       clearHistory('yt-finder');
                       setHistoryOpen(false);
-                      toast({ title: 'Cleared', description: 'YT Finder history cleared' });
+                      toast({ title: t('yt.cleared'), description: t('yt.historyClearedDesc') });
                     }}
                   >
-                    <Trash2 className="h-3 w-3 mr-1" /> Clear
+                    <Trash2 className="h-3 w-3 mr-1" /> {t('yt.clear')}
                   </Button>
                 </div>
               </div>
               <ScrollArea className="max-h-[300px]">
                 <div className="p-2 space-y-1">
                   {ytHistory.length === 0 ? (
-                    <p className="text-sm text-muted-foreground text-center py-4">No search history yet</p>
+                    <p className="text-sm text-muted-foreground text-center py-4">{t('yt.noSearchHistory')}</p>
                   ) : (
                     ytHistory.slice(0, 10).map((item) => (
                       <div 
@@ -679,7 +680,7 @@ export default function YTFinder() {
                       className="w-full text-xs mt-2"
                       onClick={() => navigate('/history')}
                     >
-                      View all {ytHistory.length} items →
+                      {t('yt.viewAllItems', { count: ytHistory.length })}
                     </Button>
                   )}
                 </div>
@@ -687,7 +688,7 @@ export default function YTFinder() {
             </PopoverContent>
           </Popover>
           <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
-            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
+            <RotateCcw className="h-3.5 w-3.5 mr-1" /> {t('yt.reset')}
           </Button>
         </div>
       </ToolPageHeader>
@@ -698,7 +699,7 @@ export default function YTFinder() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-3">
               <BarChart3 className="h-4 w-4 text-primary" />
-              <h3 className="text-sm font-medium">Channel Analytics</h3>
+              <h3 className="text-sm font-medium">{t('yt.channelAnalytics')}</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Stats */}
@@ -706,21 +707,21 @@ export default function YTFinder() {
                 <div className="text-center p-3 bg-background rounded-lg border">
                   <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
                     <Youtube className="h-3.5 w-3.5" />
-                    <span className="text-xs">Total Videos</span>
+                    <span className="text-xs">{t('yt.totalVideos')}</span>
                   </div>
                   <p className="text-2xl font-bold">{successResults.length}</p>
                 </div>
                 <div className="text-center p-3 bg-background rounded-lg border">
                   <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
                     <Users className="h-3.5 w-3.5" />
-                    <span className="text-xs">Unique Channels</span>
+                    <span className="text-xs">{t('yt.uniqueChannels')}</span>
                   </div>
                   <p className="text-2xl font-bold">{uniqueChannelCount}</p>
                 </div>
                 <div className="text-center p-3 bg-background rounded-lg border">
                   <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-1">
                     <TrendingUp className="h-3.5 w-3.5" />
-                    <span className="text-xs">Top Channel</span>
+                    <span className="text-xs">{t('yt.topChannel')}</span>
                   </div>
                   {topChannelData ? (
                     <TooltipProvider>
@@ -801,7 +802,7 @@ export default function YTFinder() {
           <CardHeader className="p-3">
             <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
               <span>
-                YouTube URLs
+                {t('yt.youtubeUrls')}
                 <span className="text-destructive ml-1">*</span>
               </span>
               {urlCount > 0 && (
@@ -811,7 +812,7 @@ export default function YTFinder() {
                     ? "text-muted-foreground bg-muted" 
                     : "text-destructive bg-destructive/10"
                 )}>
-                  {validVideoIds.length} valid / {urlCount} lines
+                  {validVideoIds.length} {t('yt.valid')} / {urlCount} {t('yt.lines')}
                 </span>
               )}
             </CardTitle>
@@ -827,7 +828,7 @@ export default function YTFinder() {
                 }}
                 compact
               />
-              <span className="text-xs text-muted-foreground">or paste URLs below</span>
+              <span className="text-xs text-muted-foreground">{t('yt.orPasteBelow')}</span>
             </div>
             
             <Textarea 
@@ -848,7 +849,7 @@ export default function YTFinder() {
               <div className="space-y-2 p-3 bg-muted rounded-md">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">
-                    Fetching: {progress.current} / {progress.total}
+                    {t('yt.fetchingProgress', { current: progress.current, total: progress.total })}
                   </span>
                   <TooltipProvider>
                     <Tooltip>
@@ -859,11 +860,11 @@ export default function YTFinder() {
                           onClick={handleCancel}
                           className="h-7 text-xs"
                         >
-                          <X className="h-3 w-3 mr-1" /> Cancel
+                          <X className="h-3 w-3 mr-1" /> {t('yt.cancel')}
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Cancel fetch <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-muted rounded">Shift+X</kbd></p>
+                        <p>{t('yt.cancelFetch')} <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-muted rounded">Shift+X</kbd></p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -875,7 +876,7 @@ export default function YTFinder() {
             {/* URL Format Help */}
             {!hasValidUrls && urls.trim() && touched && (
               <div className="text-xs text-muted-foreground bg-muted p-2 rounded-md">
-                <p className="font-medium mb-1">Supported formats:</p>
+                <p className="font-medium mb-1">{t('yt.supportedFormats')}</p>
                 <ul className="list-disc list-inside space-y-0.5">
                   <li>youtube.com/watch?v=VIDEO_ID</li>
                   <li>youtu.be/VIDEO_ID</li>
@@ -895,11 +896,11 @@ export default function YTFinder() {
                     className="w-full bg-destructive hover:bg-destructive/90 text-sm"
                   >
                     <Youtube className="h-4 w-4 mr-2" />
-                    {loading ? 'Fetching...' : 'Get Channel Data'}
+                    {loading ? t('yt.fetchingBtn') : t('yt.getChannelData')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Fetch video data <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-muted rounded">Shift+F</kbd></p>
+                  <p>{t('yt.fetchVideoData')} <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-muted rounded">Shift+F</kbd></p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -909,15 +910,15 @@ export default function YTFinder() {
         <Card className="border-2 border-primary/20">
           <CardHeader className="p-3 flex-row items-center justify-between gap-2">
             <CardTitle className="text-xs sm:text-sm">
-              Results ({showUniqueOnly ? displayResults.length : successResults.length})
+              {t('yt.results')} ({showUniqueOnly ? displayResults.length : successResults.length})
               {showUniqueOnly && successResults.length !== displayResults.length && (
                 <span className="ml-2 text-muted-foreground text-xs font-normal">
-                  ({successResults.length} total)
+                  ({successResults.length} {t('yt.total')})
                 </span>
               )}
               {results.some(r => r.status === 'error') && (
                 <span className="ml-2 text-destructive text-xs font-normal">
-                  ({results.filter(r => r.status === 'error').length} failed)
+                  ({results.filter(r => r.status === 'error').length} {t('yt.failed')})
                 </span>
               )}
             </CardTitle>
@@ -932,14 +933,14 @@ export default function YTFinder() {
                       className="h-7 text-xs"
                       disabled={successResults.length === 0}
                     >
-                      <Filter className="h-3 w-3 mr-1" /> Unique
+                      <Filter className="h-3 w-3 mr-1" /> {t('yt.unique')}
                       {uniqueChannelCount !== successResults.length && successResults.length > 0 && (
                         <span className="ml-1">({uniqueChannelCount})</span>
                       )}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{showUniqueOnly ? 'Show all results' : 'Show unique channels only'}</p>
+                    <p>{showUniqueOnly ? t('yt.showAllResults') : t('yt.showUniqueOnly')}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -952,23 +953,23 @@ export default function YTFinder() {
                       onClick={() => {
                         const urls = [...new Set(successResults.map(r => r.channelUrl))].join('\n');
                         copy(urls);
-                        toast({ title: 'Copied!', description: `${uniqueChannelCount} unique channel URLs copied` });
+                        toast({ title: t('yt.copied'), description: t('yt.channelUrlsCopied', { count: uniqueChannelCount }) });
                       }} 
                       className="h-7 text-xs"
                       disabled={successResults.length === 0}
                     >
-                      <Copy className="h-3 w-3 mr-1" /> Copy All URLs
+                      <Copy className="h-3 w-3 mr-1" /> {t('yt.copyAllUrls')}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Copy all unique channel URLs to clipboard</p>
+                    <p>{t('yt.copyAllChannelUrls')}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="h-7 text-xs" disabled={successResults.length === 0}>
-                    Export
+                    {t('yt.export')}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -982,8 +983,8 @@ export default function YTFinder() {
             {displayResults.length === 0 && results.filter(r => r.status === 'error').length === 0 ? (
               <EmptyState
                 icon={Search}
-                title={loading ? "Fetching channel data..." : "No results yet"}
-                description={loading ? "Please wait while we retrieve channel information" : "Paste YouTube URLs and click 'Get Channel Data' to extract channel information"}
+                title={loading ? t('yt.fetchingData') : t('yt.noResultsYet')}
+                description={loading ? t('yt.pleaseWait') : t('yt.noResultsDesc2')}
                 className="py-6"
               />
             ) : (
@@ -997,7 +998,7 @@ export default function YTFinder() {
                         onClick={() => handleSort('title')}
                       >
                         <span className="flex items-center">
-                          Title {getSortIcon('title')}
+                          {t('yt.title')} {getSortIcon('title')}
                         </span>
                       </TableHead>
                       <TableHead 
@@ -1005,7 +1006,7 @@ export default function YTFinder() {
                         onClick={() => handleSort('channelName')}
                       >
                         <span className="flex items-center">
-                          Channel {getSortIcon('channelName')}
+                          {t('yt.channel')} {getSortIcon('channelName')}
                         </span>
                       </TableHead>
                       {showUniqueOnly && (
@@ -1014,7 +1015,7 @@ export default function YTFinder() {
                           onClick={() => handleSort('videoCount')}
                         >
                           <span className="flex items-center justify-center">
-                            Videos {getSortIcon('videoCount')}
+                            {t('yt.videos')} {getSortIcon('videoCount')}
                           </span>
                         </TableHead>
                       )}
