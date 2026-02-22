@@ -935,11 +935,11 @@ export default function AdCopyValidator() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-                Cancel
+                {t('adcopy.cancel')}
               </Button>
               <Button onClick={saveDraft}>
                 <Save className="h-4 w-4 mr-1" />
-                Save
+                {t('adcopy.save')}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -976,10 +976,10 @@ export default function AdCopyValidator() {
                     >
                       <div className="font-medium">{draft.name}</div>
                       <div className="text-xs text-muted-foreground">
-                        Updated: {new Date(draft.updatedAt).toLocaleString()}
+                        {t('adcopy.updated')}: {new Date(draft.updatedAt).toLocaleString()}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {draft.headlines.filter(h => h.text).length} headlines, {draft.descriptions.filter(d => d.text).length} descriptions
+                        {draft.headlines.filter(h => h.text).length} {t('adcopy.headlines').toLowerCase()}, {draft.descriptions.filter(d => d.text).length} {t('adcopy.descriptions').toLowerCase()}
                       </div>
                     </div>
                     <Button
@@ -1010,11 +1010,11 @@ export default function AdCopyValidator() {
           {t('adcopy.exportCsv')}
         </Button>
         <Button variant="outline" size="sm" onClick={loadSample}>
-          Sample
+          {t('adcopy.sample')}
         </Button>
         <Button variant="outline" size="sm" onClick={reset}>
           <RotateCcw className="h-4 w-4 mr-1" />
-          Reset
+          {t('common.reset')}
         </Button>
       </ToolPageHeader>
 
@@ -1025,38 +1025,38 @@ export default function AdCopyValidator() {
             <div className="flex items-center gap-2">
               <Badge variant={stats.isRSAReady ? 'default' : 'secondary'} className="text-xs">
                 {stats.isRSAReady ? (
-                  <><CheckCircle2 className="h-3 w-3 mr-1" /> RSA Ready</>
+                  <><CheckCircle2 className="h-3 w-3 mr-1" /> {t('adcopy.rsaReady')}</>
                 ) : (
-                  <><AlertCircle className="h-3 w-3 mr-1" /> Not Ready</>
+                  <><AlertCircle className="h-3 w-3 mr-1" /> {t('adcopy.notReady')}</>
                 )}
               </Badge>
             </div>
             <Separator orientation="vertical" className="h-6 hidden sm:block" />
             <div className="flex gap-4 text-sm">
               <span>
-                Headlines: <strong className="text-primary">{stats.validHeadlines}</strong>/{stats.totalHeadlines} valid
+                {t('adcopy.headlines')}: <strong className="text-primary">{stats.validHeadlines}</strong>/{stats.totalHeadlines} {t('adcopy.valid')}
               </span>
               <span>
-                Descriptions: <strong className="text-primary">{stats.validDescriptions}</strong>/{stats.totalDescriptions} valid
+                {t('adcopy.descriptions')}: <strong className="text-primary">{stats.validDescriptions}</strong>/{stats.totalDescriptions} {t('adcopy.valid')}
               </span>
             </div>
             <span>
-              Sitelinks: <strong className="text-primary">{stats.validSitelinks}</strong>/{stats.totalSitelinks} valid
+              {t('adcopy.sitelinks')}: <strong className="text-primary">{stats.validSitelinks}</strong>/{stats.totalSitelinks} {t('adcopy.valid')}
             </span>
             <span>
-              Callouts: <strong className="text-primary">{stats.validCallouts}</strong>/{stats.totalCallouts} valid
+              {t('adcopy.callouts')}: <strong className="text-primary">{stats.validCallouts}</strong>/{stats.totalCallouts} {t('adcopy.valid')}
             </span>
             <span>
-              Snippets: <strong className="text-primary">{stats.validSnippets}</strong>/{stats.totalSnippets} valid
+              {t('adcopy.snippets')}: <strong className="text-primary">{stats.validSnippets}</strong>/{stats.totalSnippets} {t('adcopy.valid')}
             </span>
             <span>
-              Prices: <strong className="text-primary">{stats.validPrices}</strong>/{stats.totalPrices} valid
+              {t('adcopy.prices')}: <strong className="text-primary">{stats.validPrices}</strong>/{stats.totalPrices} {t('adcopy.valid')}
             </span>
             {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0 || stats.invalidSitelinks > 0 || stats.invalidCallouts > 0 || stats.invalidSnippetValues > 0 || stats.invalidPrices > 0) && (
               <>
                 <Separator orientation="vertical" className="h-6 hidden sm:block" />
                 <span className="text-destructive text-sm">
-                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks + stats.invalidCallouts + stats.invalidSnippetValues + stats.invalidPrices} over limit
+                  {stats.invalidHeadlines + stats.invalidDescriptions + stats.invalidSitelinks + stats.invalidCallouts + stats.invalidSnippetValues + stats.invalidPrices} {t('adcopy.overLimit')}
                 </span>
               </>
             )}
@@ -1077,10 +1077,9 @@ export default function AdCopyValidator() {
           {stats.invalidPrices > 0 && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Price Extension Character Limit Exceeded</AlertTitle>
+               <AlertTitle>{t('adcopy.priceCharLimitExceeded')}</AlertTitle>
               <AlertDescription>
-                {stats.invalidPrices} price item{stats.invalidPrices > 1 ? 's have' : ' has'} fields exceeding character limits.
-                Headers and descriptions must be max {MAX_PRICE_HEADER_LENGTH} chars each.
+                {t('adcopy.priceCharLimitDesc', { count: stats.invalidPrices, max: MAX_PRICE_HEADER_LENGTH })}
               </AlertDescription>
             </Alert>
           )}
@@ -1088,9 +1087,9 @@ export default function AdCopyValidator() {
           {stats.invalidSnippetValues > 0 && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Structured Snippet Character Limit Exceeded</AlertTitle>
+              <AlertTitle>{t('adcopy.snippetCharLimitExceeded')}</AlertTitle>
               <AlertDescription>
-                {stats.invalidSnippetValues} snippet value{stats.invalidSnippetValues > 1 ? 's' : ''} exceed{stats.invalidSnippetValues === 1 ? 's' : ''} the {MAX_SNIPPET_VALUE_LENGTH} character limit.
+                {t('adcopy.snippetCharLimitDesc', { count: stats.invalidSnippetValues, max: MAX_SNIPPET_VALUE_LENGTH })}
               </AlertDescription>
             </Alert>
           )}
@@ -1098,9 +1097,9 @@ export default function AdCopyValidator() {
           {stats.invalidCallouts > 0 && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Callout Character Limit Exceeded</AlertTitle>
+              <AlertTitle>{t('adcopy.calloutCharLimitExceeded')}</AlertTitle>
               <AlertDescription>
-                {stats.invalidCallouts} callout{stats.invalidCallouts > 1 ? 's' : ''} exceed{stats.invalidCallouts === 1 ? 's' : ''} the {MAX_CALLOUT_LENGTH} character limit.
+                {t('adcopy.calloutCharLimitDesc', { count: stats.invalidCallouts, max: MAX_CALLOUT_LENGTH })}
               </AlertDescription>
             </Alert>
           )}
@@ -1108,10 +1107,9 @@ export default function AdCopyValidator() {
           {stats.invalidSitelinks > 0 && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Sitelink Character Limit Exceeded</AlertTitle>
+              <AlertTitle>{t('adcopy.sitelinkCharLimitExceeded')}</AlertTitle>
               <AlertDescription>
-                {stats.invalidSitelinks} sitelink{stats.invalidSitelinks > 1 ? 's have' : ' has'} fields exceeding character limits.
-                Titles must be max {MAX_SITELINK_TITLE_LENGTH} chars, descriptions max {MAX_SITELINK_DESC_LENGTH} chars each.
+                {t('adcopy.sitelinkCharLimitDesc', { count: stats.invalidSitelinks, titleMax: MAX_SITELINK_TITLE_LENGTH, descMax: MAX_SITELINK_DESC_LENGTH })}
               </AlertDescription>
             </Alert>
           )}
@@ -1119,20 +1117,15 @@ export default function AdCopyValidator() {
           {(stats.invalidHeadlines > 0 || stats.invalidDescriptions > 0) && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Character Limit Exceeded</AlertTitle>
+              <AlertTitle>{t('adcopy.charLimitExceeded')}</AlertTitle>
               <AlertDescription>
                 {stats.invalidHeadlines > 0 && (
-                  <span>
-                    {stats.invalidHeadlines} headline{stats.invalidHeadlines > 1 ? 's' : ''} exceed{stats.invalidHeadlines === 1 ? 's' : ''} the {MAX_HEADLINE_LENGTH} character limit.
-                  </span>
+                  <span>{t('adcopy.headlineCharLimitDesc', { count: stats.invalidHeadlines, max: MAX_HEADLINE_LENGTH })} </span>
                 )}
-                {stats.invalidHeadlines > 0 && stats.invalidDescriptions > 0 && ' '}
                 {stats.invalidDescriptions > 0 && (
-                  <span>
-                    {stats.invalidDescriptions} description{stats.invalidDescriptions > 1 ? 's' : ''} exceed{stats.invalidDescriptions === 1 ? 's' : ''} the {MAX_DESCRIPTION_LENGTH} character limit.
-                  </span>
+                  <span>{t('adcopy.descCharLimitDesc', { count: stats.invalidDescriptions, max: MAX_DESCRIPTION_LENGTH })} </span>
                 )}
-                {' '}Please shorten them to create a valid RSA ad.
+                {t('adcopy.shortenForValid')}
               </AlertDescription>
             </Alert>
           )}
@@ -1144,7 +1137,7 @@ export default function AdCopyValidator() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-lg">{t('adcopy.headlines')}</CardTitle>
-                    <CardDescription>Max {MAX_HEADLINE_LENGTH} {t('common.characters')} (3-{MAX_HEADLINES} {t('adcopy.required')})</CardDescription>
+                    <CardDescription>{t('adcopy.headlineMaxDesc', { max: MAX_HEADLINE_LENGTH, maxItems: MAX_HEADLINES })}</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" onClick={addHeadline} disabled={headlines.length >= MAX_HEADLINES}>
                     <Plus className="h-4 w-4 mr-1" /> {t('adcopy.add')}
@@ -1187,7 +1180,7 @@ export default function AdCopyValidator() {
                       </div>
                       {validation.isOverLimit && (
                         <p className="text-xs text-destructive pl-8">
-                          Exceeds limit by {validation.length - MAX_HEADLINE_LENGTH} characters
+                          {t('adcopy.exceedsLimitBy', { count: validation.length - MAX_HEADLINE_LENGTH })}
                         </p>
                       )}
                     </div>
@@ -1202,10 +1195,10 @@ export default function AdCopyValidator() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-lg">{t('adcopy.descriptions')}</CardTitle>
-                    <CardDescription>Max {MAX_DESCRIPTION_LENGTH} {t('common.characters')} (2-{MAX_DESCRIPTIONS} {t('adcopy.required')})</CardDescription>
+                    <CardDescription>{t('adcopy.descMaxDesc', { max: MAX_DESCRIPTION_LENGTH, maxItems: MAX_DESCRIPTIONS })}</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" onClick={addDescription} disabled={descriptions.length >= MAX_DESCRIPTIONS}>
-                    <Plus className="h-4 w-4 mr-1" /> Add
+                    <Plus className="h-4 w-4 mr-1" /> {t('adcopy.add')}
                   </Button>
                 </div>
               </CardHeader>
@@ -1245,7 +1238,7 @@ export default function AdCopyValidator() {
                       </div>
                       {validation.isOverLimit && (
                         <p className="text-xs text-destructive pl-8">
-                          Exceeds limit by {validation.length - MAX_DESCRIPTION_LENGTH} characters
+                          {t('adcopy.exceedsLimitBy', { count: validation.length - MAX_DESCRIPTION_LENGTH })}
                         </p>
                       )}
                     </div>
@@ -1264,10 +1257,10 @@ export default function AdCopyValidator() {
                     <Link className="h-5 w-5" />
                     {t('adcopy.sitelinkExtensions')}
                   </CardTitle>
-                  <CardDescription>Title max {MAX_SITELINK_TITLE_LENGTH}, desc max {MAX_SITELINK_DESC_LENGTH} {t('common.characters')}</CardDescription>
+                  <CardDescription>{t('adcopy.sitelinkMaxDesc', { titleMax: MAX_SITELINK_TITLE_LENGTH, descMax: MAX_SITELINK_DESC_LENGTH })}</CardDescription>
                 </div>
                 <Button variant="outline" size="sm" onClick={addSitelink} disabled={sitelinks.length >= MAX_SITELINKS}>
-                  <Plus className="h-4 w-4 mr-1" /> Add
+                  <Plus className="h-4 w-4 mr-1" /> {t('adcopy.add')}
                 </Button>
               </div>
             </CardHeader>
@@ -1281,7 +1274,7 @@ export default function AdCopyValidator() {
                     hasError ? "border-destructive/50 bg-destructive/5" : "border-border"
                   )}>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Sitelink {index + 1}</span>
+                      <span className="text-sm font-medium">{t('adcopy.sitelinks')} {index + 1}</span>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -1295,7 +1288,7 @@ export default function AdCopyValidator() {
                     
                     {/* Title */}
                     <div className="space-y-1">
-                      <label className="text-xs text-muted-foreground">Link Text (Title)</label>
+                      <label className="text-xs text-muted-foreground">{t('adcopy.linkText')}</label>
                       <div className="relative">
                         <Input
                           value={sitelink.title}
@@ -1315,7 +1308,7 @@ export default function AdCopyValidator() {
                       </div>
                       {validation.isTitleOverLimit && (
                         <p className="text-xs text-destructive">
-                          Exceeds limit by {validation.titleLength - MAX_SITELINK_TITLE_LENGTH} characters
+                          {t('adcopy.exceedsLimitBy', { count: validation.titleLength - MAX_SITELINK_TITLE_LENGTH })}
                         </p>
                       )}
                     </div>
@@ -1323,7 +1316,7 @@ export default function AdCopyValidator() {
                     {/* Description Lines */}
                     <div className="grid sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-xs text-muted-foreground">Description Line 1</label>
+                        <label className="text-xs text-muted-foreground">{t('adcopy.descLine1')}</label>
                         <div className="relative">
                           <Input
                             value={sitelink.description1}
@@ -1343,12 +1336,12 @@ export default function AdCopyValidator() {
                         </div>
                         {validation.isDesc1OverLimit && (
                           <p className="text-xs text-destructive">
-                            Exceeds limit by {validation.desc1Length - MAX_SITELINK_DESC_LENGTH} characters
+                            {t('adcopy.exceedsLimitBy', { count: validation.desc1Length - MAX_SITELINK_DESC_LENGTH })}
                           </p>
                         )}
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs text-muted-foreground">Description Line 2</label>
+                        <label className="text-xs text-muted-foreground">{t('adcopy.descLine2')}</label>
                         <div className="relative">
                           <Input
                             value={sitelink.description2}
@@ -1368,7 +1361,7 @@ export default function AdCopyValidator() {
                         </div>
                         {validation.isDesc2OverLimit && (
                           <p className="text-xs text-destructive">
-                            Exceeds limit by {validation.desc2Length - MAX_SITELINK_DESC_LENGTH} characters
+                            {t('adcopy.exceedsLimitBy', { count: validation.desc2Length - MAX_SITELINK_DESC_LENGTH })}
                           </p>
                         )}
                       </div>
@@ -1386,12 +1379,12 @@ export default function AdCopyValidator() {
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <MessageSquare className="h-5 w-5" />
-                    Callout Extensions
+                    {t('adcopy.calloutExtensions')}
                   </CardTitle>
-                  <CardDescription>Max {MAX_CALLOUT_LENGTH} characters each (4-{MAX_CALLOUTS} recommended)</CardDescription>
+                  <CardDescription>{t('adcopy.calloutExtensionsDesc', { max: MAX_CALLOUT_LENGTH, maxItems: MAX_CALLOUTS })}</CardDescription>
                 </div>
                 <Button variant="outline" size="sm" onClick={addCallout} disabled={callouts.length >= MAX_CALLOUTS}>
-                  <Plus className="h-4 w-4 mr-1" /> Add
+                <Plus className="h-4 w-4 mr-1" /> {t('adcopy.add')}
                 </Button>
               </div>
             </CardHeader>
@@ -1432,7 +1425,7 @@ export default function AdCopyValidator() {
                       </div>
                       {validation.isOverLimit && (
                         <p className="text-xs text-destructive pl-7">
-                          Exceeds limit by {validation.length - MAX_CALLOUT_LENGTH} characters
+                          {t('adcopy.exceedsLimitBy', { count: validation.length - MAX_CALLOUT_LENGTH })}
                         </p>
                       )}
                     </div>
@@ -1449,12 +1442,12 @@ export default function AdCopyValidator() {
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <List className="h-5 w-5" />
-                    Structured Snippet Extensions
+                    {t('adcopy.structuredSnippets')}
                   </CardTitle>
-                  <CardDescription>Select a header and add {MIN_SNIPPET_VALUES}-{MAX_SNIPPET_VALUES} values (max {MAX_SNIPPET_VALUE_LENGTH} chars each)</CardDescription>
+                  <CardDescription>{t('adcopy.snippetExtensionsDesc', { min: MIN_SNIPPET_VALUES, max: MAX_SNIPPET_VALUES, charMax: MAX_SNIPPET_VALUE_LENGTH })}</CardDescription>
                 </div>
                 <Button variant="outline" size="sm" onClick={addSnippet} disabled={snippets.length >= 2}>
-                  <Plus className="h-4 w-4 mr-1" /> Add Snippet
+                  <Plus className="h-4 w-4 mr-1" /> {t('adcopy.addSnippet')}
                 </Button>
               </div>
             </CardHeader>
@@ -1468,10 +1461,10 @@ export default function AdCopyValidator() {
                   )}>
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3 flex-1">
-                        <span className="text-sm font-medium whitespace-nowrap">Snippet {snippetIndex + 1}</span>
+                        <span className="text-sm font-medium whitespace-nowrap">{t('adcopy.snippets')} {snippetIndex + 1}</span>
                         <Select value={snippet.header} onValueChange={(value) => updateSnippetHeader(snippet.id, value)}>
                           <SelectTrigger className="w-48">
-                            <SelectValue placeholder="Select header" />
+                            <SelectValue placeholder={t('adcopy.selectHeader')} />
                           </SelectTrigger>
                           <SelectContent>
                             {SNIPPET_HEADERS.map((header) => (
@@ -1493,7 +1486,7 @@ export default function AdCopyValidator() {
 
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs text-muted-foreground">Values ({validation.validValues}/{snippet.values.length} valid, min {MIN_SNIPPET_VALUES})</label>
+                        <label className="text-xs text-muted-foreground">{t('adcopy.valuesLabel', { valid: validation.validValues, total: snippet.values.length, min: MIN_SNIPPET_VALUES })}</label>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -1501,7 +1494,7 @@ export default function AdCopyValidator() {
                           disabled={snippet.values.length >= MAX_SNIPPET_VALUES}
                           className="h-7 text-xs"
                         >
-                          <Plus className="h-3 w-3 mr-1" /> Add Value
+                          <Plus className="h-3 w-3 mr-1" /> {t('adcopy.addValue')}
                         </Button>
                       </div>
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -1539,7 +1532,7 @@ export default function AdCopyValidator() {
                               </div>
                               {valueValidation.isOverLimit && (
                                 <p className="text-xs text-destructive">
-                                  Exceeds by {valueValidation.length - MAX_SNIPPET_VALUE_LENGTH} chars
+                                  {t('adcopy.exceedsBy', { count: valueValidation.length - MAX_SNIPPET_VALUE_LENGTH })}
                                 </p>
                               )}
                             </div>
@@ -1560,12 +1553,12 @@ export default function AdCopyValidator() {
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <DollarSign className="h-5 w-5" />
-                    Price Extensions
+                    {t('adcopy.priceExtensions')}
                   </CardTitle>
-                  <CardDescription>Header & description max {MAX_PRICE_HEADER_LENGTH} chars each (3-{MAX_PRICES} items)</CardDescription>
+                  <CardDescription>{t('adcopy.priceExtensionsDesc', { max: MAX_PRICE_HEADER_LENGTH, maxItems: MAX_PRICES })}</CardDescription>
                 </div>
                 <Button variant="outline" size="sm" onClick={addPrice} disabled={prices.length >= MAX_PRICES}>
-                  <Plus className="h-4 w-4 mr-1" /> Add
+                  <Plus className="h-4 w-4 mr-1" /> {t('adcopy.add')}
                 </Button>
               </div>
             </CardHeader>
@@ -1583,7 +1576,7 @@ export default function AdCopyValidator() {
                       <div className="flex-1 grid sm:grid-cols-4 gap-2">
                         {/* Header */}
                         <div className="space-y-1">
-                          <label className="text-xs text-muted-foreground">Header</label>
+                          <label className="text-xs text-muted-foreground">{t('adcopy.header')}</label>
                           <div className="relative">
                             <Input
                               value={price.header}
@@ -1602,13 +1595,13 @@ export default function AdCopyValidator() {
                             </span>
                           </div>
                           {validation.isHeaderOverLimit && (
-                            <p className="text-xs text-destructive">Over by {validation.headerLength - MAX_PRICE_HEADER_LENGTH}</p>
+                            <p className="text-xs text-destructive">{t('adcopy.overBy', { count: validation.headerLength - MAX_PRICE_HEADER_LENGTH })}</p>
                           )}
                         </div>
                         
                         {/* Price */}
                         <div className="space-y-1">
-                          <label className="text-xs text-muted-foreground">Price</label>
+                          <label className="text-xs text-muted-foreground">{t('adcopy.price')}</label>
                           <Input
                             value={price.price}
                             onChange={(e) => updatePrice(price.id, 'price', e.target.value)}
@@ -1619,7 +1612,7 @@ export default function AdCopyValidator() {
                         
                         {/* Unit */}
                         <div className="space-y-1">
-                          <label className="text-xs text-muted-foreground">Unit</label>
+                          <label className="text-xs text-muted-foreground">{t('adcopy.unit')}</label>
                           <Select value={price.unit} onValueChange={(value) => updatePrice(price.id, 'unit', value)}>
                             <SelectTrigger className="h-9">
                               <SelectValue />
@@ -1634,7 +1627,7 @@ export default function AdCopyValidator() {
                         
                         {/* Description */}
                         <div className="space-y-1">
-                          <label className="text-xs text-muted-foreground">Description</label>
+                          <label className="text-xs text-muted-foreground">{t('adcopy.description')}</label>
                           <div className="relative">
                             <Input
                               value={price.description}
@@ -1653,7 +1646,7 @@ export default function AdCopyValidator() {
                             </span>
                           </div>
                           {validation.isDescOverLimit && (
-                            <p className="text-xs text-destructive">Over by {validation.descLength - MAX_PRICE_DESC_LENGTH}</p>
+                            <p className="text-xs text-destructive">{t('adcopy.overBy', { count: validation.descLength - MAX_PRICE_DESC_LENGTH })}</p>
                           )}
                         </div>
                       </div>
@@ -1687,8 +1680,8 @@ export default function AdCopyValidator() {
           <div className="grid lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Bulk Headlines</CardTitle>
-                <CardDescription>Paste headlines, one per line (max {MAX_HEADLINES})</CardDescription>
+                <CardTitle className="text-lg">{t('adcopy.bulkHeadlines')}</CardTitle>
+                <CardDescription>{t('adcopy.bulkHeadlinesDesc', { max: MAX_HEADLINES })}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Textarea
@@ -1702,8 +1695,8 @@ export default function AdCopyValidator() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Bulk Descriptions</CardTitle>
-                <CardDescription>Paste descriptions, one per line (max {MAX_DESCRIPTIONS})</CardDescription>
+                <CardTitle className="text-lg">{t('adcopy.bulkDescriptions')}</CardTitle>
+                <CardDescription>{t('adcopy.bulkDescriptionsDesc', { max: MAX_DESCRIPTIONS })}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Textarea
@@ -1718,7 +1711,7 @@ export default function AdCopyValidator() {
 
           <div className="flex justify-end">
             <Button onClick={importBulk}>
-              Import to Editor
+              {t('adcopy.importToEditor')}
             </Button>
           </div>
         </TabsContent>
@@ -1728,18 +1721,18 @@ export default function AdCopyValidator() {
           {/* Main RSA Preview Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Google Search Ad Preview</CardTitle>
-              <CardDescription>Preview how your ad might appear in search results with all extensions</CardDescription>
+              <CardTitle className="text-lg">{t('adcopy.googleSearchAdPreview')}</CardTitle>
+              <CardDescription>{t('adcopy.googleSearchAdPreviewDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="max-w-2xl space-y-6">
                 {/* Desktop Preview */}
                 <div className="border rounded-lg p-4 bg-background">
-                  <p className="text-xs text-muted-foreground mb-3">Desktop Preview</p>
+                  <p className="text-xs text-muted-foreground mb-3">{t('adcopy.desktopPreview')}</p>
                   <div className="space-y-2">
                     {/* Ad Header */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-medium">Sponsored</span>
+                      <span className="px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-medium">{t('adcopy.sponsored')}</span>
                       <span>www.example.com</span>
                     </div>
                     
@@ -1749,7 +1742,7 @@ export default function AdCopyValidator() {
                         .filter(h => h.isValid)
                         .slice(0, 3)
                         .map(h => h.text)
-                        .join(' | ') || 'Your headlines will appear here'}
+                        .join(' | ') || t('adcopy.headlinesAppearHere')}
                     </h3>
                     
                     {/* Descriptions */}
@@ -1758,7 +1751,7 @@ export default function AdCopyValidator() {
                         .filter(d => d.isValid)
                         .slice(0, 2)
                         .map(d => d.text)
-                        .join(' ') || 'Your descriptions will appear here'}
+                        .join(' ') || t('adcopy.descriptionsAppearHere')}
                     </p>
 
                     {/* Sitelinks Preview */}
@@ -1820,11 +1813,11 @@ export default function AdCopyValidator() {
 
                 {/* Mobile Preview */}
                 <div className="border rounded-lg p-4 bg-background max-w-sm">
-                  <p className="text-xs text-muted-foreground mb-3">Mobile Preview</p>
+                  <p className="text-xs text-muted-foreground mb-3">{t('adcopy.mobilePreview')}</p>
                   <div className="space-y-2">
                     {/* Ad Header */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-medium">Sponsored</span>
+                      <span className="px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-medium">{t('adcopy.sponsored')}</span>
                       <span>example.com</span>
                     </div>
                     
@@ -1834,7 +1827,7 @@ export default function AdCopyValidator() {
                         .filter(h => h.isValid)
                         .slice(0, 2)
                         .map(h => h.text)
-                        .join(' | ') || 'Headlines here'}
+                        .join(' | ') || t('adcopy.headlinesHere')}
                     </h3>
                     
                     {/* Descriptions */}
@@ -1843,7 +1836,7 @@ export default function AdCopyValidator() {
                         .filter(d => d.isValid)
                         .slice(0, 1)
                         .map(d => d.text)
-                        .join(' ') || 'Description here'}
+                        .join(' ') || t('adcopy.descriptionHere')}
                     </p>
 
                     {/* Sitelinks Preview (Mobile - horizontal scroll) */}
@@ -1888,9 +1881,9 @@ export default function AdCopyValidator() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <DollarSign className="h-5 w-5" />
-                  Price Extensions Preview
+                  {t('adcopy.priceExtensionsPreview')}
                 </CardTitle>
-                <CardDescription>How your price assets appear below ads</CardDescription>
+                <CardDescription>{t('adcopy.pricePreviewDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="border rounded-lg p-4 bg-background">
@@ -1919,15 +1912,15 @@ export default function AdCopyValidator() {
           {/* All Extensions Summary */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Extensions Summary</CardTitle>
-              <CardDescription>Overview of all ad assets and their validation status</CardDescription>
+              <CardTitle className="text-lg">{t('adcopy.extensionsSummary')}</CardTitle>
+              <CardDescription>{t('adcopy.extensionsSummaryDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Headlines Summary */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-sm">Headlines</h4>
+                    <h4 className="font-medium text-sm">{t('adcopy.headlines')}</h4>
                     <Badge variant={stats.validHeadlines >= 3 ? 'default' : 'secondary'} className="text-xs">
                       {stats.validHeadlines}/{stats.totalHeadlines}
                     </Badge>
@@ -1948,7 +1941,7 @@ export default function AdCopyValidator() {
                       </li>
                     ))}
                     {headlineValidation.length > 5 && (
-                      <li className="text-xs text-muted-foreground pl-5">+{headlineValidation.length - 5} more</li>
+                      <li className="text-xs text-muted-foreground pl-5">{t('adcopy.more', { count: headlineValidation.length - 5 })}</li>
                     )}
                   </ul>
                 </div>
@@ -1956,7 +1949,7 @@ export default function AdCopyValidator() {
                 {/* Descriptions Summary */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-sm">Descriptions</h4>
+                    <h4 className="font-medium text-sm">{t('adcopy.descriptions')}</h4>
                     <Badge variant={stats.validDescriptions >= 2 ? 'default' : 'secondary'} className="text-xs">
                       {stats.validDescriptions}/{stats.totalDescriptions}
                     </Badge>
@@ -1985,7 +1978,7 @@ export default function AdCopyValidator() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium text-sm flex items-center gap-1">
                       <Link className="h-3.5 w-3.5" />
-                      Sitelinks
+                      {t('adcopy.sitelinks')}
                     </h4>
                     <Badge variant={stats.validSitelinks >= 2 ? 'default' : 'secondary'} className="text-xs">
                       {stats.validSitelinks}/{stats.totalSitelinks}
@@ -2012,7 +2005,7 @@ export default function AdCopyValidator() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium text-sm flex items-center gap-1">
                       <MessageSquare className="h-3.5 w-3.5" />
-                      Callouts
+                      {t('adcopy.callouts')}
                     </h4>
                     <Badge variant={stats.validCallouts >= 4 ? 'default' : 'secondary'} className="text-xs">
                       {stats.validCallouts}/{stats.totalCallouts}
@@ -2040,7 +2033,7 @@ export default function AdCopyValidator() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium text-sm flex items-center gap-1">
                       <List className="h-3.5 w-3.5" />
-                      Snippets
+                      {t('adcopy.snippets')}
                     </h4>
                     <Badge variant={stats.validSnippets >= 1 ? 'default' : 'secondary'} className="text-xs">
                       {stats.validSnippets}/{stats.totalSnippets}
@@ -2055,7 +2048,7 @@ export default function AdCopyValidator() {
                           <AlertCircle className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
                         )}
                         <span className="truncate">
-                          {s.header}: {s.validValues}/{s.valueValidations.length} values
+                          {s.header}: {s.validValues}/{s.valueValidations.length} {t('adcopy.values')}
                         </span>
                       </li>
                     ))}
@@ -2067,7 +2060,7 @@ export default function AdCopyValidator() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium text-sm flex items-center gap-1">
                       <DollarSign className="h-3.5 w-3.5" />
-                      Prices
+                      {t('adcopy.prices')}
                     </h4>
                     <Badge variant={stats.validPrices >= 3 ? 'default' : 'secondary'} className="text-xs">
                       {stats.validPrices}/{stats.totalPrices}
@@ -2090,7 +2083,7 @@ export default function AdCopyValidator() {
                       </li>
                     ))}
                     {priceValidation.length > 4 && (
-                      <li className="text-xs text-muted-foreground pl-5">+{priceValidation.length - 4} more</li>
+                      <li className="text-xs text-muted-foreground pl-5">{t('adcopy.more', { count: priceValidation.length - 4 })}</li>
                     )}
                   </ul>
                 </div>
