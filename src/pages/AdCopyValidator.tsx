@@ -226,8 +226,8 @@ export default function AdCopyValidator() {
             setPrices(data.prices || prices);
             setLastAutoSave(savedTime);
             toast({
-              title: 'Draft restored',
-              description: `Auto-saved draft from ${savedTime.toLocaleTimeString()} restored`,
+              title: t('adcopy.draftRestored'),
+              description: t('adcopy.draftRestoredDesc', { time: savedTime.toLocaleTimeString() }),
             });
           }
         }
@@ -316,9 +316,9 @@ export default function AdCopyValidator() {
     setAutoSaveEnabled((prev: boolean) => {
       const newValue = !prev;
       if (newValue) {
-        toast({ title: 'Auto-save enabled', description: 'Your work will be saved automatically every 5 seconds' });
+        toast({ title: t('adcopy.autoSaveOn'), description: t('adcopy.autoSaveEnabledDesc') });
       } else {
-        toast({ title: 'Auto-save disabled', description: 'Remember to save your work manually' });
+        toast({ title: t('adcopy.autoSaveOff'), description: t('adcopy.autoSaveDisabledDesc') });
       }
       return newValue;
     });
@@ -500,7 +500,7 @@ export default function AdCopyValidator() {
 
   const addHeadline = () => {
     if (headlines.length >= MAX_HEADLINES) {
-      toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_HEADLINES} headlines` });
+      toast({ title: t('adcopy.maxReached'), description: t('adcopy.maxHeadlines', { max: MAX_HEADLINES }) });
       return;
     }
     setHeadlines(prev => [...prev, { id: Date.now().toString(), text: '' }]);
@@ -508,7 +508,7 @@ export default function AdCopyValidator() {
 
   const addDescription = () => {
     if (descriptions.length >= MAX_DESCRIPTIONS) {
-      toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_DESCRIPTIONS} descriptions` });
+      toast({ title: t('adcopy.maxReached'), description: t('adcopy.maxDescriptions', { max: MAX_DESCRIPTIONS }) });
       return;
     }
     setDescriptions(prev => [...prev, { id: Date.now().toString(), text: '' }]);
@@ -516,7 +516,7 @@ export default function AdCopyValidator() {
 
   const addSitelink = () => {
     if (sitelinks.length >= MAX_SITELINKS) {
-      toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_SITELINKS} sitelinks` });
+      toast({ title: t('adcopy.maxReached'), description: t('adcopy.maxSitelinks', { max: MAX_SITELINKS }) });
       return;
     }
     setSitelinks(prev => [...prev, { id: Date.now().toString(), title: '', description1: '', description2: '' }]);
@@ -524,7 +524,7 @@ export default function AdCopyValidator() {
 
   const addCallout = () => {
     if (callouts.length >= MAX_CALLOUTS) {
-      toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_CALLOUTS} callouts` });
+      toast({ title: t('adcopy.maxReached'), description: t('adcopy.maxCallouts', { max: MAX_CALLOUTS }) });
       return;
     }
     setCallouts(prev => [...prev, { id: Date.now().toString(), text: '' }]);
@@ -532,7 +532,7 @@ export default function AdCopyValidator() {
 
   const addSnippet = () => {
     if (snippets.length >= 2) {
-      toast({ title: 'Maximum reached', description: 'You can only add up to 2 structured snippets' });
+      toast({ title: t('adcopy.maxReached'), description: t('adcopy.maxSnippets') });
       return;
     }
     setSnippets(prev => [...prev, { id: Date.now().toString(), header: 'Brands', values: ['', '', ''] }]);
@@ -540,7 +540,7 @@ export default function AdCopyValidator() {
 
   const addPrice = () => {
     if (prices.length >= MAX_PRICES) {
-      toast({ title: 'Maximum reached', description: `You can only add up to ${MAX_PRICES} price items` });
+      toast({ title: t('adcopy.maxReached'), description: t('adcopy.maxPrices', { max: MAX_PRICES }) });
       return;
     }
     setPrices(prev => [...prev, { id: Date.now().toString(), header: '', price: '', unit: 'None', description: '' }]);
@@ -548,7 +548,7 @@ export default function AdCopyValidator() {
 
   const removeHeadline = (id: string) => {
     if (headlines.length <= 3) {
-      toast({ title: 'Minimum required', description: 'RSA requires at least 3 headlines' });
+      toast({ title: t('adcopy.minRequired'), description: t('adcopy.minHeadlines') });
       return;
     }
     setHeadlines(prev => prev.filter(h => h.id !== id));
@@ -556,7 +556,7 @@ export default function AdCopyValidator() {
 
   const removeDescription = (id: string) => {
     if (descriptions.length <= 2) {
-      toast({ title: 'Minimum required', description: 'RSA requires at least 2 descriptions' });
+      toast({ title: t('adcopy.minRequired'), description: t('adcopy.minDescriptions') });
       return;
     }
     setDescriptions(prev => prev.filter(d => d.id !== id));
@@ -564,7 +564,7 @@ export default function AdCopyValidator() {
 
   const removeSitelink = (id: string) => {
     if (sitelinks.length <= 2) {
-      toast({ title: 'Minimum required', description: 'At least 2 sitelinks recommended' });
+      toast({ title: t('adcopy.minRequired'), description: t('adcopy.minSitelinks') });
       return;
     }
     setSitelinks(prev => prev.filter(s => s.id !== id));
@@ -572,7 +572,7 @@ export default function AdCopyValidator() {
 
   const removeCallout = (id: string) => {
     if (callouts.length <= 4) {
-      toast({ title: 'Minimum required', description: 'At least 4 callouts recommended' });
+      toast({ title: t('adcopy.minRequired'), description: t('adcopy.minCallouts') });
       return;
     }
     setCallouts(prev => prev.filter(c => c.id !== id));
@@ -580,7 +580,7 @@ export default function AdCopyValidator() {
 
   const removeSnippet = (id: string) => {
     if (snippets.length <= 1) {
-      toast({ title: 'Minimum required', description: 'At least 1 structured snippet recommended' });
+      toast({ title: t('adcopy.minRequired'), description: t('adcopy.minSnippets') });
       return;
     }
     setSnippets(prev => prev.filter(s => s.id !== id));
@@ -588,7 +588,7 @@ export default function AdCopyValidator() {
 
   const removePrice = (id: string) => {
     if (prices.length <= 3) {
-      toast({ title: 'Minimum required', description: 'At least 3 price items recommended' });
+      toast({ title: t('adcopy.minRequired'), description: t('adcopy.minPrices') });
       return;
     }
     setPrices(prev => prev.filter(p => p.id !== id));
@@ -616,7 +616,7 @@ export default function AdCopyValidator() {
       { id: '2', header: 'Pro Plan', price: '$29.99', unit: 'per month', description: 'For small teams' },
       { id: '3', header: 'Enterprise', price: '$99.99', unit: 'per month', description: 'For large orgs' },
     ]);
-    toast({ title: 'Sample loaded', description: 'Sample ad copy has been loaded' });
+    toast({ title: t('adcopy.sampleLoaded'), description: t('adcopy.sampleLoadedDesc') });
   };
 
   const reset = () => {
@@ -649,12 +649,12 @@ export default function AdCopyValidator() {
     ]);
     setBulkHeadlines('');
     setBulkDescriptions('');
-    toast({ title: 'Reset', description: 'All fields have been cleared' });
+    toast({ title: t('common.reset'), description: t('adcopy.resetDesc') });
   };
 
   const saveDraft = () => {
     if (!draftName.trim()) {
-      toast({ title: 'Error', description: 'Please enter a draft name', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: t('adcopy.enterDraftNameError'), variant: 'destructive' });
       return;
     }
 
@@ -675,7 +675,7 @@ export default function AdCopyValidator() {
         prices,
       };
       setDrafts(updatedDrafts);
-      toast({ title: 'Draft updated', description: `"${draftName}" has been updated` });
+      toast({ title: t('adcopy.draftUpdated'), description: `"${draftName}"` });
     } else {
       // Create new draft
       const newDraft: AdCopyDraft = {
@@ -691,7 +691,7 @@ export default function AdCopyValidator() {
         prices,
       };
       setDrafts(prev => [...prev, newDraft]);
-      toast({ title: 'Draft saved', description: `"${draftName}" has been saved` });
+      toast({ title: t('adcopy.draftSaved'), description: `"${draftName}"` });
     }
 
     setDraftName('');
@@ -706,13 +706,13 @@ export default function AdCopyValidator() {
     setSnippets(draft.snippets);
     setPrices(draft.prices);
     setLoadDialogOpen(false);
-    toast({ title: 'Draft loaded', description: `"${draft.name}" has been loaded` });
+    toast({ title: t('adcopy.draftLoaded'), description: `"${draft.name}"` });
   };
 
   const deleteDraft = (draftId: string) => {
     const draft = drafts.find(d => d.id === draftId);
     setDrafts(prev => prev.filter(d => d.id !== draftId));
-    toast({ title: 'Draft deleted', description: `"${draft?.name}" has been deleted` });
+    toast({ title: t('adcopy.draftDeleted'), description: `"${draft?.name}"` });
   };
 
   const importBulk = () => {
@@ -738,8 +738,8 @@ export default function AdCopyValidator() {
     }
 
     toast({ 
-      title: 'Imported', 
-      description: `${newHeadlines.length} headlines, ${newDescriptions.length} descriptions imported` 
+      title: t('adcopy.imported'), 
+      description: t('adcopy.importedDesc', { headlines: newHeadlines.length, descriptions: newDescriptions.length })
     });
   };
 
@@ -748,7 +748,7 @@ export default function AdCopyValidator() {
     const validD = descriptionValidation.filter(d => d.isValid).map(d => d.text);
     const output = `Headlines:\n${validH.join('\n')}\n\nDescriptions:\n${validD.join('\n')}`;
     copy(output);
-    toast({ title: 'Copied', description: 'Valid ad copy copied to clipboard' });
+    toast({ title: t('adcopy.copied'), description: t('adcopy.copiedDesc') });
   };
 
   // Export to Google Ads Editor CSV format
@@ -762,8 +762,8 @@ export default function AdCopyValidator() {
 
     if (validHeadlineTexts.length < 3 || validDescriptionTexts.length < 2) {
       toast({
-        title: 'Cannot export',
-        description: 'You need at least 3 valid headlines and 2 valid descriptions to export',
+        title: t('adcopy.cannotExport'),
+        description: t('adcopy.cannotExportDesc'),
         variant: 'destructive',
       });
       return;
@@ -867,8 +867,8 @@ export default function AdCopyValidator() {
     URL.revokeObjectURL(url);
 
     toast({
-      title: 'Exported successfully',
-      description: `RSA with ${validHeadlineTexts.length} headlines, ${validDescriptionTexts.length} descriptions, ${validSitelinkData.length} sitelinks, ${validCalloutTexts.length} callouts, ${validSnippetData.length} snippets, and ${validPriceData.length} prices exported`,
+      title: t('adcopy.exportedSuccess'),
+      description: `RSA: ${validHeadlineTexts.length}H, ${validDescriptionTexts.length}D, ${validSitelinkData.length} sitelinks, ${validCalloutTexts.length} callouts, ${validSnippetData.length} snippets, ${validPriceData.length} prices`,
     });
   };
 
@@ -879,8 +879,8 @@ export default function AdCopyValidator() {
       {/* Header */}
       <ToolPageHeader
         icon={FileText}
-        title="Ad Copy Validator"
-        description="Validate character limits for Google Ads RSA headlines and descriptions"
+        title={t('adcopy.title')}
+        description={t('adcopy.descLong')}
         iconColor="bg-primary/10 text-primary"
         accentGradient="from-primary to-primary/40"
       >
@@ -899,37 +899,37 @@ export default function AdCopyValidator() {
           ) : (
             <Clock className="h-3 w-3 mr-1" />
           )}
-          {autoSaveEnabled ? "Auto-save ON" : "Auto-save OFF"}
+          {autoSaveEnabled ? t('adcopy.autoSaveOn') : t('adcopy.autoSaveOff')}
         </Button>
         {lastAutoSave && autoSaveEnabled && (
           <span className="text-xs text-muted-foreground hidden sm:inline">
-            Last saved: {lastAutoSave.toLocaleTimeString()}
+            {t('adcopy.lastSaved')}: {lastAutoSave.toLocaleTimeString()}
           </span>
         )}
         <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <Save className="h-4 w-4 mr-1" />
-              Save Draft
+              {t('adcopy.saveDraft')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Save Draft</DialogTitle>
+              <DialogTitle>{t('adcopy.saveDraft')}</DialogTitle>
               <DialogDescription>
-                Save your current ad copy as a draft for later use.
+                {t('adcopy.saveDraftDesc')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <Input
-                placeholder="Enter draft name..."
+                placeholder={t('adcopy.enterDraftName')}
                 value={draftName}
                 onChange={(e) => setDraftName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && saveDraft()}
               />
               {drafts.length > 0 && (
                 <div className="text-sm text-muted-foreground">
-                  Existing drafts: {drafts.map(d => d.name).join(', ')}
+                  {t('adcopy.existingDrafts')}: {drafts.map(d => d.name).join(', ')}
                 </div>
               )}
             </div>
@@ -949,20 +949,20 @@ export default function AdCopyValidator() {
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <FolderOpen className="h-4 w-4 mr-1" />
-              Load Draft
+              {t('adcopy.loadDraft')}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Load Draft</DialogTitle>
+              <DialogTitle>{t('adcopy.loadDraft')}</DialogTitle>
               <DialogDescription>
-                Select a saved draft to load.
+                {t('adcopy.loadDraftDesc')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-2 py-4 max-h-[300px] overflow-y-auto">
               {drafts.length === 0 ? (
                 <div className="text-center text-muted-foreground py-8">
-                  No saved drafts yet.
+                  {t('adcopy.noSavedDrafts')}
                 </div>
               ) : (
                 drafts.map(draft => (
@@ -1007,7 +1007,7 @@ export default function AdCopyValidator() {
           disabled={!stats.isRSAReady}
         >
           <Download className="h-4 w-4 mr-1" />
-          Export CSV
+          {t('adcopy.exportCsv')}
         </Button>
         <Button variant="outline" size="sm" onClick={loadSample}>
           Sample
@@ -1066,9 +1066,9 @@ export default function AdCopyValidator() {
 
       <Tabs defaultValue="editor" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="editor">Editor</TabsTrigger>
-          <TabsTrigger value="bulk">Bulk Import</TabsTrigger>
-          <TabsTrigger value="preview">Ad Preview</TabsTrigger>
+          <TabsTrigger value="editor">{t('adcopy.editor')}</TabsTrigger>
+          <TabsTrigger value="bulk">{t('adcopy.bulkImport')}</TabsTrigger>
+          <TabsTrigger value="preview">{t('adcopy.adPreview')}</TabsTrigger>
         </TabsList>
 
         {/* Editor Tab */}
@@ -1143,11 +1143,11 @@ export default function AdCopyValidator() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">Headlines</CardTitle>
-                    <CardDescription>Max {MAX_HEADLINE_LENGTH} characters each (3-{MAX_HEADLINES} required)</CardDescription>
+                    <CardTitle className="text-lg">{t('adcopy.headlines')}</CardTitle>
+                    <CardDescription>Max {MAX_HEADLINE_LENGTH} {t('common.characters')} (3-{MAX_HEADLINES} {t('adcopy.required')})</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" onClick={addHeadline} disabled={headlines.length >= MAX_HEADLINES}>
-                    <Plus className="h-4 w-4 mr-1" /> Add
+                    <Plus className="h-4 w-4 mr-1" /> {t('adcopy.add')}
                   </Button>
                 </div>
               </CardHeader>
@@ -1201,8 +1201,8 @@ export default function AdCopyValidator() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">Descriptions</CardTitle>
-                    <CardDescription>Max {MAX_DESCRIPTION_LENGTH} characters each (2-{MAX_DESCRIPTIONS} required)</CardDescription>
+                    <CardTitle className="text-lg">{t('adcopy.descriptions')}</CardTitle>
+                    <CardDescription>Max {MAX_DESCRIPTION_LENGTH} {t('common.characters')} (2-{MAX_DESCRIPTIONS} {t('adcopy.required')})</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" onClick={addDescription} disabled={descriptions.length >= MAX_DESCRIPTIONS}>
                     <Plus className="h-4 w-4 mr-1" /> Add
@@ -1262,9 +1262,9 @@ export default function AdCopyValidator() {
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Link className="h-5 w-5" />
-                    Sitelink Extensions
+                    {t('adcopy.sitelinkExtensions')}
                   </CardTitle>
-                  <CardDescription>Title max {MAX_SITELINK_TITLE_LENGTH} chars, descriptions max {MAX_SITELINK_DESC_LENGTH} chars each</CardDescription>
+                  <CardDescription>Title max {MAX_SITELINK_TITLE_LENGTH}, desc max {MAX_SITELINK_DESC_LENGTH} {t('common.characters')}</CardDescription>
                 </div>
                 <Button variant="outline" size="sm" onClick={addSitelink} disabled={sitelinks.length >= MAX_SITELINKS}>
                   <Plus className="h-4 w-4 mr-1" /> Add
