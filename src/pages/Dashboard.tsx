@@ -28,6 +28,7 @@ import { DashboardSkeleton } from '@/components/skeletons';
 import { WelcomeBanner } from '@/components/OnboardingTour';
 import { QuickStats } from '@/components/QuickStats';
 import { useFavoriteTools } from '@/hooks/useFavoriteTools';
+import { useTranslation } from '@/hooks/useTranslation';
 import { toast } from 'sonner';
 
 const toolColors: Record<string, { border: string; shadow: string; gradient: string; dot: string }> = {
@@ -44,134 +45,46 @@ const toolColors: Record<string, { border: string; shadow: string; gradient: str
   'url-history':       { border: 'border-l-muted-foreground', shadow: '',                             gradient: 'from-muted-foreground to-muted-foreground/70', dot: 'bg-muted-foreground' },
 };
 
-const tools = [
-  {
-    id: 'utm-builder',
-    title: 'UTM Builder',
-    description: 'Build campaign URLs with UTM parameters and Google Ads ValueTrack',
-    icon: Link2,
-    path: '/utm-builder',
-    color: 'bg-primary/10 text-primary',
-    features: ['UTM Parameters', 'ValueTrack Macros', 'Live Preview'],
-  },
-  {
-    id: 'keyword-combiner',
-    title: 'Keyword Combiner',
-    description: 'Combine keyword lists into all possible combinations',
-    icon: Combine,
-    path: '/keyword-combiner',
-    color: 'bg-accent/10 text-accent',
-    features: ['Multi-column Lists', 'Match Types', 'Export Options'],
-  },
-  {
-    id: 'keyword-mixer',
-    title: 'Keyword Mixer',
-    description: 'Mix base keywords with prefixes and suffixes',
-    icon: Shuffle,
-    path: '/keyword-mixer',
-    color: 'bg-accent/10 text-accent',
-    features: ['Prefix/Suffix', 'De-duplicate', 'Bulk Processing'],
-  },
-  {
-    id: 'keyword-tools',
-    title: 'Keyword Tools',
-    description: 'Remove duplicates, convert case, and bulk replace text',
-    icon: Wrench,
-    path: '/keyword-tools',
-    color: 'bg-warning/10 text-warning-foreground',
-    features: ['De-duplicate', 'Case Convert', 'Bulk Replace'],
-  },
-  {
-    id: 'yt-finder',
-    title: 'YT Channel Finder',
-    description: 'Extract channel info from YouTube video URLs',
-    icon: Youtube,
-    path: '/yt-finder',
-    color: 'bg-destructive/10 text-destructive',
-    features: ['Bulk URLs', 'oEmbed API', 'Export Data'],
-  },
-  {
-    id: 'qr-generator',
-    title: 'QR Generator',
-    description: 'Generate QR codes with custom colors and logo',
-    icon: QrCode,
-    path: '/qr-generator',
-    color: 'bg-tool-qr/10 text-tool-qr',
-    features: ['Custom Colors', 'Logo Support', 'PNG/SVG Export'],
-  },
-  {
-    id: 'url-validator',
-    title: 'URL Validator',
-    description: 'Validate URL format and structure before use',
-    icon: ShieldCheck,
-    path: '/url-validator',
-    color: 'bg-accent/10 text-accent',
-    features: ['Format Check', 'Bulk Validation', 'Quick Actions'],
-  },
-  {
-    id: 'negative-keywords',
-    title: 'Negative Keywords',
-    description: 'Manage, deduplicate, and detect conflicts in negative keywords',
-    icon: Ban,
-    path: '/negative-keywords',
-    color: 'bg-destructive/10 text-destructive',
-    features: ['Deduplicate', 'Match Types', 'Conflict Detection'],
-  },
-  {
-    id: 'ad-copy-validator',
-    title: 'Ad Copy Validator',
-    description: 'Validate RSA headlines (30 chars) and descriptions (90 chars)',
-    icon: FileText,
-    path: '/ad-copy-validator',
-    color: 'bg-primary/10 text-primary',
-    features: ['Character Limits', 'RSA Preview', 'Bulk Import'],
-  },
-  {
-    id: 'roas-calculator',
-    title: 'ROAS Calculator',
-    description: 'Calculate Return on Ad Spend, budget estimation, and break-even CPA',
-    icon: Calculator,
-    path: '/roas-calculator',
-    color: 'bg-accent/10 text-accent',
-    features: ['ROAS & ROI', 'Budget Planning', 'Break-even CPA'],
-  },
-  {
-    id: 'url-history',
-    title: 'URL History',
-    description: 'Search, filter, and re-use all your generated URLs',
-    icon: History,
-    path: '/history',
-    color: 'bg-muted text-muted-foreground',
-    features: ['Search & Filter', 'Star Favorites', 'Export/Import'],
-  },
+// Tool definitions with i18n keys
+const toolDefs = [
+  { id: 'utm-builder', titleKey: 'tool.utmBuilder' as const, descKey: 'tool.utmBuilder.desc' as const, icon: Link2, path: '/utm-builder', color: 'bg-primary/10 text-primary', features: ['UTM Parameters', 'ValueTrack Macros', 'Live Preview'] },
+  { id: 'keyword-combiner', titleKey: 'tool.keywordCombiner' as const, descKey: 'tool.keywordCombiner.desc' as const, icon: Combine, path: '/keyword-combiner', color: 'bg-accent/10 text-accent', features: ['Multi-column Lists', 'Match Types', 'Export Options'] },
+  { id: 'keyword-mixer', titleKey: 'tool.keywordMixer' as const, descKey: 'tool.keywordMixer.desc' as const, icon: Shuffle, path: '/keyword-mixer', color: 'bg-accent/10 text-accent', features: ['Prefix/Suffix', 'De-duplicate', 'Bulk Processing'] },
+  { id: 'keyword-tools', titleKey: 'tool.keywordTools' as const, descKey: 'tool.keywordTools.desc' as const, icon: Wrench, path: '/keyword-tools', color: 'bg-warning/10 text-warning-foreground', features: ['De-duplicate', 'Case Convert', 'Bulk Replace'] },
+  { id: 'yt-finder', titleKey: 'tool.ytFinder' as const, descKey: 'tool.ytFinder.desc' as const, icon: Youtube, path: '/yt-finder', color: 'bg-destructive/10 text-destructive', features: ['Bulk URLs', 'oEmbed API', 'Export Data'] },
+  { id: 'qr-generator', titleKey: 'tool.qrGenerator' as const, descKey: 'tool.qrGenerator.desc' as const, icon: QrCode, path: '/qr-generator', color: 'bg-tool-qr/10 text-tool-qr', features: ['Custom Colors', 'Logo Support', 'PNG/SVG Export'] },
+  { id: 'url-validator', titleKey: 'tool.urlValidator' as const, descKey: 'tool.urlValidator.desc' as const, icon: ShieldCheck, path: '/url-validator', color: 'bg-accent/10 text-accent', features: ['Format Check', 'Bulk Validation', 'Quick Actions'] },
+  { id: 'negative-keywords', titleKey: 'tool.negativeKeywords' as const, descKey: 'tool.negativeKeywords.desc' as const, icon: Ban, path: '/negative-keywords', color: 'bg-destructive/10 text-destructive', features: ['Deduplicate', 'Match Types', 'Conflict Detection'] },
+  { id: 'ad-copy-validator', titleKey: 'tool.adCopyValidator' as const, descKey: 'tool.adCopyValidator.desc' as const, icon: FileText, path: '/ad-copy-validator', color: 'bg-primary/10 text-primary', features: ['Character Limits', 'RSA Preview', 'Bulk Import'] },
+  { id: 'roas-calculator', titleKey: 'tool.roasCalculator' as const, descKey: 'tool.roasCalculator.desc' as const, icon: Calculator, path: '/roas-calculator', color: 'bg-accent/10 text-accent', features: ['ROAS & ROI', 'Budget Planning', 'Break-even CPA'] },
+  { id: 'url-history', titleKey: 'tool.urlHistory' as const, descKey: 'tool.urlHistory.desc' as const, icon: History, path: '/history', color: 'bg-muted text-muted-foreground', features: ['Search & Filter', 'Star Favorites', 'Export/Import'] },
 ];
 
 export default function Dashboard() {
   const isLoading = usePageLoading(400);
   const { favorites, toggleFavorite, isFavorite, reorderFavorites } = useFavoriteTools();
+  const { t } = useTranslation();
 
-  // Drag-and-drop state for Quick Access reorder
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
 
   if (isLoading) return <DashboardSkeleton />;
 
-  const favoriteTools = tools.filter(tool => favorites.includes(tool.id));
-  // Sort by favorites order
+  const favoriteTools = toolDefs.filter(tool => favorites.includes(tool.id));
   favoriteTools.sort((a, b) => favorites.indexOf(a.id) - favorites.indexOf(b.id));
   const hasFavorites = favoriteTools.length > 0;
 
-  const handleToggleFavorite = (e: React.MouseEvent, tool: typeof tools[0], starred: boolean) => {
+  const handleToggleFavorite = (e: React.MouseEvent, tool: typeof toolDefs[0], starred: boolean) => {
     e.preventDefault();
     toggleFavorite(tool.id);
     if (!starred) {
-      toast.success(`${tool.title} pinned to Quick Access`, {
-        description: 'Find it at the top of your dashboard.',
+      toast.success(`${t(tool.titleKey)} ${t('toast.pinned')}`, {
+        description: t('toast.pinnedDesc'),
         icon: '📌',
       });
     } else {
-      toast(`${tool.title} unpinned`, { icon: '🗑️' });
+      toast(`${t(tool.titleKey)} ${t('toast.unpinned')}`, { icon: '🗑️' });
     }
   };
 
@@ -195,10 +108,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Welcome Banner */}
       <WelcomeBanner />
-
-      {/* Quick Stats */}
       <QuickStats />
 
       {/* ── Pinned / Quick Access ── */}
@@ -207,13 +117,13 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <Pin className="h-4 w-4 text-primary" />
-              Quick Access
+              {t('dashboard.quickAccess')}
               <span className="text-xs font-normal text-muted-foreground ml-1">
                 ({favoriteTools.length})
               </span>
             </div>
             <p className="text-xs text-muted-foreground hidden sm:block">
-              Drag to reorder · Click ⭐ to pin/unpin
+              {t('dashboard.dragToReorder')}
             </p>
           </div>
           <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -246,9 +156,8 @@ export default function Dashboard() {
                       <tool.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <span className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors flex-1">
-                      {tool.title}
+                      {t(tool.titleKey)}
                     </span>
-                    {/* Unpin button visible on hover */}
                     <button
                       onClick={(e) => handleToggleFavorite(e, tool, true)}
                       className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
@@ -263,13 +172,12 @@ export default function Dashboard() {
           </div>
         </section>
       ) : (
-        /* Empty-state hint — shown once, before any tools are starred */
         <section className="rounded-xl border border-dashed border-muted p-4 sm:p-5 flex items-start gap-3 animate-fade-in bg-muted/20">
           <Star className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
           <div>
-            <p className="text-sm font-medium text-foreground">Pin your favourite tools</p>
+            <p className="text-sm font-medium text-foreground">{t('dashboard.pinFavourites')}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Click the ⭐ icon on any tool card below to add it to Quick Access here.
+              {t('dashboard.pinFavouritesDesc')}
             </p>
           </div>
         </section>
@@ -277,7 +185,6 @@ export default function Dashboard() {
 
       {/* Hero Section */}
       <section className="relative text-center py-8 sm:py-10 lg:py-14 overflow-hidden">
-        {/* Decorative gradient blobs */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute -top-20 -left-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />
           <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
@@ -293,14 +200,13 @@ export default function Dashboard() {
           <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-accent animate-pulse-gentle" />
         </div>
         <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
-          Your complete toolkit for Google Ads campaign management. 
-          Build UTMs, combine keywords, and generate QR codes.
+          {t('dashboard.subtitle')}
         </p>
       </section>
 
       {/* Tools Grid */}
       <section data-tour="tools-grid" className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
-        {tools.map((tool, index) => {
+        {toolDefs.map((tool, index) => {
           const starred = isFavorite(tool.id);
           const colors = toolColors[tool.id];
           return (
@@ -341,9 +247,9 @@ export default function Dashboard() {
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <CardTitle className="text-sm sm:text-base lg:text-lg">{tool.title}</CardTitle>
+                <CardTitle className="text-sm sm:text-base lg:text-lg">{t(tool.titleKey)}</CardTitle>
                 <CardDescription className="text-xs sm:text-sm line-clamp-2">
-                  {tool.description}
+                  {t(tool.descKey)}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-3 sm:p-4 pt-0">
@@ -361,7 +267,7 @@ export default function Dashboard() {
                   colors?.gradient
                 )}>
                   <Link to={tool.path} className="flex items-center justify-center gap-1.5 sm:gap-2">
-                    Launch
+                    {t('common.launch')}
                     <ArrowRight className="tool-arrow h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Link>
                 </Button>

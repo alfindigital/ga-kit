@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Link2, Combine, Shuffle, QrCode, Youtube, TrendingUp, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUsageStats } from '@/hooks/useUsageStats';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
