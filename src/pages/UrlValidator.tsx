@@ -185,17 +185,17 @@ export default function UrlValidator() {
   
   const handleSingleValidate = useCallback(() => {
     if (!singleUrl.trim()) {
-      toast({ title: "Enter a URL", description: "Please enter a URL to validate", variant: "destructive" });
+      toast({ title: t('urlval.enterUrl'), description: t('urlval.enterUrlDesc'), variant: "destructive" });
       return;
     }
     const result = validateUrl(singleUrl);
     setSingleResult(result);
-  }, [singleUrl, toast]);
+  }, [singleUrl, toast, t]);
   
   const handleBulkValidate = useCallback(async () => {
     const urls = bulkUrls.split('\n').filter(url => url.trim());
     if (urls.length === 0) {
-      toast({ title: "No URLs", description: "Please enter at least one URL", variant: "destructive" });
+      toast({ title: t('urlval.noUrls'), description: t('urlval.noUrlsDesc'), variant: "destructive" });
       return;
     }
     
@@ -211,10 +211,10 @@ export default function UrlValidator() {
     
     const validCount = results.filter(r => r.isValidFormat).length;
     toast({ 
-      title: "Validation complete", 
-      description: `${validCount} valid, ${results.length - validCount} invalid URLs` 
+      title: t('urlval.validationComplete'), 
+      description: t('urlval.validInvalidCount', { valid: validCount, invalid: results.length - validCount })
     });
-  }, [bulkUrls, toast]);
+  }, [bulkUrls, toast, t]);
   
   const handlePaste = useCallback(async (mode: 'single' | 'bulk') => {
     try {
@@ -224,16 +224,16 @@ export default function UrlValidator() {
       } else {
         setBulkUrls(text);
       }
-      toast({ title: "Pasted!", description: "Content pasted from clipboard" });
+      toast({ title: t('urlval.pasted'), description: t('urlval.pastedDesc') });
     } catch {
-      toast({ title: "Paste failed", description: "Unable to read clipboard", variant: "destructive" });
+      toast({ title: t('urlval.pasteFailed'), description: t('urlval.pasteFailedDesc'), variant: "destructive" });
     }
-  }, [toast]);
+  }, [toast, t]);
   
   const handleCopy = useCallback(async (text: string) => {
     await navigator.clipboard.writeText(text);
-    toast({ title: "Copied!", description: "URL copied to clipboard" });
-  }, [toast]);
+    toast({ title: t('urlval.copied'), description: t('urlval.copiedDesc') });
+  }, [toast, t]);
   
   const handleExportResults = useCallback(() => {
     if (bulkResults.length === 0) return;
@@ -266,31 +266,31 @@ export default function UrlValidator() {
   // Encoding handlers
   const handleEncode = useCallback(() => {
     if (!encodeInput.trim()) {
-      toast({ title: "Enter text", description: "Please enter text to encode", variant: "destructive" });
+      toast({ title: t('urlval.enterText'), description: t('urlval.enterTextToEncode'), variant: "destructive" });
       return;
     }
     try {
       const encoded = encodeURIComponent(encodeInput);
       setEncodeOutput(encoded);
-      toast({ title: "Encoded!", description: "Text successfully URL encoded" });
+      toast({ title: t('toast.encoded'), description: t('urlval.textEncoded') });
     } catch {
-      toast({ title: "Encoding failed", description: "Unable to encode the text", variant: "destructive" });
+      toast({ title: t('toast.encodingFailed'), description: t('urlval.unableToEncode'), variant: "destructive" });
     }
-  }, [encodeInput, toast]);
+  }, [encodeInput, toast, t]);
   
   const handleDecode = useCallback(() => {
     if (!decodeInput.trim()) {
-      toast({ title: "Enter text", description: "Please enter text to decode", variant: "destructive" });
+      toast({ title: t('urlval.enterText'), description: t('urlval.enterTextToDecode'), variant: "destructive" });
       return;
     }
     try {
       const decoded = decodeURIComponent(decodeInput);
       setDecodeOutput(decoded);
-      toast({ title: "Decoded!", description: "Text successfully URL decoded" });
+      toast({ title: t('toast.decoded'), description: t('urlval.textDecoded') });
     } catch {
-      toast({ title: "Decoding failed", description: "Invalid encoded text", variant: "destructive" });
+      toast({ title: t('toast.decodingFailed'), description: t('urlval.invalidEncoded'), variant: "destructive" });
     }
-  }, [decodeInput, toast]);
+  }, [decodeInput, toast, t]);
   
   const handleClearEncode = useCallback(() => {
     setEncodeInput('');
@@ -305,31 +305,31 @@ export default function UrlValidator() {
   // Base64 handlers
   const handleBase64Encode = useCallback(() => {
     if (!base64EncodeInput.trim()) {
-      toast({ title: "Enter text", description: "Please enter text to encode", variant: "destructive" });
+      toast({ title: t('urlval.enterText'), description: t('urlval.enterTextToEncode'), variant: "destructive" });
       return;
     }
     try {
       const encoded = btoa(unescape(encodeURIComponent(base64EncodeInput)));
       setBase64EncodeOutput(encoded);
-      toast({ title: "Encoded!", description: "Text successfully Base64 encoded" });
+      toast({ title: t('toast.encoded'), description: t('urlval.base64Encoded') });
     } catch {
-      toast({ title: "Encoding failed", description: "Unable to encode the text", variant: "destructive" });
+      toast({ title: t('toast.encodingFailed'), description: t('urlval.unableToEncode'), variant: "destructive" });
     }
-  }, [base64EncodeInput, toast]);
+  }, [base64EncodeInput, toast, t]);
   
   const handleBase64Decode = useCallback(() => {
     if (!base64DecodeInput.trim()) {
-      toast({ title: "Enter text", description: "Please enter Base64 text to decode", variant: "destructive" });
+      toast({ title: t('urlval.enterText'), description: t('urlval.enterTextToDecode'), variant: "destructive" });
       return;
     }
     try {
       const decoded = decodeURIComponent(escape(atob(base64DecodeInput)));
       setBase64DecodeOutput(decoded);
-      toast({ title: "Decoded!", description: "Base64 text successfully decoded" });
+      toast({ title: t('toast.decoded'), description: t('urlval.base64Decoded') });
     } catch {
-      toast({ title: "Decoding failed", description: "Invalid Base64 text", variant: "destructive" });
+      toast({ title: t('toast.decodingFailed'), description: t('urlval.invalidBase64'), variant: "destructive" });
     }
-  }, [base64DecodeInput, toast]);
+  }, [base64DecodeInput, toast, t]);
   
   const handleClearBase64Encode = useCallback(() => {
     setBase64EncodeInput('');
@@ -465,7 +465,7 @@ export default function UrlValidator() {
   
   const handleGenerateHashes = useCallback(async () => {
     if (!hashInput.trim()) {
-      toast({ title: "Enter text", description: "Please enter text to hash", variant: "destructive" });
+      toast({ title: t('urlval.enterText'), description: t('urlval.enterTextToHash'), variant: "destructive" });
       return;
     }
     
@@ -478,12 +478,12 @@ export default function UrlValidator() {
       const md5Hash = md5(hashInput);
       
       setHashResults({ md5: md5Hash, sha1, sha256 });
-      toast({ title: "Hashes generated!", description: "All hash values computed successfully" });
+      toast({ title: t('urlval.hashesGenerated'), description: t('urlval.hashesGeneratedDesc') });
     } catch {
-      toast({ title: "Hashing failed", description: "Unable to compute hashes", variant: "destructive" });
+      toast({ title: t('urlval.hashingFailed'), description: t('urlval.unableToComputeHashes'), variant: "destructive" });
     }
     setIsHashing(false);
-  }, [hashInput, toast, computeHash, md5]);
+  }, [hashInput, toast, computeHash, md5, t]);
   
   const handleClearHash = useCallback(() => {
     setHashInput('');
@@ -620,8 +620,8 @@ export default function UrlValidator() {
   const handleFileDrop = useCallback((file: File) => {
     setSelectedFile(file);
     setFileHashResults(null);
-    toast({ title: "File selected", description: `${file.name} ready for hashing` });
-  }, [toast]);
+    toast({ title: t('urlval.fileSelected'), description: t('urlval.readyForHashing', { name: file.name }) });
+  }, [toast, t]);
   
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -652,7 +652,7 @@ export default function UrlValidator() {
   
   const handleGenerateFileHashes = useCallback(async () => {
     if (!selectedFile) {
-      toast({ title: "Select a file", description: "Please select a file to hash", variant: "destructive" });
+      toast({ title: t('urlval.selectFileError'), description: t('urlval.selectFileToHash'), variant: "destructive" });
       return;
     }
     
@@ -666,12 +666,12 @@ export default function UrlValidator() {
       const md5Hash = md5ArrayBuffer(buffer);
       
       setFileHashResults({ md5: md5Hash, sha1, sha256 });
-      toast({ title: "File hashes generated!", description: `Computed hashes for ${selectedFile.name}` });
+      toast({ title: t('urlval.fileHashesGenerated'), description: t('urlval.computedHashesFor', { name: selectedFile.name }) });
     } catch {
-      toast({ title: "Hashing failed", description: "Unable to compute file hashes", variant: "destructive" });
+      toast({ title: t('urlval.hashingFailed'), description: t('urlval.unableToComputeFileHashes'), variant: "destructive" });
     }
     setIsFileHashing(false);
-  }, [selectedFile, toast, computeHashFromBuffer, md5ArrayBuffer]);
+  }, [selectedFile, toast, computeHashFromBuffer, md5ArrayBuffer, t]);
   
   const handleClearFileHash = useCallback(() => {
     setSelectedFile(null);
@@ -690,8 +690,8 @@ export default function UrlValidator() {
   const handleChecksumFileDrop = useCallback((file: File) => {
     setChecksumFile(file);
     setChecksumResult(null);
-    toast({ title: "File selected", description: `${file.name} ready for verification` });
-  }, [toast]);
+    toast({ title: t('urlval.fileSelected'), description: t('urlval.readyForVerification', { name: file.name }) });
+  }, [toast, t]);
   
   const handleChecksumDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -722,11 +722,11 @@ export default function UrlValidator() {
   
   const handleVerifyChecksum = useCallback(async () => {
     if (!checksumFile) {
-      toast({ title: "Select a file", description: "Please select a file to verify", variant: "destructive" });
+      toast({ title: t('urlval.selectFileError'), description: t('urlval.selectFileToVerify'), variant: "destructive" });
       return;
     }
     if (!expectedHash.trim()) {
-      toast({ title: "Enter expected hash", description: "Please enter the expected hash value", variant: "destructive" });
+      toast({ title: t('urlval.enterExpectedHashError'), description: t('urlval.enterExpectedHashDesc'), variant: "destructive" });
       return;
     }
     
@@ -749,15 +749,15 @@ export default function UrlValidator() {
       setChecksumResult({ computed, match });
       
       if (match) {
-        toast({ title: "✓ Checksum verified!", description: "The file matches the expected hash" });
+        toast({ title: t('urlval.checksumVerified'), description: t('urlval.checksumVerifiedDesc') });
       } else {
-        toast({ title: "✗ Checksum mismatch", description: "The file does NOT match the expected hash", variant: "destructive" });
+        toast({ title: "✗ " + t('urlval.checksumMismatch'), description: t('urlval.checksumMismatchDesc'), variant: "destructive" });
       }
     } catch {
-      toast({ title: "Verification failed", description: "Unable to compute file hash", variant: "destructive" });
+      toast({ title: t('urlval.verificationFailed'), description: t('urlval.unableToComputeFileHash'), variant: "destructive" });
     }
     setIsChecksumHashing(false);
-  }, [checksumFile, expectedHash, checksumAlgorithm, toast, md5ArrayBuffer, computeHashFromBuffer]);
+  }, [checksumFile, expectedHash, checksumAlgorithm, toast, md5ArrayBuffer, computeHashFromBuffer, t]);
   
   const handleClearChecksum = useCallback(() => {
     setChecksumFile(null);
@@ -789,9 +789,9 @@ export default function UrlValidator() {
       const content = await file.text();
       const entries = parseChecksumFile(content);
       setBatchChecksumList(entries.map(e => ({ ...e, status: 'pending' as const })));
-      toast({ title: "Checksum list loaded", description: `Found ${entries.length} entries` });
+      toast({ title: t('urlval.checksumListLoaded'), description: t('urlval.foundEntries', { count: entries.length }) });
     }
-  }, [parseChecksumFile, toast]);
+  }, [parseChecksumFile, toast, t]);
   
   const handleBatchListDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
@@ -804,9 +804,9 @@ export default function UrlValidator() {
       const content = await file.text();
       const entries = parseChecksumFile(content);
       setBatchChecksumList(entries.map(e => ({ ...e, status: 'pending' as const })));
-      toast({ title: "Checksum list loaded", description: `Found ${entries.length} entries` });
+      toast({ title: t('urlval.checksumListLoaded'), description: t('urlval.foundEntries', { count: entries.length }) });
     }
-  }, [parseChecksumFile, toast]);
+  }, [parseChecksumFile, toast, t]);
   
   const handleBatchListDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -837,8 +837,8 @@ export default function UrlValidator() {
       return entry;
     }));
     
-    toast({ title: "Files added", description: `${files.length} file(s) added for verification` });
-  }, [toast]);
+    toast({ title: t('urlval.filesAdded'), description: t('urlval.filesAddedDesc', { count: files.length }) });
+  }, [toast, t]);
   
   const handleBatchFilesDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -857,8 +857,8 @@ export default function UrlValidator() {
       return entry;
     }));
     
-    toast({ title: "Files added", description: `${files.length} file(s) added for verification` });
-  }, [toast]);
+    toast({ title: t('urlval.filesAdded'), description: t('urlval.filesAddedDesc', { count: files.length }) });
+  }, [toast, t]);
   
   const handleBatchFilesDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -878,7 +878,7 @@ export default function UrlValidator() {
   
   const handleVerifyBatch = useCallback(async () => {
     if (batchChecksumList.length === 0) {
-      toast({ title: "No checksums loaded", description: "Please load a checksum list file first", variant: "destructive" });
+      toast({ title: t('urlval.noChecksums'), description: t('urlval.loadChecksumFirst'), variant: "destructive" });
       return;
     }
     
@@ -916,10 +916,10 @@ export default function UrlValidator() {
     const missing = updatedList.filter(e => e.status === 'missing').length;
     
     toast({ 
-      title: "Batch verification complete", 
-      description: `${verified} verified, ${failed} failed, ${missing} missing` 
+      title: t('urlval.batchVerificationComplete'), 
+      description: t('urlval.batchResultVerified', { verified, failed, missing })
     });
-  }, [batchChecksumList, batchAlgorithm, md5ArrayBuffer, computeHashFromBuffer, toast]);
+  }, [batchChecksumList, batchAlgorithm, md5ArrayBuffer, computeHashFromBuffer, toast, t]);
   
   const handleClearBatchChecksum = useCallback(() => {
     setBatchChecksumList([]);
@@ -946,11 +946,11 @@ export default function UrlValidator() {
   
   const handleGenerateTextHmac = useCallback(async () => {
     if (!hmacTextInput.trim()) {
-      toast({ title: "Enter text", description: "Please enter text to generate HMAC", variant: "destructive" });
+      toast({ title: t('urlval.enterText'), description: t('urlval.enterTextForHmac'), variant: "destructive" });
       return;
     }
     if (!hmacSecretKey.trim()) {
-      toast({ title: "Enter secret key", description: "Please enter a secret key for HMAC", variant: "destructive" });
+      toast({ title: t('urlval.enterSecretKeyError'), description: t('urlval.enterSecretKeyDesc'), variant: "destructive" });
       return;
     }
     
@@ -961,12 +961,12 @@ export default function UrlValidator() {
       const algorithmMap = { sha1: 'SHA-1', sha256: 'SHA-256', sha512: 'SHA-512' } as const;
       const result = await computeHmac(data.buffer, hmacSecretKey, algorithmMap[hmacAlgorithm]);
       setHmacResult(result);
-      toast({ title: "HMAC generated!", description: `${hmacAlgorithm.toUpperCase()} HMAC computed successfully` });
+      toast({ title: t('urlval.textHmacGenerated'), description: t('urlval.hmacComputedSuccess', { algorithm: hmacAlgorithm.toUpperCase() }) });
     } catch {
-      toast({ title: "HMAC generation failed", description: "Unable to compute HMAC", variant: "destructive" });
+      toast({ title: t('urlval.hmacGenerationFailed'), description: t('urlval.unableToComputeHmac'), variant: "destructive" });
     }
     setIsHmacGenerating(false);
-  }, [hmacTextInput, hmacSecretKey, hmacAlgorithm, computeHmac, toast]);
+  }, [hmacTextInput, hmacSecretKey, hmacAlgorithm, computeHmac, toast, t]);
   
   const handleClearTextHmac = useCallback(() => {
     setHmacTextInput('');
@@ -985,8 +985,8 @@ export default function UrlValidator() {
   const handleHmacFileDrop = useCallback((file: File) => {
     setHmacFile(file);
     setHmacFileResult('');
-    toast({ title: "File selected", description: `${file.name} ready for HMAC generation` });
-  }, [toast]);
+    toast({ title: t('urlval.fileSelected'), description: t('urlval.readyForHmac', { name: file.name }) });
+  }, [toast, t]);
   
   const handleHmacFileDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -1017,11 +1017,11 @@ export default function UrlValidator() {
   
   const handleGenerateFileHmac = useCallback(async () => {
     if (!hmacFile) {
-      toast({ title: "Select a file", description: "Please select a file to generate HMAC", variant: "destructive" });
+      toast({ title: t('urlval.selectFileError'), description: t('urlval.selectFileToHmac'), variant: "destructive" });
       return;
     }
     if (!hmacSecretKey.trim()) {
-      toast({ title: "Enter secret key", description: "Please enter a secret key for HMAC", variant: "destructive" });
+      toast({ title: t('urlval.enterSecretKeyError'), description: t('urlval.enterSecretKeyDesc'), variant: "destructive" });
       return;
     }
     
@@ -1031,12 +1031,12 @@ export default function UrlValidator() {
       const algorithmMap = { sha1: 'SHA-1', sha256: 'SHA-256', sha512: 'SHA-512' } as const;
       const result = await computeHmac(buffer, hmacSecretKey, algorithmMap[hmacAlgorithm]);
       setHmacFileResult(result);
-      toast({ title: "File HMAC generated!", description: `${hmacAlgorithm.toUpperCase()} HMAC computed for ${hmacFile.name}` });
+      toast({ title: t('urlval.fileHmacGenerated'), description: t('urlval.hmacComputedForFile', { algorithm: hmacAlgorithm.toUpperCase(), name: hmacFile.name }) });
     } catch {
-      toast({ title: "HMAC generation failed", description: "Unable to compute file HMAC", variant: "destructive" });
+      toast({ title: t('urlval.hmacGenerationFailed'), description: t('urlval.unableToComputeFileHmac'), variant: "destructive" });
     }
     setIsHmacFileGenerating(false);
-  }, [hmacFile, hmacSecretKey, hmacAlgorithm, computeHmac, toast]);
+  }, [hmacFile, hmacSecretKey, hmacAlgorithm, computeHmac, toast, t]);
   
   const handleClearFileHmac = useCallback(() => {
     setHmacFile(null);
@@ -1072,25 +1072,25 @@ export default function UrlValidator() {
       {/* Header */}
       <ToolPageHeader
         icon={ShieldCheck}
-        title="URL Validator"
-        description="Validate URL format before using in campaigns. Check protocol, domain, and structure."
+        title={t('tool.urlValidator')}
+        description={t('urlval.descLong')}
         iconColor="bg-accent/10 text-accent"
         accentGradient="from-accent to-accent/40"
       />
       
       <Tabs defaultValue="single" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 max-w-lg">
-          <TabsTrigger value="single">Single URL</TabsTrigger>
-          <TabsTrigger value="bulk">Bulk Validation</TabsTrigger>
-          <TabsTrigger value="encode">Encode/Decode</TabsTrigger>
+          <TabsTrigger value="single">{t('urlval.singleUrl')}</TabsTrigger>
+          <TabsTrigger value="bulk">{t('urlval.bulkValidation')}</TabsTrigger>
+          <TabsTrigger value="encode">{t('urlval.encodeDecode')}</TabsTrigger>
         </TabsList>
         
         {/* Single URL Mode */}
         <TabsContent value="single" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Validate URL</CardTitle>
-              <CardDescription>Enter a URL to validate its format and structure</CardDescription>
+              <CardTitle className="text-lg">{t('urlval.validateUrl')}</CardTitle>
+              <CardDescription>{t('urlval.validateUrlDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-2">
@@ -1113,7 +1113,7 @@ export default function UrlValidator() {
                 </div>
                 <Button onClick={handleSingleValidate}>
                   <ShieldCheck className="h-4 w-4 mr-2" />
-                  Validate
+                  {t('urlval.validate')}
                 </Button>
                 {singleUrl && (
                   <Button variant="outline" size="icon" onClick={handleClearSingle}>
@@ -1151,7 +1151,7 @@ export default function UrlValidator() {
                         {/* Details */}
                         <div className="grid gap-3 text-sm">
                           <div className="flex items-center justify-between py-2 border-b border-border/50">
-                            <span className="text-muted-foreground">Protocol</span>
+                            <span className="text-muted-foreground">{t('urlval.protocol')}</span>
                             <Badge variant={singleResult.isSecure ? "default" : "secondary"}>
                               {singleResult.protocol.toUpperCase()}
                               {!singleResult.isSecure && (
@@ -1160,28 +1160,28 @@ export default function UrlValidator() {
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between py-2 border-b border-border/50">
-                            <span className="text-muted-foreground">Domain</span>
+                            <span className="text-muted-foreground">{t('urlval.domain')}</span>
                             <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
                               {singleResult.domain}
                             </span>
                           </div>
                           <div className="flex items-center justify-between py-2 border-b border-border/50">
-                            <span className="text-muted-foreground">Path</span>
+                            <span className="text-muted-foreground">{t('urlval.path')}</span>
                             <span className="font-mono text-xs bg-muted px-2 py-1 rounded max-w-[200px] truncate">
                               {singleResult.path || '/'}
                             </span>
                           </div>
                           <div className="flex items-center justify-between py-2">
-                            <span className="text-muted-foreground">Query Params</span>
+                            <span className="text-muted-foreground">{t('urlval.queryParams')}</span>
                             <Badge variant="outline">
-                              {singleResult.hasQueryParams ? 'Yes' : 'No'}
+                              {singleResult.hasQueryParams ? t('urlval.yes') : t('urlval.no')}
                             </Badge>
                           </div>
                         </div>
                         
                         {/* Normalized URL */}
                         <div className="space-y-2">
-                          <Label className="text-xs text-muted-foreground">Normalized URL</Label>
+                          <Label className="text-xs text-muted-foreground">{t('urlval.normalizedUrl')}</Label>
                           <div className="flex gap-2">
                             <Input 
                               value={singleResult.normalizedUrl} 
@@ -1203,13 +1203,13 @@ export default function UrlValidator() {
                           <Button asChild size="sm" variant="outline">
                             <Link to={`/utm-builder?url=${encodeURIComponent(singleResult.normalizedUrl)}`}>
                               <Link2 className="h-4 w-4 mr-2" />
-                              Send to UTM Builder
+                              {t('urlval.sendToUtm')}
                             </Link>
                           </Button>
                           <Button asChild size="sm" variant="outline">
                             <Link to={`/qr-generator?url=${encodeURIComponent(singleResult.normalizedUrl)}`}>
                               <QrCode className="h-4 w-4 mr-2" />
-                              Send to QR Generator
+                              {t('urlval.sendToQr')}
                             </Link>
                           </Button>
                         </div>
@@ -1226,20 +1226,20 @@ export default function UrlValidator() {
         <TabsContent value="bulk" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Bulk URL Validation</CardTitle>
-              <CardDescription>Enter multiple URLs (one per line) to validate all at once</CardDescription>
+              <CardTitle className="text-lg">{t('urlval.bulkUrlValidation')}</CardTitle>
+              <CardDescription>{t('urlval.bulkUrlValidationDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <Label>URLs (one per line)</Label>
+                  <Label>{t('urlval.urlsOnePerLine')}</Label>
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={() => handlePaste('bulk')}
                   >
                     <ClipboardPaste className="h-4 w-4 mr-1" />
-                    Paste
+                    {t('common.paste')}
                   </Button>
                 </div>
                 <Textarea
@@ -1250,7 +1250,7 @@ export default function UrlValidator() {
                   className="font-mono text-sm"
                 />
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{bulkUrls.split('\n').filter(l => l.trim()).length} URLs</span>
+                  <span>{bulkUrls.split('\n').filter(l => l.trim()).length} {t('urlval.urls')}</span>
                 </div>
               </div>
               
@@ -1265,12 +1265,12 @@ export default function UrlValidator() {
                   ) : (
                     <ShieldCheck className="h-4 w-4 mr-2" />
                   )}
-                  Validate All
+                  {t('urlval.validateAll')}
                 </Button>
                 {bulkUrls && (
                   <Button variant="outline" onClick={handleClearBulk}>
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Clear
+                    {t('common.clear')}
                   </Button>
                 )}
               </div>
@@ -1283,15 +1283,15 @@ export default function UrlValidator() {
               <CardHeader className="pb-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <CardTitle className="text-lg">Results</CardTitle>
+                    <CardTitle className="text-lg">{t('urlval.results')}</CardTitle>
                     <div className="flex gap-2">
                       <Badge variant="default" className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30">
                         <CheckCircle2 className="h-3 w-3 mr-1" />
-                        {validCount} Valid
+                        {validCount} {t('common.valid')}
                       </Badge>
                       <Badge variant="default" className="bg-destructive/10 text-destructive border-destructive/30">
                         <XCircle className="h-3 w-3 mr-1" />
-                        {invalidCount} Invalid
+                        {invalidCount} {t('common.invalid')}
                       </Badge>
                     </div>
                   </div>
@@ -1302,14 +1302,14 @@ export default function UrlValidator() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All URLs</SelectItem>
-                        <SelectItem value="valid">Valid Only</SelectItem>
-                        <SelectItem value="invalid">Invalid Only</SelectItem>
+                        <SelectItem value="all">{t('urlval.allUrls')}</SelectItem>
+                        <SelectItem value="valid">{t('urlval.validOnly')}</SelectItem>
+                        <SelectItem value="invalid">{t('urlval.invalidOnly')}</SelectItem>
                       </SelectContent>
                     </Select>
                     <Button variant="outline" size="sm" onClick={handleExportResults}>
                       <Download className="h-4 w-4 mr-2" />
-                      Export CSV
+                      {t('urlval.exportCsv')}
                     </Button>
                   </div>
                 </div>
@@ -1320,10 +1320,10 @@ export default function UrlValidator() {
                     <table className="w-full text-sm">
                       <thead className="bg-muted/50">
                         <tr>
-                          <th className="text-left p-3 font-medium">URL</th>
-                          <th className="text-center p-3 font-medium w-24">Status</th>
-                          <th className="text-center p-3 font-medium w-24">Protocol</th>
-                          <th className="text-left p-3 font-medium w-40">Domain</th>
+                          <th className="text-left p-3 font-medium">{t('urlval.url')}</th>
+                          <th className="text-center p-3 font-medium w-24">{t('urlval.status')}</th>
+                          <th className="text-center p-3 font-medium w-24">{t('urlval.protocol')}</th>
+                          <th className="text-left p-3 font-medium w-40">{t('urlval.domain')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border">
@@ -1396,13 +1396,13 @@ export default function UrlValidator() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Code className="h-4 w-4" />
-                  URL Encode
+                  {t('urlval.urlEncode')}
                 </CardTitle>
-                <CardDescription>Convert special characters to URL-safe format</CardDescription>
+                <CardDescription>{t('urlval.convertSpecialChars')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Input Text</Label>
+                  <Label>{t('urlval.inputText')}</Label>
                   <div className="flex gap-2">
                     <Textarea
                       placeholder="Hello World! Special chars: @#$%"
@@ -1417,7 +1417,7 @@ export default function UrlValidator() {
                 <div className="flex gap-2">
                   <Button onClick={handleEncode} className="flex-1">
                     <ArrowRightLeft className="h-4 w-4 mr-2" />
-                    Encode
+                    {t('urlval.encode')}
                   </Button>
                   {encodeInput && (
                     <Button variant="outline" size="icon" onClick={handleClearEncode}>
@@ -1428,7 +1428,7 @@ export default function UrlValidator() {
                 
                 {encodeOutput && (
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Encoded Output</Label>
+                    <Label className="text-xs text-muted-foreground">{t('urlval.encodedOutput')}</Label>
                     <div className="flex gap-2">
                       <Textarea
                         value={encodeOutput}
@@ -1455,13 +1455,13 @@ export default function UrlValidator() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Code className="h-4 w-4" />
-                  URL Decode
+                  {t('urlval.urlDecode')}
                 </CardTitle>
-                <CardDescription>Convert URL-encoded text back to readable format</CardDescription>
+                <CardDescription>{t('urlval.convertUrlEncoded')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Encoded Text</Label>
+                  <Label>{t('urlval.encodedText')}</Label>
                   <div className="flex gap-2">
                     <Textarea
                       placeholder="Hello%20World%21%20Special%20chars%3A%20%40%23%24%25"
@@ -1476,7 +1476,7 @@ export default function UrlValidator() {
                 <div className="flex gap-2">
                   <Button onClick={handleDecode} className="flex-1">
                     <ArrowRightLeft className="h-4 w-4 mr-2" />
-                    Decode
+                    {t('urlval.decode')}
                   </Button>
                   {decodeInput && (
                     <Button variant="outline" size="icon" onClick={handleClearDecode}>
@@ -1487,7 +1487,7 @@ export default function UrlValidator() {
                 
                 {decodeOutput && (
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Decoded Output</Label>
+                    <Label className="text-xs text-muted-foreground">{t('urlval.decodedOutput')}</Label>
                     <div className="flex gap-2">
                       <Textarea
                         value={decodeOutput}
@@ -1516,10 +1516,9 @@ export default function UrlValidator() {
               <div className="flex items-start gap-3">
                 <Code className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div className="space-y-1 text-sm">
-                  <p className="font-medium">About URL Encoding</p>
+                  <p className="font-medium">{t('urlval.aboutUrlEncoding')}</p>
                   <p className="text-muted-foreground">
-                    URL encoding converts special characters (like spaces, @, #, etc.) into percent-encoded format 
-                    that is safe for use in URLs. Use this when building query parameters or passing data in URLs.
+                    {t('urlval.aboutUrlEncodingDesc')}
                   </p>
                 </div>
               </div>
@@ -1533,13 +1532,13 @@ export default function UrlValidator() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Code className="h-4 w-4" />
-                  Base64 Encode
+                  {t('urlval.base64Encode')}
                 </CardTitle>
-                <CardDescription>Convert text to Base64 encoded format</CardDescription>
+                <CardDescription>{t('urlval.base64EncodeDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Input Text</Label>
+                  <Label>{t('urlval.inputText')}</Label>
                   <div className="flex gap-2">
                     <Textarea
                       placeholder="Hello World! Enter any text..."
@@ -1554,7 +1553,7 @@ export default function UrlValidator() {
                 <div className="flex gap-2">
                   <Button onClick={handleBase64Encode} className="flex-1">
                     <ArrowRightLeft className="h-4 w-4 mr-2" />
-                    Encode
+                    {t('urlval.encode')}
                   </Button>
                   {base64EncodeInput && (
                     <Button variant="outline" size="icon" onClick={handleClearBase64Encode}>
@@ -1565,7 +1564,7 @@ export default function UrlValidator() {
                 
                 {base64EncodeOutput && (
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Base64 Output</Label>
+                    <Label className="text-xs text-muted-foreground">{t('urlval.base64Output')}</Label>
                     <div className="flex gap-2">
                       <Textarea
                         value={base64EncodeOutput}
@@ -1592,13 +1591,13 @@ export default function UrlValidator() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Code className="h-4 w-4" />
-                  Base64 Decode
+                  {t('urlval.base64Decode')}
                 </CardTitle>
-                <CardDescription>Convert Base64 encoded text back to readable format</CardDescription>
+                <CardDescription>{t('urlval.base64DecodeDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Base64 Text</Label>
+                  <Label>{t('urlval.base64Text')}</Label>
                   <div className="flex gap-2">
                     <Textarea
                       placeholder="SGVsbG8gV29ybGQh"
@@ -1613,7 +1612,7 @@ export default function UrlValidator() {
                 <div className="flex gap-2">
                   <Button onClick={handleBase64Decode} className="flex-1">
                     <ArrowRightLeft className="h-4 w-4 mr-2" />
-                    Decode
+                    {t('urlval.decode')}
                   </Button>
                   {base64DecodeInput && (
                     <Button variant="outline" size="icon" onClick={handleClearBase64Decode}>
@@ -1624,7 +1623,7 @@ export default function UrlValidator() {
                 
                 {base64DecodeOutput && (
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Decoded Output</Label>
+                    <Label className="text-xs text-muted-foreground">{t('urlval.decodedOutput')}</Label>
                     <div className="flex gap-2">
                       <Textarea
                         value={base64DecodeOutput}
@@ -1653,10 +1652,9 @@ export default function UrlValidator() {
               <div className="flex items-start gap-3">
                 <Code className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div className="space-y-1 text-sm">
-                  <p className="font-medium">About Base64 Encoding</p>
+                  <p className="font-medium">{t('urlval.aboutBase64')}</p>
                   <p className="text-muted-foreground">
-                    Base64 encoding converts binary data or text into ASCII characters. It's commonly used for 
-                    embedding images in CSS/HTML, encoding data in URLs, and transmitting data over text-based protocols.
+                    {t('urlval.aboutBase64Desc')}
                   </p>
                 </div>
               </div>
@@ -1668,13 +1666,13 @@ export default function UrlValidator() {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Hash className="h-4 w-4" />
-                Hash Generator
+                {t('urlval.hashGenerator')}
               </CardTitle>
-              <CardDescription>Generate MD5, SHA-1, and SHA-256 hashes from text</CardDescription>
+              <CardDescription>{t('urlval.hashGeneratorDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Input Text</Label>
+                <Label>{t('urlval.inputText')}</Label>
                 <Textarea
                   placeholder="Enter text to hash..."
                   value={hashInput}
@@ -1691,7 +1689,7 @@ export default function UrlValidator() {
                   ) : (
                     <FileDigit className="h-4 w-4 mr-2" />
                   )}
-                  Generate Hashes
+                  {t('urlval.generateHashes')}
                 </Button>
                 {hashInput && (
                   <Button variant="outline" size="icon" onClick={handleClearHash}>
@@ -1706,7 +1704,7 @@ export default function UrlValidator() {
                   <div className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground flex items-center gap-2">
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0">MD5</Badge>
-                      <span>32 characters</span>
+                      <span>32 {t('urlval.characters')}</span>
                     </Label>
                     <div className="flex gap-2">
                       <Input
@@ -1729,7 +1727,7 @@ export default function UrlValidator() {
                   <div className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground flex items-center gap-2">
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0">SHA-1</Badge>
-                      <span>40 characters</span>
+                      <span>40 {t('urlval.characters')}</span>
                     </Label>
                     <div className="flex gap-2">
                       <Input
@@ -1752,7 +1750,7 @@ export default function UrlValidator() {
                   <div className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground flex items-center gap-2">
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0">SHA-256</Badge>
-                      <span>64 characters</span>
+                      <span>64 {t('urlval.characters')}</span>
                     </Label>
                     <div className="flex gap-2">
                       <Input
@@ -1780,9 +1778,9 @@ export default function UrlValidator() {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Upload className="h-4 w-4" />
-                File Hash Generator
+                {t('urlval.fileHashGenerator')}
               </CardTitle>
-              <CardDescription>Generate MD5, SHA-1, and SHA-256 hashes from uploaded files</CardDescription>
+              <CardDescription>{t('urlval.fileHashGeneratorDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Drag and Drop Zone */}
@@ -1804,8 +1802,8 @@ export default function UrlValidator() {
                       <Loader2 className="h-12 w-12 text-primary animate-spin" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-medium">Processing {selectedFile?.name}...</p>
-                      <p className="text-xs text-muted-foreground">Computing MD5, SHA-1, and SHA-256 hashes</p>
+                      <p className="text-sm font-medium">{t('urlval.processing', { name: selectedFile?.name || '' })}</p>
+                      <p className="text-xs text-muted-foreground">{t('urlval.computingHashes')}</p>
                     </div>
                   </div>
                 ) : selectedFile ? (
@@ -1822,11 +1820,11 @@ export default function UrlValidator() {
                     <div className="flex justify-center gap-2">
                       <Button onClick={handleGenerateFileHashes} size="sm">
                         <FileDigit className="h-4 w-4 mr-2" />
-                        Generate Hashes
+                        {t('urlval.generateHashes')}
                       </Button>
                       <Button variant="outline" size="sm" onClick={handleClearFileHash}>
                         <Trash2 className="h-4 w-4 mr-2" />
-                        Clear
+                        {t('common.clear')}
                       </Button>
                     </div>
                   </div>
@@ -1850,10 +1848,10 @@ export default function UrlValidator() {
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm">
-                        <span className="font-medium text-foreground">Click to upload</span>{" "}
-                        <span className="text-muted-foreground">or drag and drop</span>
+                        <span className="font-medium text-foreground">{t('urlval.clickToUpload')}</span>{" "}
+                        <span className="text-muted-foreground">{t('urlval.orDragDrop')}</span>
                       </p>
-                      <p className="text-xs text-muted-foreground">Any file type supported</p>
+                      <p className="text-xs text-muted-foreground">{t('urlval.anyFileType')}</p>
                     </div>
                   </label>
                 )}
@@ -1865,7 +1863,7 @@ export default function UrlValidator() {
                   <div className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground flex items-center gap-2">
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0">MD5</Badge>
-                      <span>32 characters</span>
+                      <span>32 {t('urlval.characters')}</span>
                     </Label>
                     <div className="flex gap-2">
                       <Input
@@ -1888,7 +1886,7 @@ export default function UrlValidator() {
                   <div className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground flex items-center gap-2">
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0">SHA-1</Badge>
-                      <span>40 characters</span>
+                      <span>40 {t('urlval.characters')}</span>
                     </Label>
                     <div className="flex gap-2">
                       <Input
@@ -1911,7 +1909,7 @@ export default function UrlValidator() {
                   <div className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground flex items-center gap-2">
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0">SHA-256</Badge>
-                      <span>64 characters</span>
+                      <span>64 {t('urlval.characters')}</span>
                     </Label>
                     <div className="flex gap-2">
                       <Input
@@ -1939,17 +1937,17 @@ export default function UrlValidator() {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4" />
-                Checksum Verification
+                {t('urlval.checksumVerification')}
               </CardTitle>
-              <CardDescription>Verify downloaded files by comparing computed hashes against expected values</CardDescription>
+              <CardDescription>{t('urlval.checksumVerificationDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Expected Hash Input */}
               <div className="space-y-2">
-                <Label>Expected Hash</Label>
+                <Label>{t('urlval.expectedHash')}</Label>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Paste the expected hash value here..."
+                    placeholder={t('urlval.enterExpectedHash')}
                     value={expectedHash}
                     onChange={(e) => setExpectedHash(e.target.value)}
                     className="font-mono text-sm flex-1"
@@ -1986,8 +1984,8 @@ export default function UrlValidator() {
                       <Loader2 className="h-12 w-12 text-primary animate-spin" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-medium">Verifying {checksumFile?.name}...</p>
-                      <p className="text-xs text-muted-foreground">Computing {checksumAlgorithm.toUpperCase()} hash</p>
+                      <p className="text-sm font-medium">{t('urlval.verifyingFile', { name: checksumFile?.name || '' })}</p>
+                      <p className="text-xs text-muted-foreground">{t('urlval.computingAlgorithm', { algorithm: checksumAlgorithm.toUpperCase() })}</p>
                     </div>
                   </div>
                 ) : checksumFile ? (
@@ -2004,11 +2002,11 @@ export default function UrlValidator() {
                     <div className="flex justify-center gap-2">
                       <Button onClick={handleVerifyChecksum} size="sm" disabled={!expectedHash.trim()}>
                         <ShieldCheck className="h-4 w-4 mr-2" />
-                        Verify Checksum
+                        {t('urlval.verifyChecksum')}
                       </Button>
                       <Button variant="outline" size="sm" onClick={handleClearChecksum}>
                         <Trash2 className="h-4 w-4 mr-2" />
-                        Clear
+                        {t('common.clear')}
                       </Button>
                     </div>
                   </div>
@@ -2032,10 +2030,10 @@ export default function UrlValidator() {
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm">
-                        <span className="font-medium text-foreground">Click to upload</span>{" "}
-                        <span className="text-muted-foreground">or drag and drop</span>
+                        <span className="font-medium text-foreground">{t('urlval.clickToUpload')}</span>{" "}
+                        <span className="text-muted-foreground">{t('urlval.orDragDrop')}</span>
                       </p>
-                      <p className="text-xs text-muted-foreground">Select file to verify its integrity</p>
+                      <p className="text-xs text-muted-foreground">{t('urlval.selectFileToVerify')}</p>
                     </div>
                   </label>
                 )}
@@ -2053,24 +2051,24 @@ export default function UrlValidator() {
                     {checksumResult.match ? (
                       <>
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
-                        <span className="font-medium text-green-600 dark:text-green-400">Checksum Match!</span>
+                        <span className="font-medium text-green-600 dark:text-green-400">{t('urlval.checksumMatch')}</span>
                       </>
                     ) : (
                       <>
                         <XCircle className="h-5 w-5 text-red-500" />
-                        <span className="font-medium text-red-600 dark:text-red-400">Checksum Mismatch!</span>
+                        <span className="font-medium text-red-600 dark:text-red-400">{t('urlval.checksumMismatch')}</span>
                       </>
                     )}
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-start gap-2">
-                      <span className="text-muted-foreground w-20 flex-shrink-0">Expected:</span>
+                      <span className="text-muted-foreground w-20 flex-shrink-0">{t('urlval.expected')}:</span>
                       <code className="font-mono text-xs break-all bg-muted/50 px-1.5 py-0.5 rounded">
                         {expectedHash.trim().toLowerCase().replace(/\s/g, '')}
                       </code>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-muted-foreground w-20 flex-shrink-0">Computed:</span>
+                      <span className="text-muted-foreground w-20 flex-shrink-0">{t('urlval.computed')}:</span>
                       <code className="font-mono text-xs break-all bg-muted/50 px-1.5 py-0.5 rounded">
                         {checksumResult.computed}
                       </code>
@@ -2078,7 +2076,7 @@ export default function UrlValidator() {
                   </div>
                   {!checksumResult.match && (
                     <p className="text-xs text-muted-foreground">
-                      The file may be corrupted or modified. Try downloading it again from a trusted source.
+                      {t('urlval.fileMayBeCorrupted')}
                     </p>
                   )}
                 </div>
@@ -2091,14 +2089,14 @@ export default function UrlValidator() {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Files className="h-4 w-4" />
-                Batch Checksum Verification
+                {t('urlval.batchChecksumVerification')}
               </CardTitle>
-              <CardDescription>Verify multiple files against a checksum list file (like SHA256SUMS)</CardDescription>
+              <CardDescription>{t('urlval.batchChecksumVerificationDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Algorithm Selection */}
               <div className="flex items-center gap-2">
-                <Label className="text-sm">Algorithm:</Label>
+                <Label className="text-sm">{t('urlval.algorithm')}:</Label>
                 <Select value={batchAlgorithm} onValueChange={(v) => setBatchAlgorithm(v as 'md5' | 'sha1' | 'sha256')}>
                   <SelectTrigger className="w-28">
                     <SelectValue />
@@ -2114,8 +2112,8 @@ export default function UrlValidator() {
               {/* Step 1: Upload Checksum List */}
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">Step 1</Badge>
-                  Upload Checksum List
+                  <Badge variant="outline" className="text-xs">{t('urlval.step1')}</Badge>
+                  {t('urlval.uploadChecksumList')}
                 </Label>
                 <div
                   onDragOver={handleBatchListDragOver}
@@ -2146,9 +2144,9 @@ export default function UrlValidator() {
                     </div>
                     <div className="space-y-0.5">
                       <p className="text-sm">
-                        <span className="font-medium text-foreground">Upload checksum file</span>
+                        <span className="font-medium text-foreground">{t('urlval.uploadChecksumFile')}</span>
                       </p>
-                      <p className="text-xs text-muted-foreground">SHA256SUMS, MD5SUMS, or similar format</p>
+                      <p className="text-xs text-muted-foreground">{t('urlval.checksumFormats')}</p>
                     </div>
                   </label>
                 </div>
@@ -2158,10 +2156,10 @@ export default function UrlValidator() {
               {batchChecksumList.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm">{batchChecksumList.length} entries loaded</Label>
+                    <Label className="text-sm">{t('urlval.entriesLoaded', { count: batchChecksumList.length })}</Label>
                     <Button variant="ghost" size="sm" onClick={handleClearBatchChecksum}>
                       <Trash2 className="h-4 w-4 mr-1" />
-                      Clear
+                      {t('common.clear')}
                     </Button>
                   </div>
                   <div className="max-h-48 overflow-y-auto rounded-lg border bg-muted/30">
@@ -2184,7 +2182,7 @@ export default function UrlValidator() {
                           <span className="font-mono text-xs truncate flex-1">{entry.filename}</span>
                           {entry.file && (
                             <Badge variant="secondary" className="text-[10px] px-1.5">
-                              matched
+                              {t('urlval.matched')}
                             </Badge>
                           )}
                         </div>
@@ -2198,8 +2196,8 @@ export default function UrlValidator() {
               {batchChecksumList.length > 0 && (
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs">Step 2</Badge>
-                    Upload Files to Verify
+                  <Badge variant="outline" className="text-xs">{t('urlval.step2')}</Badge>
+                  {t('urlval.uploadFilesToVerify')}
                   </Label>
                   <div
                     onDragOver={handleBatchFilesDragOver}
@@ -2230,12 +2228,12 @@ export default function UrlValidator() {
                       </div>
                       <div className="space-y-0.5">
                         <p className="text-sm">
-                          <span className="font-medium text-foreground">Upload files to verify</span>
-                        </p>
-                        <p className="text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">{t('urlval.uploadFilesLabel')}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
                           {batchFiles.length > 0 
-                            ? `${batchFiles.length} file(s) selected` 
-                            : "Files will be matched by filename"
+                            ? t('urlval.filesSelected', { count: batchFiles.length })
+                            : t('urlval.filesWillBeMatched')
                           }
                         </p>
                       </div>
@@ -2254,12 +2252,12 @@ export default function UrlValidator() {
                   {isBatchVerifying ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Verifying...
+                      {t('urlval.verifying')}
                     </>
                   ) : (
                     <>
                       <ShieldCheck className="h-4 w-4 mr-2" />
-                      Verify All Files
+                      {t('urlval.verifyAllFiles')}
                     </>
                   )}
                 </Button>
@@ -2272,19 +2270,19 @@ export default function UrlValidator() {
                     <div className="text-lg font-bold text-green-600 dark:text-green-400">
                       {batchChecksumList.filter(e => e.status === 'verified').length}
                     </div>
-                    <div className="text-xs text-muted-foreground">Verified</div>
+                    <div className="text-xs text-muted-foreground">{t('urlval.verified')}</div>
                   </div>
                   <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/30">
                     <div className="text-lg font-bold text-red-600 dark:text-red-400">
                       {batchChecksumList.filter(e => e.status === 'failed').length}
                     </div>
-                    <div className="text-xs text-muted-foreground">Failed</div>
+                    <div className="text-xs text-muted-foreground">{t('urlval.failed')}</div>
                   </div>
                   <div className="p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
                     <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
                       {batchChecksumList.filter(e => e.status === 'missing').length}
                     </div>
-                    <div className="text-xs text-muted-foreground">Missing</div>
+                    <div className="text-xs text-muted-foreground">{t('urlval.missing')}</div>
                   </div>
                 </div>
               )}
@@ -2296,25 +2294,25 @@ export default function UrlValidator() {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Key className="h-4 w-4" />
-                HMAC Generator
+                {t('urlval.hmacGenerator')}
               </CardTitle>
-              <CardDescription>Generate keyed-hash message authentication codes (HMAC) using a secret key</CardDescription>
+              <CardDescription>{t('urlval.hmacGeneratorDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Shared Settings */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label>Secret Key</Label>
+                  <Label>{t('urlval.secretKey')}</Label>
                   <Input
                     type="password"
-                    placeholder="Enter your secret key..."
+                    placeholder={t('urlval.enterSecretKey')}
                     value={hmacSecretKey}
                     onChange={(e) => setHmacSecretKey(e.target.value)}
                     className="font-mono text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Algorithm</Label>
+                  <Label>{t('urlval.algorithm')}</Label>
                   <Select value={hmacAlgorithm} onValueChange={(v) => setHmacAlgorithm(v as 'sha1' | 'sha256' | 'sha512')}>
                     <SelectTrigger>
                       <SelectValue />
@@ -2332,11 +2330,11 @@ export default function UrlValidator() {
               <div className="space-y-3 p-4 rounded-lg bg-muted/30 border">
                 <Label className="flex items-center gap-2">
                   <Badge variant="outline" className="text-xs">Text</Badge>
-                  Generate HMAC from Text
+                  {t('urlval.generateHmacFromText')}
                 </Label>
                 <div className="space-y-2">
                   <Textarea
-                    placeholder="Enter text to generate HMAC..."
+                    placeholder={t('urlval.enterTextForHmac')}
                     value={hmacTextInput}
                     onChange={(e) => setHmacTextInput(e.target.value)}
                     rows={3}
@@ -2351,12 +2349,12 @@ export default function UrlValidator() {
                       {isHmacGenerating ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Generating...
+                          {t('urlval.generating')}
                         </>
                       ) : (
                         <>
                           <Key className="h-4 w-4 mr-2" />
-                          Generate HMAC
+                          {t('urlval.generateHmac')}
                         </>
                       )}
                     </Button>
@@ -2394,7 +2392,7 @@ export default function UrlValidator() {
               <div className="space-y-3 p-4 rounded-lg bg-muted/30 border">
                 <Label className="flex items-center gap-2">
                   <Badge variant="outline" className="text-xs">File</Badge>
-                  Generate HMAC from File
+                  {t('urlval.generateHmacFromFile')}
                 </Label>
                 
                 <div
@@ -2412,7 +2410,7 @@ export default function UrlValidator() {
                   {isHmacFileGenerating ? (
                     <div className="space-y-2">
                       <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto" />
-                      <p className="text-sm font-medium">Processing {hmacFile?.name}...</p>
+                      <p className="text-sm font-medium">{t('urlval.processing', { name: hmacFile?.name || '' })}</p>
                     </div>
                   ) : hmacFile ? (
                     <div className="space-y-2">
@@ -2430,11 +2428,11 @@ export default function UrlValidator() {
                           disabled={!hmacSecretKey.trim()}
                         >
                           <Key className="h-4 w-4 mr-2" />
-                          Generate HMAC
+                          {t('urlval.generateHmac')}
                         </Button>
                         <Button variant="outline" size="sm" onClick={handleClearFileHmac}>
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Clear
+                           {t('common.clear')}
                         </Button>
                       </div>
                     </div>
@@ -2455,8 +2453,8 @@ export default function UrlValidator() {
                         )} />
                       </div>
                       <p className="text-sm">
-                        <span className="font-medium text-foreground">Click to upload</span>{" "}
-                        <span className="text-muted-foreground">or drag and drop</span>
+                        <span className="font-medium text-foreground">{t('urlval.clickToUpload')}</span>{" "}
+                        <span className="text-muted-foreground">{t('urlval.orDragDrop')}</span>
                       </p>
                     </label>
                   )}
@@ -2490,7 +2488,7 @@ export default function UrlValidator() {
               <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 text-sm">
                 <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
                 <p className="text-muted-foreground">
-                  HMAC provides message authentication using a secret key. Keep your key secure and never share it publicly.
+                  {t('urlval.hmacInfo')}
                 </p>
               </div>
             </CardContent>
@@ -2502,10 +2500,9 @@ export default function UrlValidator() {
               <div className="flex items-start gap-3">
                 <Hash className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div className="space-y-1 text-sm">
-                  <p className="font-medium">About Hash Functions</p>
+                  <p className="font-medium">{t('urlval.aboutHashFunctions')}</p>
                   <p className="text-muted-foreground">
-                    Hash functions create fixed-size fingerprints of data. MD5 (128-bit) is fast but considered weak for security. 
-                    SHA-1 (160-bit) is deprecated for cryptographic use. SHA-256 (256-bit) is recommended for security-sensitive applications.
+                    {t('urlval.aboutHashFunctionsDesc')}
                   </p>
                 </div>
               </div>
@@ -2520,10 +2517,9 @@ export default function UrlValidator() {
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
             <div className="space-y-1 text-sm">
-              <p className="font-medium">About URL Validation</p>
+              <p className="font-medium">{t('urlval.aboutUrlValidation')}</p>
               <p className="text-muted-foreground">
-                This tool validates URL format and structure client-side. It checks protocol, domain format, 
-                and URL syntax. Full accessibility checks (HTTP status) require server-side validation.
+                {t('urlval.aboutUrlValidationDesc')}
               </p>
             </div>
           </div>
