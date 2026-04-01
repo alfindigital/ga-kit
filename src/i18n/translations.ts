@@ -759,6 +759,25 @@ const en = {
   'roas.estProfit': 'Est. Profit',
   'roas.estProfitDesc': 'Estimated monthly profit',
 
+  // ── Not Found ──
+  'notFound.title': '404',
+  'notFound.message': 'Oops! Page not found',
+  'notFound.returnHome': 'Return to Home',
+
+  // ── URL History ──
+  'urlHistory.title': 'URL History',
+  'urlHistory.subtitle': 'All your generated URLs in one place',
+  'urlHistory.totalUrls': 'Total URLs',
+  'urlHistory.utmUrls': 'UTM URLs',
+  'urlHistory.qrCodes': 'QR Codes',
+  'urlHistory.ytSearches': 'YT Searches',
+  'urlHistory.starred': 'Starred',
+  'urlHistory.historyTab': 'History',
+  'urlHistory.analyticsTab': 'Analytics',
+  'urlHistory.allHistory': 'All History',
+  'urlHistory.loaded': 'Loaded',
+  'urlHistory.redirecting': 'Redirecting to {{tool}}',
+
   // ── Settings ──
   'settings.title': 'Settings',
   'settings.subtitle': 'Customize your GA Toolkit experience',
