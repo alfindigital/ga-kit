@@ -583,13 +583,13 @@ export default function ROASCalculator() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="targetRevenue" className="flex items-center gap-2">
-                    Target Monthly Revenue ($)
+                    {t('roas.targetMonthlyRevenue')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Your desired monthly revenue from ads
+                        {t('roas.desiredMonthlyRevenue')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
