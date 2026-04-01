@@ -617,7 +617,7 @@ export default function ROASCalculator() {
                     id="expectedROAS"
                     type="number"
                     step="0.1"
-                    placeholder="e.g., 4"
+                    placeholder={t('roas.egExpectedRoas')}
                     value={expectedROAS}
                     onChange={(e) => setExpectedROAS(e.target.value)}
                   />
