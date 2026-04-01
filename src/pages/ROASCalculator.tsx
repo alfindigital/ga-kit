@@ -500,8 +500,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    A ROAS of 4.0 means you earn $4 for every $1 spent on ads.
-                    Generally, a ROAS above 3.0 is considered good.
+                    {t('roas.roasInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
