@@ -214,7 +214,7 @@ export default function ROASCalculator() {
         _format: 'percent',
       },
     ];
-  }, [roasAdSpend, roasRevenue]);
+  }, [roasAdSpend, roasRevenue, t]);
 
   // Budget Estimation
   const budgetResult = useMemo((): CalculatorResult[] => {
