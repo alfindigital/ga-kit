@@ -641,7 +641,7 @@ export default function ROASCalculator() {
                 {budgetResult.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
                     <DollarSign className="h-12 w-12 mb-4 opacity-50" />
-                    <p>Enter your target revenue and expected ROAS</p>
+                    <p>{t('roas.enterTargetRevenue')}</p>
                   </div>
                 ) : (
                   <div className="grid gap-4">
