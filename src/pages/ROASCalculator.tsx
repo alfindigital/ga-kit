@@ -356,7 +356,7 @@ export default function ROASCalculator() {
         _format: 'currency',
       },
     ];
-  }, [monthlyBudget, avgCPC, conversionRate, avgOrderValue]);
+  }, [monthlyBudget, avgCPC, conversionRate, avgOrderValue, t]);
 
   const resetAll = () => {
     setRoasAdSpend('');
