@@ -799,10 +799,10 @@ export default function ROASCalculator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5 text-primary" />
-                  Advanced Campaign Estimator
+                  {t('roas.advancedEstimator')}
                 </CardTitle>
                 <CardDescription>
-                  Forecast campaign performance with detailed inputs
+                  {t('roas.advancedEstimatorDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
