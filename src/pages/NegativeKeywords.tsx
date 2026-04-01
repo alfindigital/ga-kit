@@ -352,19 +352,19 @@ export default function NegativeKeywords() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Ban className="h-4 w-4 text-destructive" />
-              Negative Keywords
+              {t('neg.negativeKeywords')}
             </CardTitle>
-            <CardDescription>One keyword per line</CardDescription>
+            <CardDescription>{t('neg.onePerLine')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="Enter negative keywords...&#10;free&#10;&quot;cheap shoes&quot;&#10;[discount code]"
+              placeholder={t('neg.negPlaceholder')}
               value={negativeInput}
               onChange={(e) => setNegativeInput(e.target.value)}
               className="min-h-[200px] font-mono text-sm"
             />
             <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-              <Badge variant="outline">{negativeKeywords.length} keywords</Badge>
+              <Badge variant="outline">{negativeKeywords.length} {t('neg.keywords')}</Badge>
             </div>
           </CardContent>
         </Card>
