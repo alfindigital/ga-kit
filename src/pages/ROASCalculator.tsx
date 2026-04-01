@@ -603,13 +603,13 @@ export default function ROASCalculator() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="expectedROAS" className="flex items-center gap-2">
-                    Expected ROAS
+                    {t('roas.expectedRoas')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Your historical or expected ROAS (e.g., 4 = $4 revenue per $1 spent)
+                        {t('roas.expectedRoasTooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
