@@ -249,7 +249,7 @@ export default function ROASCalculator() {
         isPositive: true,
       },
     ];
-  }, [targetRevenue, expectedROAS]);
+  }, [targetRevenue, expectedROAS, t]);
 
   // Break-even CPA Calculation
   const cpaResult = useMemo((): CalculatorResult[] => {
