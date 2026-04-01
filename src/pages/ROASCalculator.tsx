@@ -458,13 +458,13 @@ export default function ROASCalculator() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="adSpend" className="flex items-center gap-2">
-                    Ad Spend ($)
+                    {t('roas.adSpend')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Total amount spent on advertising
+                        {t('roas.totalSpent')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
