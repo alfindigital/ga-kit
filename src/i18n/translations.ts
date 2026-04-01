@@ -1024,6 +1024,22 @@ const en = {
   'cmd.resetForm': 'Reset Form',
   'cmd.keyboardShortcuts': 'Keyboard Shortcuts',
 
+  // ── Keyboard Shortcuts Dialog ──
+  'kbd.title': 'Keyboard Shortcuts',
+  'kbd.navigation': 'Navigation',
+  'kbd.pageActions': 'Page Actions',
+  'kbd.toggleHint': 'Press {{key}} to toggle this dialog',
+  'kbd.openCommandPalette': 'Open command palette',
+  'kbd.dashboard': 'Dashboard',
+  'kbd.showShortcuts': 'Show shortcuts help',
+  'kbd.copyResult': 'Copy result',
+  'kbd.resetForm': 'Reset form',
+  'kbd.loadSample': 'Load sample data',
+  'kbd.validateUrls': 'Validate URL(s)',
+  'kbd.generateHashes': 'Generate hashes (URL Validator)',
+  'kbd.fetchData': 'Fetch data (YT Finder)',
+  'kbd.cancelRequest': 'Cancel request (YT Finder)',
+
   // ── Settings ──
   'settings.title': 'Settings',
   'settings.subtitle': 'Customize your GA Toolkit experience',
@@ -2107,6 +2123,22 @@ const id: Record<string, string> = {
   'cmd.copyResults': 'Salin Hasil',
   'cmd.resetForm': 'Reset Formulir',
   'cmd.keyboardShortcuts': 'Pintasan Keyboard',
+
+  // ── Dialog Pintasan Keyboard ──
+  'kbd.title': 'Pintasan Keyboard',
+  'kbd.navigation': 'Navigasi',
+  'kbd.pageActions': 'Aksi Halaman',
+  'kbd.toggleHint': 'Tekan {{key}} untuk membuka/menutup dialog ini',
+  'kbd.openCommandPalette': 'Buka palet perintah',
+  'kbd.dashboard': 'Dasbor',
+  'kbd.showShortcuts': 'Tampilkan bantuan pintasan',
+  'kbd.copyResult': 'Salin hasil',
+  'kbd.resetForm': 'Reset formulir',
+  'kbd.loadSample': 'Muat data sampel',
+  'kbd.validateUrls': 'Validasi URL',
+  'kbd.generateHashes': 'Buat hash (URL Validator)',
+  'kbd.fetchData': 'Ambil data (YT Finder)',
+  'kbd.cancelRequest': 'Batalkan permintaan (YT Finder)',
 
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',
