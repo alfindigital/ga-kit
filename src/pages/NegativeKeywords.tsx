@@ -340,7 +340,7 @@ export default function NegativeKeywords() {
                 checked={ignoreMatchType}
                 onCheckedChange={(checked) => setIgnoreMatchType(checked as boolean)}
               />
-              <Label htmlFor="matchtype" className="font-normal cursor-pointer">Ignore match type when deduplicating</Label>
+              <Label htmlFor="matchtype" className="font-normal cursor-pointer">{t('neg.ignoreMatchType')}</Label>
             </div>
           </div>
         </CardContent>
