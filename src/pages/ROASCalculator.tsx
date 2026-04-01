@@ -475,7 +475,7 @@ export default function ROASCalculator() {
                   <Input
                     id="adSpend"
                     type="number"
-                    placeholder="e.g., 1000"
+                    placeholder={t('roas.egAdSpend')}
                     value={roasAdSpend}
                     onChange={(e) => setRoasAdSpend(e.target.value)}
                   />
