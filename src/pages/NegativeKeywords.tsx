@@ -266,7 +266,7 @@ export default function NegativeKeywords() {
       ...conflicts.map(c => `[${c.severity.toUpperCase()}] ${c.message}`),
     ];
     exportTxt(lines, 'negative-keywords-report');
-    toast({ title: 'Exported', description: 'Full report with conflicts downloaded' });
+    toast({ title: t('neg.exported'), description: t('neg.reportDownloaded') });
   };
   
   if (isLoading) return <NegativeKeywordsSkeleton />;
