@@ -190,24 +190,28 @@ export default function ROASCalculator() {
         label: 'ROAS',
         description: t('roas.roasPerDollar', { value: roas.toFixed(2) }),
         isPositive: roas >= 1,
+        _format: 'decimal',
       },
       {
         value: roasPercent,
         label: 'ROAS %',
         description: t('roas.roasPercentReturn', { value: roasPercent.toFixed(0) }),
         isPositive: roasPercent >= 100,
+        _format: 'percent',
       },
       {
         value: profit,
         label: t('roas.profitLoss'),
         description: profit >= 0 ? t('roas.profitLossDescPositive') : t('roas.profitLossDescNegative'),
         isPositive: profit >= 0,
+        _format: 'currency',
       },
       {
         value: roi,
         label: t('roas.roiPercent'),
         description: t('roas.roiDesc'),
         isPositive: roi >= 0,
+        _format: 'percent',
       },
     ];
   }, [roasAdSpend, roasRevenue]);
