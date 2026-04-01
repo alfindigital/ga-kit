@@ -31,9 +31,9 @@ export default function Install() {
 
       {/* Already installed */}
       {isInstalled && (
-        <Card className="border-green-500/30 bg-green-500/5">
+        <Card className="border-primary/30 bg-primary/5">
           <CardContent className="flex items-center gap-3 pt-6">
-            <CheckCircle2 className="h-6 w-6 text-green-500 shrink-0" />
+            <CheckCircle2 className="h-6 w-6 text-primary shrink-0" />
             <div>
               <p className="font-medium">{t('install.alreadyInstalled')}</p>
               <p className="text-sm text-muted-foreground">{t('install.alreadyInstalledDesc')}</p>

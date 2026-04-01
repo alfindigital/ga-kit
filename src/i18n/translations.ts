@@ -2223,6 +2223,29 @@ const id: Record<string, string> = {
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – konsep v1',
+
+  // ── Install / PWA ──
+  'install.title': 'Instal GAKit',
+  'install.description': 'Tambahkan GAKit ke layar utama untuk akses cepat, dukungan offline, dan pengalaman seperti aplikasi native.',
+  'install.alreadyInstalled': 'GAKit sudah terinstal!',
+  'install.alreadyInstalledDesc': 'Anda sudah menggunakan GAKit sebagai aplikasi terinstal.',
+  'install.ctaTitle': 'Dapatkan Aplikasi',
+  'install.ctaDesc': 'Instal GAKit langsung dari browser — tanpa app store.',
+  'install.button': 'Instal Aplikasi',
+  'install.iosTitle': 'Instal di iOS',
+  'install.iosStep1': 'Ketuk tombol Bagikan',
+  'install.iosStep2': 'Ketuk "Tambahkan ke Layar Utama"',
+  'install.iosStep3': 'Ketuk "Tambah" untuk konfirmasi',
+  'install.browserHint': 'Gunakan Chrome atau Edge di desktop/Android untuk pengalaman instal terbaik.',
+  'install.featureOffline': 'Bekerja Offline',
+  'install.featureFast': 'Super Cepat',
+  'install.featureNative': 'Rasa Native',
+  'install.featureNoStore': 'Tanpa App Store',
+  'install.note': 'Instal PWA hanya tersedia di situs yang sudah dipublikasi, bukan di preview editor.',
+  'install.settingsTitle': 'Instal Aplikasi',
+  'install.settingsDesc': 'Tambahkan GAKit ke layar utama untuk akses cepat dan dukungan offline',
+  'install.settingsButton': 'Instal',
+  'install.settingsGoToInstall': 'Panduan Instal',
 };
 
 export const translations: Record<string, Record<string, string>> = { en, id };
