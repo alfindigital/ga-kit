@@ -809,7 +809,7 @@ export default function ROASCalculator() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="monthlyBudget" className="flex items-center gap-2">
-                      Monthly Budget ($)
+                      {t('roas.monthlyBudget')}
                     </Label>
                     <Input
                       id="monthlyBudget"
