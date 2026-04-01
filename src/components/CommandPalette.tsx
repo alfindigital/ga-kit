@@ -29,6 +29,7 @@ import {
 import { useTheme } from '@/contexts/ThemeContext';
 import { getRecentPages, clearRecentPages } from '@/hooks/useRecentPages';
 import { toast } from '@/hooks/use-toast';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const navigationItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard, keywords: ['home', 'main'] },
@@ -49,8 +50,8 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
   const [recentKey, setRecentKey] = useState(0);
   const navigate = useNavigate();
   const { setTheme } = useTheme();
+  const { t } = useTranslation();
 
-  // Get recent pages when dialog opens or after clearing
   const recentPages = useMemo(() => {
     if (!open) return [];
     return getRecentPages();
@@ -63,7 +64,6 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
       .filter(Boolean) as typeof navigationItems;
   }, [recentPages]);
 
-  // Filter out recent items from main navigation
   const remainingNavItems = useMemo(() => {
     return navigationItems.filter(item => !recentPages.includes(item.path));
   }, [recentPages]);
@@ -75,7 +75,6 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
         setOpen((open) => !open);
       }
     };
-
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
   }, []);
@@ -88,51 +87,36 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
   const handleClearRecent = useCallback(() => {
     clearRecentPages();
     setRecentKey(k => k + 1);
-    toast({
-      title: "Cleared",
-      description: "Recent tools history cleared",
-      duration: 2000,
-    });
-  }, []);
+    toast({ title: t('cmd.cleared'), description: t('cmd.clearedDesc'), duration: 2000 });
+  }, [t]);
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Type a command or search..." />
+      <CommandInput placeholder={t('cmd.placeholder')} />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandEmpty>{t('cmd.noResults')}</CommandEmpty>
         
         {recentItems.length > 0 && (
           <>
-            <CommandGroup heading="Recent">
+            <CommandGroup heading={t('cmd.recent')}>
               {recentItems.map((item) => (
-                <CommandItem
-                  key={`recent-${item.path}`}
-                  value={`recent ${item.label} ${item.keywords.join(' ')}`}
-                  onSelect={() => runCommand(() => navigate(item.path))}
-                >
+                <CommandItem key={`recent-${item.path}`} value={`recent ${item.label} ${item.keywords.join(' ')}`} onSelect={() => runCommand(() => navigate(item.path))}>
                   <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
                   <span>{item.label}</span>
                 </CommandItem>
               ))}
-              <CommandItem
-                value="clear recent history"
-                onSelect={handleClearRecent}
-              >
+              <CommandItem value="clear recent history" onSelect={handleClearRecent}>
                 <Trash2 className="mr-2 h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Clear Recent</span>
+                <span className="text-muted-foreground">{t('cmd.clearRecent')}</span>
               </CommandItem>
             </CommandGroup>
             <CommandSeparator />
           </>
         )}
         
-        <CommandGroup heading="Navigation">
+        <CommandGroup heading={t('cmd.navigation')}>
           {remainingNavItems.map((item) => (
-            <CommandItem
-              key={item.path}
-              value={`${item.label} ${item.keywords.join(' ')}`}
-              onSelect={() => runCommand(() => navigate(item.path))}
-            >
+            <CommandItem key={item.path} value={`${item.label} ${item.keywords.join(' ')}`} onSelect={() => runCommand(() => navigate(item.path))}>
               <item.icon className="mr-2 h-4 w-4" />
               <span>{item.label}</span>
             </CommandItem>
@@ -141,64 +125,36 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
 
         <CommandSeparator />
 
-        <CommandGroup heading="Theme">
-          <CommandItem
-            value="light mode theme"
-            onSelect={() => runCommand(() => setTheme('light'))}
-          >
+        <CommandGroup heading={t('cmd.theme')}>
+          <CommandItem value="light mode theme" onSelect={() => runCommand(() => setTheme('light'))}>
             <Sun className="mr-2 h-4 w-4" />
-            <span>Light Mode</span>
+            <span>{t('cmd.lightMode')}</span>
           </CommandItem>
-          <CommandItem
-            value="dark mode theme"
-            onSelect={() => runCommand(() => setTheme('dark'))}
-          >
+          <CommandItem value="dark mode theme" onSelect={() => runCommand(() => setTheme('dark'))}>
             <Moon className="mr-2 h-4 w-4" />
-            <span>Dark Mode</span>
+            <span>{t('cmd.darkMode')}</span>
           </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
 
-        <CommandGroup heading="Actions">
-          <CommandItem
-            value="load sample data demo"
-            onSelect={() => {
-              setOpen(false);
-              // Dispatch custom event for sample data
-              window.dispatchEvent(new CustomEvent('command:sample'));
-            }}
-          >
+        <CommandGroup heading={t('cmd.actions')}>
+          <CommandItem value="load sample data demo" onSelect={() => { setOpen(false); window.dispatchEvent(new CustomEvent('command:sample')); }}>
             <Beaker className="mr-2 h-4 w-4" />
-            <span>Load Sample Data</span>
+            <span>{t('cmd.loadSample')}</span>
           </CommandItem>
-          <CommandItem
-            value="copy results clipboard"
-            onSelect={() => {
-              setOpen(false);
-              window.dispatchEvent(new CustomEvent('command:copy'));
-            }}
-          >
+          <CommandItem value="copy results clipboard" onSelect={() => { setOpen(false); window.dispatchEvent(new CustomEvent('command:copy')); }}>
             <Copy className="mr-2 h-4 w-4" />
-            <span>Copy Results</span>
+            <span>{t('cmd.copyResults')}</span>
           </CommandItem>
-          <CommandItem
-            value="reset clear form"
-            onSelect={() => {
-              setOpen(false);
-              window.dispatchEvent(new CustomEvent('command:reset'));
-            }}
-          >
+          <CommandItem value="reset clear form" onSelect={() => { setOpen(false); window.dispatchEvent(new CustomEvent('command:reset')); }}>
             <RotateCcw className="mr-2 h-4 w-4" />
-            <span>Reset Form</span>
+            <span>{t('cmd.resetForm')}</span>
           </CommandItem>
           {onOpenShortcuts && (
-            <CommandItem
-              value="keyboard shortcuts help"
-              onSelect={() => runCommand(onOpenShortcuts)}
-            >
+            <CommandItem value="keyboard shortcuts help" onSelect={() => runCommand(onOpenShortcuts)}>
               <Keyboard className="mr-2 h-4 w-4" />
-              <span>Keyboard Shortcuts</span>
+              <span>{t('cmd.keyboardShortcuts')}</span>
             </CommandItem>
           )}
         </CommandGroup>

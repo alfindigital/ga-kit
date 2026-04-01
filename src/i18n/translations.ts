@@ -2053,6 +2053,23 @@ const id: Record<string, string> = {
   'histPanel.kbSelect10': 'Pilih 10 item',
   'histPanel.kbFocusSearch': 'Fokus pencarian',
 
+  // ── Palet Perintah ──
+  'cmd.placeholder': 'Ketik perintah atau cari...',
+  'cmd.noResults': 'Tidak ada hasil.',
+  'cmd.recent': 'Terbaru',
+  'cmd.clearRecent': 'Hapus Terbaru',
+  'cmd.cleared': 'Dihapus',
+  'cmd.clearedDesc': 'Riwayat alat terbaru dihapus',
+  'cmd.navigation': 'Navigasi',
+  'cmd.theme': 'Tema',
+  'cmd.lightMode': 'Mode Terang',
+  'cmd.darkMode': 'Mode Gelap',
+  'cmd.actions': 'Aksi',
+  'cmd.loadSample': 'Muat Data Contoh',
+  'cmd.copyResults': 'Salin Hasil',
+  'cmd.resetForm': 'Reset Formulir',
+  'cmd.keyboardShortcuts': 'Pintasan Keyboard',
+
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',
   'settings.subtitle': 'Sesuaikan pengalaman GA Toolkit Anda',
