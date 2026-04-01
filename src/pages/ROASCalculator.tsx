@@ -548,9 +548,9 @@ export default function ROASCalculator() {
                           "text-2xl font-bold",
                           result.isPositive ? "text-primary" : "text-destructive"
                         )}>
-                          {result.label.includes('$') || result.label === 'Profit/Loss'
+                          {result._format === 'currency'
                             ? formatCurrency(result.value!)
-                            : result.label.includes('%')
+                            : result._format === 'percent'
                             ? `${formatNumber(result.value!)}%`
                             : formatNumber(result.value!)
                           }
