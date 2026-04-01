@@ -264,26 +264,26 @@ export default function ROASCalculator() {
     return [
       {
         value: breakEvenCPA,
-        label: 'Break-even CPA',
-        description: 'Maximum CPA before losing money',
+        label: t('roas.breakEvenCpaLabel'),
+        description: t('roas.breakEvenCpaDesc'),
         isPositive: true,
       },
       {
         value: maxCPAForProfit,
-        label: `Max CPA (${targetProfitPercent}% profit)`,
-        description: `Maximum CPA to maintain ${targetProfitPercent}% profit`,
+        label: t('roas.maxCpaProfit', { percent: targetProfitPercent }),
+        description: t('roas.maxCpaProfitDesc', { percent: targetProfitPercent }),
         isPositive: true,
       },
       {
         value: profitPerSale,
-        label: 'Target Profit/Sale',
-        description: `Expected profit per sale at target CPA`,
+        label: t('roas.targetProfitSale'),
+        description: t('roas.targetProfitSaleDesc'),
         isPositive: true,
       },
       {
         value: grossProfit,
-        label: 'Gross Profit/Sale',
-        description: 'Gross profit per sale before ad costs',
+        label: t('roas.grossProfitSale'),
+        description: t('roas.grossProfitSaleDesc'),
         isPositive: true,
       },
     ];
