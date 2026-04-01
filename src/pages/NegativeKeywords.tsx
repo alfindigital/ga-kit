@@ -373,20 +373,20 @@ export default function NegativeKeywords() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
-              Positive Keywords
-              <Badge variant="secondary" className="ml-1 text-xs">Optional</Badge>
+              {t('neg.positiveKeywords')}
+              <Badge variant="secondary" className="ml-1 text-xs">{t('neg.optional')}</Badge>
             </CardTitle>
-            <CardDescription>For conflict detection</CardDescription>
+            <CardDescription>{t('neg.forConflictDetection')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="Enter positive keywords to check for conflicts...&#10;buy running shoes&#10;best sneakers"
+              placeholder={t('neg.posPlaceholder')}
               value={positiveInput}
               onChange={(e) => setPositiveInput(e.target.value)}
               className="min-h-[200px] font-mono text-sm"
             />
             <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-              <Badge variant="outline">{positiveKeywords.length} keywords</Badge>
+              <Badge variant="outline">{positiveKeywords.length} {t('neg.keywords')}</Badge>
             </div>
           </CardContent>
         </Card>
