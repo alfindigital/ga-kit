@@ -24,6 +24,7 @@ interface CalculatorResult {
   label: string;
   description: string;
   isPositive?: boolean;
+  _format?: 'currency' | 'number' | 'decimal' | 'percent';
 }
 
 export default function ROASCalculator() {
