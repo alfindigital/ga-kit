@@ -531,7 +531,7 @@ export default function NegativeKeywords() {
           </Card>
           <Card className="p-3">
             <div className="text-2xl font-bold text-muted-foreground">{stats.duplicatesRemoved}</div>
-            <div className="text-xs text-muted-foreground">Duplicates Removed</div>
+            <div className="text-xs text-muted-foreground">{t('neg.duplicatesRemovedLabel')}</div>
           </Card>
           <Card className="p-3">
             <div className={cn(
