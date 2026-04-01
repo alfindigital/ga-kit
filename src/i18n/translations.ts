@@ -1821,13 +1821,6 @@ const id: Record<string, string> = {
   'settings.resetConfirmHint': 'Pertimbangkan untuk mengekspor pengaturan Anda terlebih dahulu.',
   'settings.yesReset': 'Ya, Reset Semuanya',
 
-  // ── Statistik Cepat ──
-  'stats.utmsCreated': 'UTM Dibuat',
-  'stats.keywordsCombined': 'Kata Kunci Dikombinasi',
-  'stats.keywordsMixed': 'Kata Kunci Dicampur',
-  'stats.qrCodes': 'Kode QR',
-  'stats.videosAnalyzed': 'Video Dianalisis',
-
   // ── Header ──
   'header.theme': 'Tema',
   'header.fontSize': 'Ukuran Font',
