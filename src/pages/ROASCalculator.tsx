@@ -748,8 +748,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Break-even CPA is the maximum you can pay per acquisition
-                    without losing money. Set a lower Max CPA to ensure profit.
+                    {t('roas.cpaInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
