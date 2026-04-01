@@ -438,7 +438,7 @@ export default function ROASCalculator() {
           </TabsTrigger>
           <TabsTrigger value="advanced" className="flex items-center gap-1.5">
             <Calculator className="h-4 w-4" />
-            <span className="hidden sm:inline">Advanced</span>
+            <span className="hidden sm:inline">{t('roas.advanced')}</span>
           </TabsTrigger>
         </TabsList>
 
