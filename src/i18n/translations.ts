@@ -988,6 +988,23 @@ const en = {
   'histPanel.kbSelect10': 'Select 10 items',
   'histPanel.kbFocusSearch': 'Focus search',
 
+  // ── Command Palette ──
+  'cmd.placeholder': 'Type a command or search...',
+  'cmd.noResults': 'No results found.',
+  'cmd.recent': 'Recent',
+  'cmd.clearRecent': 'Clear Recent',
+  'cmd.cleared': 'Cleared',
+  'cmd.clearedDesc': 'Recent tools history cleared',
+  'cmd.navigation': 'Navigation',
+  'cmd.theme': 'Theme',
+  'cmd.lightMode': 'Light Mode',
+  'cmd.darkMode': 'Dark Mode',
+  'cmd.actions': 'Actions',
+  'cmd.loadSample': 'Load Sample Data',
+  'cmd.copyResults': 'Copy Results',
+  'cmd.resetForm': 'Reset Form',
+  'cmd.keyboardShortcuts': 'Keyboard Shortcuts',
+
   // ── Settings ──
   'settings.title': 'Settings',
   'settings.subtitle': 'Customize your GA Toolkit experience',
@@ -2035,6 +2052,23 @@ const id: Record<string, string> = {
   'histPanel.kbJump10': 'Lompat 10 item',
   'histPanel.kbSelect10': 'Pilih 10 item',
   'histPanel.kbFocusSearch': 'Fokus pencarian',
+
+  // ── Palet Perintah ──
+  'cmd.placeholder': 'Ketik perintah atau cari...',
+  'cmd.noResults': 'Tidak ada hasil.',
+  'cmd.recent': 'Terbaru',
+  'cmd.clearRecent': 'Hapus Terbaru',
+  'cmd.cleared': 'Dihapus',
+  'cmd.clearedDesc': 'Riwayat alat terbaru dihapus',
+  'cmd.navigation': 'Navigasi',
+  'cmd.theme': 'Tema',
+  'cmd.lightMode': 'Mode Terang',
+  'cmd.darkMode': 'Mode Gelap',
+  'cmd.actions': 'Aksi',
+  'cmd.loadSample': 'Muat Data Contoh',
+  'cmd.copyResults': 'Salin Hasil',
+  'cmd.resetForm': 'Reset Formulir',
+  'cmd.keyboardShortcuts': 'Pintasan Keyboard',
 
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',
