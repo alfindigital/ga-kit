@@ -24,6 +24,7 @@ interface CalculatorResult {
   label: string;
   description: string;
   isPositive?: boolean;
+  _format?: 'currency' | 'number' | 'decimal' | 'percent';
 }
 
 export default function ROASCalculator() {
@@ -187,26 +188,30 @@ export default function ROASCalculator() {
       {
         value: roas,
         label: 'ROAS',
-        description: `For every $1 spent, you earn $${roas.toFixed(2)}`,
+        description: t('roas.roasPerDollar', { value: roas.toFixed(2) }),
         isPositive: roas >= 1,
+        _format: 'decimal',
       },
       {
         value: roasPercent,
         label: 'ROAS %',
-        description: `${roasPercent.toFixed(0)}% return on ad spend`,
+        description: t('roas.roasPercentReturn', { value: roasPercent.toFixed(0) }),
         isPositive: roasPercent >= 100,
+        _format: 'percent',
       },
       {
         value: profit,
-        label: 'Profit/Loss',
-        description: profit >= 0 ? 'Net profit from campaign' : 'Net loss from campaign',
+        label: t('roas.profitLoss'),
+        description: profit >= 0 ? t('roas.profitLossDescPositive') : t('roas.profitLossDescNegative'),
         isPositive: profit >= 0,
+        _format: 'currency',
       },
       {
         value: roi,
-        label: 'ROI %',
-        description: 'Return on investment percentage',
+        label: t('roas.roiPercent'),
+        description: t('roas.roiDesc'),
         isPositive: roi >= 0,
+        _format: 'percent',
       },
     ];
   }, [roasAdSpend, roasRevenue]);
@@ -227,20 +232,20 @@ export default function ROASCalculator() {
     return [
       {
         value: requiredBudget,
-        label: 'Monthly Budget',
-        description: 'Required monthly ad spend',
+        label: t('roas.monthlyBudgetLabel'),
+        description: t('roas.monthlyBudgetDesc'),
         isPositive: true,
       },
       {
         value: weeklyBudget,
-        label: 'Weekly Budget',
-        description: 'Required weekly ad spend',
+        label: t('roas.weeklyBudget'),
+        description: t('roas.weeklyBudgetDesc'),
         isPositive: true,
       },
       {
         value: dailyBudget,
-        label: 'Daily Budget',
-        description: 'Required daily ad spend',
+        label: t('roas.dailyBudget'),
+        description: t('roas.dailyBudgetDesc'),
         isPositive: true,
       },
     ];
@@ -264,26 +269,26 @@ export default function ROASCalculator() {
     return [
       {
         value: breakEvenCPA,
-        label: 'Break-even CPA',
-        description: 'Maximum CPA before losing money',
+        label: t('roas.breakEvenCpaLabel'),
+        description: t('roas.breakEvenCpaDesc'),
         isPositive: true,
       },
       {
         value: maxCPAForProfit,
-        label: `Max CPA (${targetProfitPercent}% profit)`,
-        description: `Maximum CPA to maintain ${targetProfitPercent}% profit`,
+        label: t('roas.maxCpaProfit', { percent: targetProfitPercent }),
+        description: t('roas.maxCpaProfitDesc', { percent: targetProfitPercent }),
         isPositive: true,
       },
       {
         value: profitPerSale,
-        label: 'Target Profit/Sale',
-        description: `Expected profit per sale at target CPA`,
+        label: t('roas.targetProfitSale'),
+        description: t('roas.targetProfitSaleDesc'),
         isPositive: true,
       },
       {
         value: grossProfit,
-        label: 'Gross Profit/Sale',
-        description: 'Gross profit per sale before ad costs',
+        label: t('roas.grossProfitSale'),
+        description: t('roas.grossProfitSaleDesc'),
         isPositive: true,
       },
     ];
@@ -310,39 +315,45 @@ export default function ROASCalculator() {
     return [
       {
         value: clicks,
-        label: 'Est. Clicks',
-        description: 'Estimated monthly clicks',
+        label: t('roas.estClicks'),
+        description: t('roas.estClicksDesc'),
         isPositive: true,
+        _format: 'number',
       },
       {
         value: conversions,
-        label: 'Est. Conversions',
-        description: 'Estimated monthly conversions',
+        label: t('roas.estConversions'),
+        description: t('roas.estConversionsDesc'),
         isPositive: true,
+        _format: 'number',
       },
       {
         value: revenue,
-        label: 'Est. Revenue',
-        description: 'Estimated monthly revenue',
+        label: t('roas.estRevenue'),
+        description: t('roas.estRevenueDesc'),
         isPositive: true,
+        _format: 'currency',
       },
       {
         value: cpa,
-        label: 'Est. CPA',
-        description: 'Estimated cost per acquisition',
+        label: t('roas.estCpa'),
+        description: t('roas.estCpaDesc'),
         isPositive: true,
+        _format: 'currency',
       },
       {
         value: roas,
-        label: 'Est. ROAS',
-        description: 'Estimated return on ad spend',
+        label: t('roas.estRoas'),
+        description: t('roas.estRoasDesc'),
         isPositive: roas >= 1,
+        _format: 'decimal',
       },
       {
         value: profit,
-        label: 'Est. Profit',
-        description: 'Estimated monthly profit',
+        label: t('roas.estProfit'),
+        description: t('roas.estProfitDesc'),
         isPositive: profit >= 0,
+        _format: 'currency',
       },
     ];
   }, [monthlyBudget, avgCPC, conversionRate, avgOrderValue]);
@@ -393,7 +404,7 @@ export default function ROASCalculator() {
       >
         {currentScenario && (
           <Badge variant="outline">
-            Editing: {currentScenario.name}
+            {t('roas.editing', { name: currentScenario.name })}
           </Badge>
         )}
         <ScenarioManager
@@ -423,15 +434,15 @@ export default function ROASCalculator() {
           </TabsTrigger>
           <TabsTrigger value="budget" className="flex items-center gap-1.5">
             <DollarSign className="h-4 w-4" />
-            <span className="hidden sm:inline">Budget</span>
+            <span className="hidden sm:inline">{t('roas.budget')}</span>
           </TabsTrigger>
           <TabsTrigger value="cpa" className="flex items-center gap-1.5">
             <Target className="h-4 w-4" />
-            <span className="hidden sm:inline">Break-even CPA</span>
+            <span className="hidden sm:inline">{t('roas.breakEvenCpa')}</span>
           </TabsTrigger>
           <TabsTrigger value="advanced" className="flex items-center gap-1.5">
             <Calculator className="h-4 w-4" />
-            <span className="hidden sm:inline">Advanced</span>
+            <span className="hidden sm:inline">{t('roas.advanced')}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -442,22 +453,22 @@ export default function ROASCalculator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-primary" />
-                  ROAS Calculator
+                   {t('roas.calculator')}
                 </CardTitle>
                 <CardDescription>
-                  Calculate your Return on Ad Spend from campaign data
+                  {t('roas.calculatorDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="adSpend" className="flex items-center gap-2">
-                    Ad Spend ($)
+                    {t('roas.adSpend')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Total amount spent on advertising
+                        {t('roas.totalSpent')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -471,13 +482,13 @@ export default function ROASCalculator() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="revenue" className="flex items-center gap-2">
-                    Revenue ($)
+                    {t('roas.revenue')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Total revenue generated from ads
+                        {t('roas.totalRevenue')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -493,8 +504,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    A ROAS of 4.0 means you earn $4 for every $1 spent on ads.
-                    Generally, a ROAS above 3.0 is considered good.
+                    {t('roas.roasInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -502,14 +512,14 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Results</CardTitle>
-                <CardDescription>Your calculated metrics</CardDescription>
+                <CardTitle>{t('roas.results')}</CardTitle>
+                <CardDescription>{t('roas.resultsDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {roasResult.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
                     <Calculator className="h-12 w-12 mb-4 opacity-50" />
-                    <p>Enter your ad spend and revenue to calculate ROAS</p>
+                    <p>{t('roas.enterAdSpendRevenue')}</p>
                   </div>
                 ) : (
                   <div className="grid gap-4">
@@ -531,16 +541,16 @@ export default function ROASCalculator() {
                             ) : (
                               <AlertCircle className="h-3 w-3 mr-1" />
                             )}
-                            {result.isPositive ? "Good" : "Warning"}
+                            {result.isPositive ? t('roas.good') : t('roas.warning')}
                           </Badge>
                         </div>
                         <div className={cn(
                           "text-2xl font-bold",
                           result.isPositive ? "text-primary" : "text-destructive"
                         )}>
-                          {result.label.includes('$') || result.label === 'Profit/Loss'
+                          {result._format === 'currency'
                             ? formatCurrency(result.value!)
-                            : result.label.includes('%')
+                            : result._format === 'percent'
                             ? `${formatNumber(result.value!)}%`
                             : formatNumber(result.value!)
                           }
@@ -564,22 +574,22 @@ export default function ROASCalculator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <DollarSign className="h-5 w-5 text-primary" />
-                  Budget Estimator
+                  {t('roas.budgetEstimator')}
                 </CardTitle>
                 <CardDescription>
-                  Calculate required budget based on revenue goals
+                  {t('roas.budgetEstimatorDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="targetRevenue" className="flex items-center gap-2">
-                    Target Monthly Revenue ($)
+                    {t('roas.targetMonthlyRevenue')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Your desired monthly revenue from ads
+                        {t('roas.desiredMonthlyRevenue')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -593,13 +603,13 @@ export default function ROASCalculator() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="expectedROAS" className="flex items-center gap-2">
-                    Expected ROAS
+                    {t('roas.expectedRoas')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Your historical or expected ROAS (e.g., 4 = $4 revenue per $1 spent)
+                        {t('roas.expectedRoasTooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -616,8 +626,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Use your historical ROAS data for more accurate budget estimation.
-                    New campaigns may have lower ROAS initially.
+                    {t('roas.budgetInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -625,14 +634,14 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Budget Requirements</CardTitle>
-                <CardDescription>Estimated budget needed</CardDescription>
+                <CardTitle>{t('roas.budgetRequirements')}</CardTitle>
+                <CardDescription>{t('roas.estimatedBudgetNeeded')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {budgetResult.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
                     <DollarSign className="h-12 w-12 mb-4 opacity-50" />
-                    <p>Enter your target revenue and expected ROAS</p>
+                    <p>{t('roas.enterTargetRevenue')}</p>
                   </div>
                 ) : (
                   <div className="grid gap-4">
@@ -668,22 +677,22 @@ export default function ROASCalculator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="h-5 w-5 text-primary" />
-                  Break-even CPA Calculator
+                  {t('roas.cpaCalculator')}
                 </CardTitle>
                 <CardDescription>
-                  Find your maximum CPA to stay profitable
+                  {t('roas.cpaCalculatorDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="aov" className="flex items-center gap-2">
-                    Average Order Value ($)
+                    {t('roas.aov')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Average revenue per order/conversion
+                        {t('roas.aovTooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -697,13 +706,13 @@ export default function ROASCalculator() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="profitMargin" className="flex items-center gap-2">
-                    Profit Margin (%)
+                    {t('roas.profitMargin')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Your gross profit margin before ad costs
+                        {t('roas.profitMarginTooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -717,13 +726,13 @@ export default function ROASCalculator() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="targetProfit" className="flex items-center gap-2">
-                    Target Profit Margin (%)
+                    {t('roas.targetProfitMargin')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Minimum profit margin you want to maintain
+                        {t('roas.targetProfitTooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -739,8 +748,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Break-even CPA is the maximum you can pay per acquisition
-                    without losing money. Set a lower Max CPA to ensure profit.
+                    {t('roas.cpaInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -748,14 +756,14 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>CPA Thresholds</CardTitle>
-                <CardDescription>Your CPA limits for profitability</CardDescription>
+                <CardTitle>{t('roas.cpaThresholds')}</CardTitle>
+                <CardDescription>{t('roas.cpaThresholdsDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {cpaResult.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
                     <Target className="h-12 w-12 mb-4 opacity-50" />
-                    <p>Enter your AOV and profit margin</p>
+                    <p>{t('roas.enterAovMargin')}</p>
                   </div>
                 ) : (
                   <div className="grid gap-4">
@@ -791,17 +799,17 @@ export default function ROASCalculator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5 text-primary" />
-                  Advanced Campaign Estimator
+                  {t('roas.advancedEstimator')}
                 </CardTitle>
                 <CardDescription>
-                  Forecast campaign performance with detailed inputs
+                  {t('roas.advancedEstimatorDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="monthlyBudget" className="flex items-center gap-2">
-                      Monthly Budget ($)
+                      {t('roas.monthlyBudget')}
                     </Label>
                     <Input
                       id="monthlyBudget"
@@ -813,7 +821,7 @@ export default function ROASCalculator() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="avgCPC" className="flex items-center gap-2">
-                      Avg. CPC ($)
+                      {t('roas.avgCpc')}
                     </Label>
                     <Input
                       id="avgCPC"
@@ -828,7 +836,7 @@ export default function ROASCalculator() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="conversionRate" className="flex items-center gap-2">
-                      Conversion Rate (%)
+                      {t('roas.conversionRate')}
                     </Label>
                     <Input
                       id="conversionRate"
@@ -841,7 +849,7 @@ export default function ROASCalculator() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="avgOrderValue" className="flex items-center gap-2">
-                      Avg. Order Value ($)
+                      {t('roas.avgOrderValue')}
                     </Label>
                     <Input
                       id="avgOrderValue"
@@ -858,8 +866,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Use historical data for accuracy. Industry benchmarks:
-                    CPC $1-3, CVR 2-5%, AOV varies by industry.
+                    {t('roas.advancedInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -867,14 +874,14 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Campaign Forecast</CardTitle>
-                <CardDescription>Estimated monthly performance</CardDescription>
+                <CardTitle>{t('roas.campaignForecast')}</CardTitle>
+                <CardDescription>{t('roas.campaignForecastDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {advancedResult.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
                     <Calculator className="h-12 w-12 mb-4 opacity-50" />
-                    <p>Fill in all fields to see forecast</p>
+                    <p>{t('roas.fillAllFields')}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
@@ -893,12 +900,9 @@ export default function ROASCalculator() {
                           "text-lg font-bold",
                           result.isPositive ? "text-primary" : "text-destructive"
                         )}>
-                          {result.label.includes('$') || 
-                           result.label.includes('Revenue') || 
-                           result.label.includes('Profit') ||
-                           result.label.includes('CPA')
+                          {result._format === 'currency'
                             ? formatCurrency(result.value!)
-                            : result.label.includes('ROAS')
+                            : result._format === 'decimal'
                             ? formatNumber(result.value!)
                             : formatNumber(result.value!, 0)
                           }
