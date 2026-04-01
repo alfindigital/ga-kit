@@ -232,7 +232,7 @@ export default function NegativeKeywords() {
   const handleReset = () => {
     setNegativeInput('');
     setPositiveInput('');
-    toast({ title: 'Reset complete' });
+    toast({ title: t('neg.resetComplete') });
   };
   
   const handleCopyResults = async () => {
