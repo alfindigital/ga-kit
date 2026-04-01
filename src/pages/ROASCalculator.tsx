@@ -227,20 +227,20 @@ export default function ROASCalculator() {
     return [
       {
         value: requiredBudget,
-        label: 'Monthly Budget',
-        description: 'Required monthly ad spend',
+        label: t('roas.monthlyBudgetLabel'),
+        description: t('roas.monthlyBudgetDesc'),
         isPositive: true,
       },
       {
         value: weeklyBudget,
-        label: 'Weekly Budget',
-        description: 'Required weekly ad spend',
+        label: t('roas.weeklyBudget'),
+        description: t('roas.weeklyBudgetDesc'),
         isPositive: true,
       },
       {
         value: dailyBudget,
-        label: 'Daily Budget',
-        description: 'Required daily ad spend',
+        label: t('roas.dailyBudget'),
+        description: t('roas.dailyBudgetDesc'),
         isPositive: true,
       },
     ];
