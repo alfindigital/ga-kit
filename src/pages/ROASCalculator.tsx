@@ -634,8 +634,8 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Budget Requirements</CardTitle>
-                <CardDescription>Estimated budget needed</CardDescription>
+                <CardTitle>{t('roas.budgetRequirements')}</CardTitle>
+                <CardDescription>{t('roas.estimatedBudgetNeeded')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {budgetResult.length === 0 ? (
