@@ -208,8 +208,8 @@ export default function NegativeKeywords() {
   const conflicts = useMemo(() => {
     if (positiveKeywords.length === 0) return [];
     const deduped = removeDuplicates(negativeKeywords, { caseInsensitive, ignoreMatchType });
-    return detectConflicts(deduped, positiveKeywords);
-  }, [negativeKeywords, positiveKeywords, caseInsensitive, ignoreMatchType]);
+    return detectConflicts(deduped, positiveKeywords, t);
+  }, [negativeKeywords, positiveKeywords, caseInsensitive, ignoreMatchType, t]);
   
   // Stats
   const stats = {
