@@ -759,6 +759,25 @@ const en = {
   'roas.estProfit': 'Est. Profit',
   'roas.estProfitDesc': 'Estimated monthly profit',
 
+  // ── Not Found ──
+  'notFound.title': '404',
+  'notFound.message': 'Oops! Page not found',
+  'notFound.returnHome': 'Return to Home',
+
+  // ── URL History ──
+  'urlHistory.title': 'URL History',
+  'urlHistory.subtitle': 'All your generated URLs in one place',
+  'urlHistory.totalUrls': 'Total URLs',
+  'urlHistory.utmUrls': 'UTM URLs',
+  'urlHistory.qrCodes': 'QR Codes',
+  'urlHistory.ytSearches': 'YT Searches',
+  'urlHistory.starred': 'Starred',
+  'urlHistory.historyTab': 'History',
+  'urlHistory.analyticsTab': 'Analytics',
+  'urlHistory.allHistory': 'All History',
+  'urlHistory.loaded': 'Loaded',
+  'urlHistory.redirecting': 'Redirecting to {{tool}}',
+
   // ── Settings ──
   'settings.title': 'Settings',
   'settings.subtitle': 'Customize your GA Toolkit experience',
@@ -1583,6 +1602,25 @@ const id: Record<string, string> = {
   'roas.estRoasDesc': 'Estimasi return on ad spend',
   'roas.estProfit': 'Est. Laba',
   'roas.estProfitDesc': 'Estimasi laba bulanan',
+
+  // ── Tidak Ditemukan ──
+  'notFound.title': '404',
+  'notFound.message': 'Oops! Halaman tidak ditemukan',
+  'notFound.returnHome': 'Kembali ke Beranda',
+
+  // ── Riwayat URL ──
+  'urlHistory.title': 'Riwayat URL',
+  'urlHistory.subtitle': 'Semua URL yang dihasilkan di satu tempat',
+  'urlHistory.totalUrls': 'Total URL',
+  'urlHistory.utmUrls': 'URL UTM',
+  'urlHistory.qrCodes': 'Kode QR',
+  'urlHistory.ytSearches': 'Pencarian YT',
+  'urlHistory.starred': 'Berbintang',
+  'urlHistory.historyTab': 'Riwayat',
+  'urlHistory.analyticsTab': 'Analitik',
+  'urlHistory.allHistory': 'Semua Riwayat',
+  'urlHistory.loaded': 'Dimuat',
+  'urlHistory.redirecting': 'Mengarahkan ke {{tool}}',
 
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',

@@ -11,15 +11,20 @@ import { usePageLoading } from '@/hooks/usePageLoading';
 import { ToolPageSkeleton } from '@/components/skeletons';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function UrlHistory() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const isLoading = usePageLoading(400);
   const { stats, allHistory } = useUrlHistory();
   const [activeTab, setActiveTab] = useState<'history' | 'analytics'>('history');
 
   if (isLoading) return <ToolPageSkeleton />;
+
+  const toolDisplayName = (type: string) =>
+    type === 'utm' ? 'UTM Builder' : type === 'qr' ? 'QR Generator' : 'YT Finder';
 
   const handleLoadUrl = (item: UrlHistoryItem) => {
     switch (item.toolType) {
@@ -34,7 +39,10 @@ export default function UrlHistory() {
         sessionStorage.setItem('yt-finder-preload', item.url);
         break;
     }
-    toast({ title: 'Loaded', description: `Redirecting to ${item.toolType === 'utm' ? 'UTM Builder' : item.toolType === 'qr' ? 'QR Generator' : 'YT Finder'}` });
+    toast({
+      title: t('urlHistory.loaded'),
+      description: t('urlHistory.redirecting', { tool: toolDisplayName(item.toolType) }),
+    });
   };
 
   return (
@@ -50,9 +58,9 @@ export default function UrlHistory() {
           <div>
             <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
               <History className="h-5 w-5 sm:h-6 sm:w-6" />
-              URL History
+              {t('urlHistory.title')}
             </h1>
-            <p className="text-sm text-muted-foreground">All your generated URLs in one place</p>
+            <p className="text-sm text-muted-foreground">{t('urlHistory.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -65,7 +73,7 @@ export default function UrlHistory() {
               <BarChart3 className="h-4 w-4 text-primary" />
               <div>
                 <p className="text-2xl font-bold">{stats.total}</p>
-                <p className="text-xs text-muted-foreground">Total URLs</p>
+                <p className="text-xs text-muted-foreground">{t('urlHistory.totalUrls')}</p>
               </div>
             </div>
           </CardContent>
@@ -77,7 +85,7 @@ export default function UrlHistory() {
               <Link2 className="h-4 w-4 text-primary" />
               <div>
                 <p className="text-2xl font-bold">{stats.byTool.utm}</p>
-                <p className="text-xs text-muted-foreground">UTM URLs</p>
+                <p className="text-xs text-muted-foreground">{t('urlHistory.utmUrls')}</p>
               </div>
             </div>
           </CardContent>
@@ -89,7 +97,7 @@ export default function UrlHistory() {
               <QrCode className="h-4 w-4 text-purple-500" />
               <div>
                 <p className="text-2xl font-bold">{stats.byTool.qr}</p>
-                <p className="text-xs text-muted-foreground">QR Codes</p>
+                <p className="text-xs text-muted-foreground">{t('urlHistory.qrCodes')}</p>
               </div>
             </div>
           </CardContent>
@@ -101,7 +109,7 @@ export default function UrlHistory() {
               <Youtube className="h-4 w-4 text-destructive" />
               <div>
                 <p className="text-2xl font-bold">{stats.byTool['yt-finder']}</p>
-                <p className="text-xs text-muted-foreground">YT Searches</p>
+                <p className="text-xs text-muted-foreground">{t('urlHistory.ytSearches')}</p>
               </div>
             </div>
           </CardContent>
@@ -113,7 +121,7 @@ export default function UrlHistory() {
               <Star className="h-4 w-4 text-yellow-500" />
               <div>
                 <p className="text-2xl font-bold">{stats.starred}</p>
-                <p className="text-xs text-muted-foreground">Starred</p>
+                <p className="text-xs text-muted-foreground">{t('urlHistory.starred')}</p>
               </div>
             </div>
           </CardContent>
@@ -125,18 +133,18 @@ export default function UrlHistory() {
         <TabsList className="grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="history" className="gap-2">
             <List className="h-4 w-4" />
-            History
+            {t('urlHistory.historyTab')}
           </TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
             <TrendingUp className="h-4 w-4" />
-            Analytics
+            {t('urlHistory.analyticsTab')}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="history" className="mt-4">
           <Card className="overflow-hidden">
             <CardHeader className="p-3 sm:p-4 border-b">
-              <CardTitle className="text-sm sm:text-base">All History</CardTitle>
+              <CardTitle className="text-sm sm:text-base">{t('urlHistory.allHistory')}</CardTitle>
             </CardHeader>
             <UrlHistoryPanel 
               onLoadUrl={handleLoadUrl}
