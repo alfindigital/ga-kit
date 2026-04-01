@@ -449,10 +449,10 @@ export default function ROASCalculator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-primary" />
-                  ROAS Calculator
+                   {t('roas.calculator')}
                 </CardTitle>
                 <CardDescription>
-                  Calculate your Return on Ad Spend from campaign data
+                  {t('roas.calculatorDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
