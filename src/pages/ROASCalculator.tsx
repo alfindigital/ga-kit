@@ -478,13 +478,13 @@ export default function ROASCalculator() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="revenue" className="flex items-center gap-2">
-                    Revenue ($)
+                    {t('roas.revenue')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Total revenue generated from ads
+                        {t('roas.totalRevenue')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
