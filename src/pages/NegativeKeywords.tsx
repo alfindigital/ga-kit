@@ -502,9 +502,9 @@ export default function NegativeKeywords() {
                               conflict.severity === 'caution' && 'border-orange-500 text-orange-700 dark:text-orange-400'
                             )}
                           >
-                            {conflict.severity === 'critical' && '🔴 Critical'}
-                            {conflict.severity === 'warning' && '🟡 Warning'}
-                            {conflict.severity === 'caution' && '🟠 Caution'}
+                            {conflict.severity === 'critical' && t('neg.critical')}
+                            {conflict.severity === 'warning' && t('neg.warning')}
+                            {conflict.severity === 'caution' && t('neg.caution')}
                           </Badge>
                           {conflict.message}
                         </AlertDescription>
