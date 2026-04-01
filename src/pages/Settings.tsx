@@ -43,6 +43,8 @@ function collectSettings() {
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+  const { canInstall, isInstalled, promptInstall } = useInstallPrompt();
   const { fontSize, setFontSize } = useFontSize();
   const { language, setLanguage } = useLanguage();
   const { t } = useTranslation();
