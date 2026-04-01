@@ -699,7 +699,7 @@ export default function ROASCalculator() {
                   <Input
                     id="aov"
                     type="number"
-                    placeholder="e.g., 100"
+                    placeholder={t('roas.egAov')}
                     value={aov}
                     onChange={(e) => setAOV(e.target.value)}
                   />
