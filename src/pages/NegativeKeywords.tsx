@@ -397,9 +397,9 @@ export default function NegativeKeywords() {
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <CardTitle className="text-base">Results</CardTitle>
+              <CardTitle className="text-base">{t('common.results')}</CardTitle>
               <CardDescription className="mt-1">
-                {stats.unique} unique keywords
+                {stats.unique} {t('neg.uniqueKeywords')}
                 {stats.duplicatesRemoved > 0 && (
                   <span className="text-primary ml-1">
                     ({stats.duplicatesRemoved} duplicates removed)
