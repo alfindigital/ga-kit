@@ -1100,6 +1100,29 @@ const en = {
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – concept v1',
+
+  // ── Install / PWA ──
+  'install.title': 'Install GAKit',
+  'install.description': 'Add GAKit to your home screen for quick access, offline support, and a native app experience.',
+  'install.alreadyInstalled': 'GAKit is installed!',
+  'install.alreadyInstalledDesc': 'You\'re already using GAKit as an installed app.',
+  'install.ctaTitle': 'Get the App',
+  'install.ctaDesc': 'Install GAKit directly from your browser — no app store needed.',
+  'install.button': 'Install App',
+  'install.iosTitle': 'Install on iOS',
+  'install.iosStep1': 'Tap the Share button',
+  'install.iosStep2': 'Tap "Add to Home Screen"',
+  'install.iosStep3': 'Tap "Add" to confirm',
+  'install.browserHint': 'Use Chrome or Edge on desktop/Android for the best install experience.',
+  'install.featureOffline': 'Works Offline',
+  'install.featureFast': 'Lightning Fast',
+  'install.featureNative': 'Native Feel',
+  'install.featureNoStore': 'No App Store',
+  'install.note': 'PWA install is available on the published site only, not in the editor preview.',
+  'install.settingsTitle': 'Install App',
+  'install.settingsDesc': 'Add GAKit to your home screen for quick access and offline support',
+  'install.settingsButton': 'Install',
+  'install.settingsGoToInstall': 'Install Guide',
 } as const;
 
 const id: Record<string, string> = {
