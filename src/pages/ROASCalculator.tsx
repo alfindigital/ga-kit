@@ -836,7 +836,7 @@ export default function ROASCalculator() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="conversionRate" className="flex items-center gap-2">
-                      Conversion Rate (%)
+                      {t('roas.conversionRate')}
                     </Label>
                     <Input
                       id="conversionRate"
