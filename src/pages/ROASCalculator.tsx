@@ -508,8 +508,8 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Results</CardTitle>
-                <CardDescription>Your calculated metrics</CardDescription>
+                <CardTitle>{t('roas.results')}</CardTitle>
+                <CardDescription>{t('roas.resultsDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {roasResult.length === 0 ? (
