@@ -318,7 +318,7 @@ export default function NegativeKeywords() {
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="keep" id="keep" />
-                <Label htmlFor="keep" className="font-normal cursor-pointer">Keep Original</Label>
+                <Label htmlFor="keep" className="font-normal cursor-pointer">{t('neg.keepOriginal')}</Label>
               </div>
             </RadioGroup>
           </div>
