@@ -187,25 +187,25 @@ export default function ROASCalculator() {
       {
         value: roas,
         label: 'ROAS',
-        description: `For every $1 spent, you earn $${roas.toFixed(2)}`,
+        description: t('roas.roasPerDollar', { value: roas.toFixed(2) }),
         isPositive: roas >= 1,
       },
       {
         value: roasPercent,
         label: 'ROAS %',
-        description: `${roasPercent.toFixed(0)}% return on ad spend`,
+        description: t('roas.roasPercentReturn', { value: roasPercent.toFixed(0) }),
         isPositive: roasPercent >= 100,
       },
       {
         value: profit,
-        label: 'Profit/Loss',
-        description: profit >= 0 ? 'Net profit from campaign' : 'Net loss from campaign',
+        label: t('roas.profitLoss'),
+        description: profit >= 0 ? t('roas.profitLossDescPositive') : t('roas.profitLossDescNegative'),
         isPositive: profit >= 0,
       },
       {
         value: roi,
-        label: 'ROI %',
-        description: 'Return on investment percentage',
+        label: t('roas.roiPercent'),
+        description: t('roas.roiDesc'),
         isPositive: roi >= 0,
       },
     ];
