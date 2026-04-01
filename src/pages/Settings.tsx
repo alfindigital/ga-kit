@@ -13,8 +13,9 @@ import { Badge } from '@/components/ui/badge';
 import {
   Sun, Moon, Monitor, RotateCcw, Palette, Type, GraduationCap,
   Globe, Download, Upload, Trash2, AlertTriangle, CheckCircle2,
-  Settings as SettingsIcon,
+  Settings as SettingsIcon, Smartphone,
 } from 'lucide-react';
+import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { toast } from 'sonner';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
