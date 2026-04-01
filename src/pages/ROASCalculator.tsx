@@ -686,13 +686,13 @@ export default function ROASCalculator() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="aov" className="flex items-center gap-2">
-                    Average Order Value ($)
+                    {t('roas.aov')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Average revenue per order/conversion
+                        {t('roas.aovTooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
