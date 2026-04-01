@@ -988,6 +988,23 @@ const en = {
   'histPanel.kbSelect10': 'Select 10 items',
   'histPanel.kbFocusSearch': 'Focus search',
 
+  // ── Command Palette ──
+  'cmd.placeholder': 'Type a command or search...',
+  'cmd.noResults': 'No results found.',
+  'cmd.recent': 'Recent',
+  'cmd.clearRecent': 'Clear Recent',
+  'cmd.cleared': 'Cleared',
+  'cmd.clearedDesc': 'Recent tools history cleared',
+  'cmd.navigation': 'Navigation',
+  'cmd.theme': 'Theme',
+  'cmd.lightMode': 'Light Mode',
+  'cmd.darkMode': 'Dark Mode',
+  'cmd.actions': 'Actions',
+  'cmd.loadSample': 'Load Sample Data',
+  'cmd.copyResults': 'Copy Results',
+  'cmd.resetForm': 'Reset Form',
+  'cmd.keyboardShortcuts': 'Keyboard Shortcuts',
+
   // ── Settings ──
   'settings.title': 'Settings',
   'settings.subtitle': 'Customize your GA Toolkit experience',
