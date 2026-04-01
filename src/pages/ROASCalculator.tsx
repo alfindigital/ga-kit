@@ -821,7 +821,7 @@ export default function ROASCalculator() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="avgCPC" className="flex items-center gap-2">
-                      Avg. CPC ($)
+                      {t('roas.avgCpc')}
                     </Label>
                     <Input
                       id="avgCPC"
