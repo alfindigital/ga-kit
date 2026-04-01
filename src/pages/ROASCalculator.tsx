@@ -214,7 +214,7 @@ export default function ROASCalculator() {
         _format: 'percent',
       },
     ];
-  }, [roasAdSpend, roasRevenue]);
+  }, [roasAdSpend, roasRevenue, t]);
 
   // Budget Estimation
   const budgetResult = useMemo((): CalculatorResult[] => {
@@ -249,7 +249,7 @@ export default function ROASCalculator() {
         isPositive: true,
       },
     ];
-  }, [targetRevenue, expectedROAS]);
+  }, [targetRevenue, expectedROAS, t]);
 
   // Break-even CPA Calculation
   const cpaResult = useMemo((): CalculatorResult[] => {
@@ -292,7 +292,7 @@ export default function ROASCalculator() {
         isPositive: true,
       },
     ];
-  }, [aov, profitMargin, targetProfit]);
+  }, [aov, profitMargin, targetProfit, t]);
 
   // Advanced Calculator
   const advancedResult = useMemo((): CalculatorResult[] => {
@@ -356,7 +356,7 @@ export default function ROASCalculator() {
         _format: 'currency',
       },
     ];
-  }, [monthlyBudget, avgCPC, conversionRate, avgOrderValue]);
+  }, [monthlyBudget, avgCPC, conversionRate, avgOrderValue, t]);
 
   const resetAll = () => {
     setRoasAdSpend('');
@@ -475,7 +475,7 @@ export default function ROASCalculator() {
                   <Input
                     id="adSpend"
                     type="number"
-                    placeholder="e.g., 1000"
+                    placeholder={t('roas.egAdSpend')}
                     value={roasAdSpend}
                     onChange={(e) => setRoasAdSpend(e.target.value)}
                   />
@@ -495,7 +495,7 @@ export default function ROASCalculator() {
                   <Input
                     id="revenue"
                     type="number"
-                    placeholder="e.g., 5000"
+                    placeholder={t('roas.egRevenue')}
                     value={roasRevenue}
                     onChange={(e) => setRoasRevenue(e.target.value)}
                   />
@@ -596,7 +596,7 @@ export default function ROASCalculator() {
                   <Input
                     id="targetRevenue"
                     type="number"
-                    placeholder="e.g., 50000"
+                    placeholder={t('roas.egTargetRevenue')}
                     value={targetRevenue}
                     onChange={(e) => setTargetRevenue(e.target.value)}
                   />
@@ -617,7 +617,7 @@ export default function ROASCalculator() {
                     id="expectedROAS"
                     type="number"
                     step="0.1"
-                    placeholder="e.g., 4"
+                    placeholder={t('roas.egExpectedRoas')}
                     value={expectedROAS}
                     onChange={(e) => setExpectedROAS(e.target.value)}
                   />
@@ -699,7 +699,7 @@ export default function ROASCalculator() {
                   <Input
                     id="aov"
                     type="number"
-                    placeholder="e.g., 100"
+                    placeholder={t('roas.egAov')}
                     value={aov}
                     onChange={(e) => setAOV(e.target.value)}
                   />
@@ -719,7 +719,7 @@ export default function ROASCalculator() {
                   <Input
                     id="profitMargin"
                     type="number"
-                    placeholder="e.g., 40"
+                    placeholder={t('roas.egMargin')}
                     value={profitMargin}
                     onChange={(e) => setProfitMargin(e.target.value)}
                   />
@@ -739,7 +739,7 @@ export default function ROASCalculator() {
                   <Input
                     id="targetProfit"
                     type="number"
-                    placeholder="e.g., 20"
+                    placeholder={t('roas.egTargetProfit')}
                     value={targetProfit}
                     onChange={(e) => setTargetProfit(e.target.value)}
                   />
@@ -814,7 +814,7 @@ export default function ROASCalculator() {
                     <Input
                       id="monthlyBudget"
                       type="number"
-                      placeholder="e.g., 5000"
+                      placeholder={t('roas.egBudget')}
                       value={monthlyBudget}
                       onChange={(e) => setMonthlyBudget(e.target.value)}
                     />
@@ -827,7 +827,7 @@ export default function ROASCalculator() {
                       id="avgCPC"
                       type="number"
                       step="0.01"
-                      placeholder="e.g., 2.50"
+                      placeholder={t('roas.egCpc')}
                       value={avgCPC}
                       onChange={(e) => setAvgCPC(e.target.value)}
                     />
@@ -842,7 +842,7 @@ export default function ROASCalculator() {
                       id="conversionRate"
                       type="number"
                       step="0.1"
-                      placeholder="e.g., 3"
+                      placeholder={t('roas.egCvr')}
                       value={conversionRate}
                       onChange={(e) => setConversionRate(e.target.value)}
                     />
@@ -854,7 +854,7 @@ export default function ROASCalculator() {
                     <Input
                       id="avgOrderValue"
                       type="number"
-                      placeholder="e.g., 150"
+                      placeholder={t('roas.egOrderValue')}
                       value={avgOrderValue}
                       onChange={(e) => setAvgOrderValue(e.target.value)}
                     />
