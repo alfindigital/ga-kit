@@ -430,7 +430,7 @@ export default function ROASCalculator() {
           </TabsTrigger>
           <TabsTrigger value="budget" className="flex items-center gap-1.5">
             <DollarSign className="h-4 w-4" />
-            <span className="hidden sm:inline">Budget</span>
+            <span className="hidden sm:inline">{t('roas.budget')}</span>
           </TabsTrigger>
           <TabsTrigger value="cpa" className="flex items-center gap-1.5">
             <Target className="h-4 w-4" />
