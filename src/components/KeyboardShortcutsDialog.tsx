@@ -18,11 +18,11 @@ const GLOBAL_SHORTCUT_ITEMS: { keys: string[]; tKey: TranslationKey }[] = [
   { keys: ['Ctrl', 'K'], tKey: 'kbd.openCommandPalette' },
   { keys: ['Ctrl', '1'], tKey: 'kbd.dashboard' },
   { keys: ['Ctrl', '2'], tKey: 'nav.utmBuilder' },
-  { keys: ['Ctrl', '3'], tKey: 'nav.qrGenerator' },
-  { keys: ['Ctrl', '4'], tKey: 'nav.keywordCombiner' },
-  { keys: ['Ctrl', '5'], tKey: 'nav.keywordMixer' },
-  { keys: ['Ctrl', '6'], tKey: 'nav.keywordTools' },
-  { keys: ['Ctrl', '7'], tKey: 'nav.ytFinder' },
+  { keys: ['Ctrl', '3'], tKey: 'tool.qrGenerator' },
+  { keys: ['Ctrl', '4'], tKey: 'tool.keywordCombiner' },
+  { keys: ['Ctrl', '5'], tKey: 'tool.keywordMixer' },
+  { keys: ['Ctrl', '6'], tKey: 'tool.keywordTools' },
+  { keys: ['Ctrl', '7'], tKey: 'tool.ytFinder' },
   { keys: ['?'], tKey: 'kbd.showShortcuts' },
 ];
 
