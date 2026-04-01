@@ -540,7 +540,7 @@ export default function NegativeKeywords() {
             )}>
               {stats.conflicts}
             </div>
-            <div className="text-xs text-muted-foreground">Conflicts Found</div>
+            <div className="text-xs text-muted-foreground">{t('neg.conflictsFound')}</div>
           </Card>
         </div>
       )}
