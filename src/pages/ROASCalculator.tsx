@@ -842,7 +842,7 @@ export default function ROASCalculator() {
                       id="conversionRate"
                       type="number"
                       step="0.1"
-                      placeholder="e.g., 3"
+                      placeholder={t('roas.egCvr')}
                       value={conversionRate}
                       onChange={(e) => setConversionRate(e.target.value)}
                     />
