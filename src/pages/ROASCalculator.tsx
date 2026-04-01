@@ -537,7 +537,7 @@ export default function ROASCalculator() {
                             ) : (
                               <AlertCircle className="h-3 w-3 mr-1" />
                             )}
-                            {result.isPositive ? "Good" : "Warning"}
+                            {result.isPositive ? t('roas.good') : t('roas.warning')}
                           </Badge>
                         </div>
                         <div className={cn(
