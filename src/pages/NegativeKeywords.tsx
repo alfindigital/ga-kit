@@ -447,7 +447,7 @@ export default function NegativeKeywords() {
               </pre>
             ) : (
               <p className="text-sm text-muted-foreground text-center py-8">
-                Enter negative keywords to see results
+                {t('neg.enterNegativeKeywords')}
               </p>
             )}
           </div>
