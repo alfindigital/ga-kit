@@ -827,7 +827,7 @@ export default function ROASCalculator() {
                       id="avgCPC"
                       type="number"
                       step="0.01"
-                      placeholder="e.g., 2.50"
+                      placeholder={t('roas.egCpc')}
                       value={avgCPC}
                       onChange={(e) => setAvgCPC(e.target.value)}
                     />
