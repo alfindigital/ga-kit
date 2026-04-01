@@ -211,7 +211,26 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Tour */}
+      {/* Install App */}
+      {!isInstalled && (
+        <Card>
+          <SectionHeader icon={Smartphone} title={t('install.settingsTitle')} description={t('install.settingsDesc')} />
+          <CardContent>
+            <div className="flex flex-col sm:flex-row gap-3">
+              {canInstall && (
+                <Button onClick={promptInstall} className="gap-2">
+                  <Download className="h-4 w-4" />{t('install.settingsButton')}
+                </Button>
+              )}
+              <Button onClick={() => navigate('/install')} variant="outline" className="gap-2">
+                <Smartphone className="h-4 w-4" />{t('install.settingsGoToInstall')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+
       <Card>
         <SectionHeader icon={GraduationCap} title={t('settings.onboardingTour')} description={t('settings.onboardingTourDesc')} />
         <CardContent>
