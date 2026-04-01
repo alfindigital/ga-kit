@@ -3,29 +3,13 @@ import { Save, FolderOpen, Trash2, Copy, Edit2, Check, X, Clock } from 'lucide-r
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ROASScenario, ROASScenarioData } from '@/hooks/useROASScenarios';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface ScenarioManagerProps {
   scenarios: ROASScenario[];
@@ -40,16 +24,10 @@ interface ScenarioManagerProps {
 }
 
 export function ScenarioManager({
-  scenarios,
-  currentScenarioId,
-  currentData,
-  onSave,
-  onLoad,
-  onDelete,
-  onDuplicate,
-  onRename,
-  onUpdate,
+  scenarios, currentScenarioId, currentData,
+  onSave, onLoad, onDelete, onDuplicate, onRename, onUpdate,
 }: ScenarioManagerProps) {
+  const { t } = useTranslation();
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -58,57 +36,17 @@ export function ScenarioManager({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
 
-  const handleSave = () => {
-    onSave(scenarioName, currentData);
-    setScenarioName('');
-    setSaveDialogOpen(false);
-  };
-
-  const handleUpdateCurrent = () => {
-    if (currentScenarioId) {
-      onUpdate(currentScenarioId, { data: currentData });
-    }
-  };
-
-  const handleLoad = (id: string) => {
-    onLoad(id);
-    setLoadDialogOpen(false);
-  };
-
-  const handleDelete = () => {
-    if (scenarioToDelete) {
-      onDelete(scenarioToDelete);
-      setScenarioToDelete(null);
-      setDeleteDialogOpen(false);
-    }
-  };
-
-  const handleStartEdit = (scenario: ROASScenario) => {
-    setEditingId(scenario.id);
-    setEditingName(scenario.name);
-  };
-
-  const handleSaveEdit = () => {
-    if (editingId && editingName.trim()) {
-      onRename(editingId, editingName);
-    }
-    setEditingId(null);
-    setEditingName('');
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditingName('');
-  };
+  const handleSave = () => { onSave(scenarioName, currentData); setScenarioName(''); setSaveDialogOpen(false); };
+  const handleUpdateCurrent = () => { if (currentScenarioId) onUpdate(currentScenarioId, { data: currentData }); };
+  const handleLoad = (id: string) => { onLoad(id); setLoadDialogOpen(false); };
+  const handleDelete = () => { if (scenarioToDelete) { onDelete(scenarioToDelete); setScenarioToDelete(null); setDeleteDialogOpen(false); } };
+  const handleStartEdit = (scenario: ROASScenario) => { setEditingId(scenario.id); setEditingName(scenario.name); };
+  const handleSaveEdit = () => { if (editingId && editingName.trim()) onRename(editingId, editingName); setEditingId(null); setEditingName(''); };
+  const handleCancelEdit = () => { setEditingId(null); setEditingName(''); };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   };
 
   const hasData = Object.values(currentData).some(v => v !== '' && v !== '20');
@@ -120,22 +58,20 @@ export function ScenarioManager({
         <DialogTrigger asChild>
           <Button variant="outline" size="sm" disabled={!hasData}>
             <Save className="h-4 w-4 mr-1" />
-            Save
+            {t('scenario.save')}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Save Scenario</DialogTitle>
-            <DialogDescription>
-              Save your current calculator values as a named scenario for later use.
-            </DialogDescription>
+            <DialogTitle>{t('scenario.saveScenario')}</DialogTitle>
+            <DialogDescription>{t('scenario.saveDesc')}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="scenario-name">Scenario Name</Label>
+              <Label htmlFor="scenario-name">{t('scenario.scenarioName')}</Label>
               <Input
                 id="scenario-name"
-                placeholder="e.g., Q1 Campaign, Product Launch"
+                placeholder={t('scenario.namePlaceholder')}
                 value={scenarioName}
                 onChange={(e) => setScenarioName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSave()}
@@ -143,22 +79,19 @@ export function ScenarioManager({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>{t('common.cancel')}</Button>
             <Button onClick={handleSave}>
               <Save className="h-4 w-4 mr-1" />
-              Save Scenario
+              {t('scenario.saveScenario')}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Update Current Button */}
       {currentScenarioId && hasData && (
         <Button variant="outline" size="sm" onClick={handleUpdateCurrent}>
           <Save className="h-4 w-4 mr-1" />
-          Update
+          {t('scenario.update')}
         </Button>
       )}
 
@@ -167,28 +100,24 @@ export function ScenarioManager({
         <DialogTrigger asChild>
           <Button variant="outline" size="sm" disabled={scenarios.length === 0}>
             <FolderOpen className="h-4 w-4 mr-1" />
-            Load
+            {t('scenario.load')}
             {scenarios.length > 0 && (
-              <Badge variant="secondary" className="ml-1.5 h-5 px-1.5">
-                {scenarios.length}
-              </Badge>
+              <Badge variant="secondary" className="ml-1.5 h-5 px-1.5">{scenarios.length}</Badge>
             )}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Load Scenario</DialogTitle>
-            <DialogDescription>
-              Select a saved scenario to load into the calculator.
-            </DialogDescription>
+            <DialogTitle>{t('scenario.loadScenario')}</DialogTitle>
+            <DialogDescription>{t('scenario.loadDesc')}</DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[400px] pr-4">
             <div className="space-y-2 py-4">
               {scenarios.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <FolderOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No saved scenarios yet</p>
-                  <p className="text-sm">Save your first scenario to get started</p>
+                  <p>{t('scenario.noScenarios')}</p>
+                  <p className="text-sm">{t('scenario.noScenariosDesc')}</p>
                 </div>
               ) : (
                 scenarios.map((scenario) => (
@@ -203,29 +132,16 @@ export function ScenarioManager({
                       <div className="flex-1 min-w-0">
                         {editingId === scenario.id ? (
                           <div className="flex items-center gap-2">
-                            <Input
-                              value={editingName}
-                              onChange={(e) => setEditingName(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSaveEdit();
-                                if (e.key === 'Escape') handleCancelEdit();
-                              }}
-                              className="h-7 text-sm"
-                              autoFocus
-                            />
-                            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleSaveEdit}>
-                              <Check className="h-4 w-4" />
-                            </Button>
-                            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCancelEdit}>
-                              <X className="h-4 w-4" />
-                            </Button>
+                            <Input value={editingName} onChange={(e) => setEditingName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleSaveEdit(); if (e.key === 'Escape') handleCancelEdit(); }} className="h-7 text-sm" autoFocus />
+                            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleSaveEdit}><Check className="h-4 w-4" /></Button>
+                            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCancelEdit}><X className="h-4 w-4" /></Button>
                           </div>
                         ) : (
                           <>
                             <div className="flex items-center gap-2">
                               <span className="font-medium truncate">{scenario.name}</span>
                               {currentScenarioId === scenario.id && (
-                                <Badge variant="default" className="text-xs">Active</Badge>
+                                <Badge variant="default" className="text-xs">{t('scenario.active')}</Badge>
                               )}
                             </div>
                             <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
@@ -237,45 +153,10 @@ export function ScenarioManager({
                       </div>
                       {editingId !== scenario.id && (
                         <div className="flex items-center gap-1">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8"
-                            onClick={() => handleLoad(scenario.id)}
-                            title="Load scenario"
-                          >
-                            <FolderOpen className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8"
-                            onClick={() => handleStartEdit(scenario)}
-                            title="Rename"
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8"
-                            onClick={() => onDuplicate(scenario.id)}
-                            title="Duplicate"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8 text-destructive hover:text-destructive"
-                            onClick={() => {
-                              setScenarioToDelete(scenario.id);
-                              setDeleteDialogOpen(true);
-                            }}
-                            title="Delete"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleLoad(scenario.id)} title={t('scenario.loadTitle')}><FolderOpen className="h-4 w-4" /></Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleStartEdit(scenario)} title={t('scenario.rename')}><Edit2 className="h-4 w-4" /></Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onDuplicate(scenario.id)} title={t('scenario.duplicate')}><Copy className="h-4 w-4" /></Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => { setScenarioToDelete(scenario.id); setDeleteDialogOpen(true); }} title={t('scenario.deleteTitle')}><Trash2 className="h-4 w-4" /></Button>
                         </div>
                       )}
                     </div>
@@ -291,18 +172,12 @@ export function ScenarioManager({
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Scenario</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this scenario? This action cannot be undone.
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t('scenario.deleteScenario')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('scenario.deleteDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setScenarioToDelete(null)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete
-            </AlertDialogAction>
+            <AlertDialogCancel onClick={() => setScenarioToDelete(null)}>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t('scenario.deleteTitle')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
