@@ -854,7 +854,7 @@ export default function ROASCalculator() {
                     <Input
                       id="avgOrderValue"
                       type="number"
-                      placeholder="e.g., 150"
+                      placeholder={t('roas.egOrderValue')}
                       value={avgOrderValue}
                       onChange={(e) => setAvgOrderValue(e.target.value)}
                     />
