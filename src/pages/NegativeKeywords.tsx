@@ -402,7 +402,7 @@ export default function NegativeKeywords() {
                 {stats.unique} {t('neg.uniqueKeywords')}
                 {stats.duplicatesRemoved > 0 && (
                   <span className="text-primary ml-1">
-                    ({stats.duplicatesRemoved} duplicates removed)
+                    ({stats.duplicatesRemoved} {t('neg.duplicatesRemoved')})
                   </span>
                 )}
               </CardDescription>
