@@ -332,7 +332,7 @@ export default function NegativeKeywords() {
                 checked={caseInsensitive}
                 onCheckedChange={(checked) => setCaseInsensitive(checked as boolean)}
               />
-              <Label htmlFor="case" className="font-normal cursor-pointer">Case insensitive</Label>
+              <Label htmlFor="case" className="font-normal cursor-pointer">{t('neg.caseInsensitive')}</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox 
