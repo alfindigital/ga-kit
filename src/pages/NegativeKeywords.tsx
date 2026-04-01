@@ -474,9 +474,9 @@ export default function NegativeKeywords() {
                 {conflicts.length === 0 ? (
                   <Alert>
                     <CheckCircle2 className="h-4 w-4" />
-                    <AlertTitle>No conflicts found</AlertTitle>
+                    <AlertTitle>{t('neg.noConflicts')}</AlertTitle>
                     <AlertDescription>
-                      Your negative keywords don't conflict with the positive keywords.
+                      {t('neg.noConflictsDesc')}
                     </AlertDescription>
                   </Alert>
                 ) : (
