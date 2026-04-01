@@ -1024,6 +1024,22 @@ const en = {
   'cmd.resetForm': 'Reset Form',
   'cmd.keyboardShortcuts': 'Keyboard Shortcuts',
 
+  // ── Keyboard Shortcuts Dialog ──
+  'kbd.title': 'Keyboard Shortcuts',
+  'kbd.navigation': 'Navigation',
+  'kbd.pageActions': 'Page Actions',
+  'kbd.toggleHint': 'Press {{key}} to toggle this dialog',
+  'kbd.openCommandPalette': 'Open command palette',
+  'kbd.dashboard': 'Dashboard',
+  'kbd.showShortcuts': 'Show shortcuts help',
+  'kbd.copyResult': 'Copy result',
+  'kbd.resetForm': 'Reset form',
+  'kbd.loadSample': 'Load sample data',
+  'kbd.validateUrls': 'Validate URL(s)',
+  'kbd.generateHashes': 'Generate hashes (URL Validator)',
+  'kbd.fetchData': 'Fetch data (YT Finder)',
+  'kbd.cancelRequest': 'Cancel request (YT Finder)',
+
   // ── Settings ──
   'settings.title': 'Settings',
   'settings.subtitle': 'Customize your GA Toolkit experience',
