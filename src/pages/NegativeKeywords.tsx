@@ -226,7 +226,7 @@ export default function NegativeKeywords() {
   const handleLoadSample = () => {
     setNegativeInput(sampleNegatives);
     setPositiveInput(samplePositives);
-    toast({ title: 'Sample data loaded', description: 'Try modifying the keywords to see conflict detection' });
+    toast({ title: t('neg.sampleLoaded'), description: t('neg.sampleLoadedDesc') });
   };
   
   const handleReset = () => {
