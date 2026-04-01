@@ -226,30 +226,30 @@ export default function NegativeKeywords() {
   const handleLoadSample = () => {
     setNegativeInput(sampleNegatives);
     setPositiveInput(samplePositives);
-    toast({ title: 'Sample data loaded', description: 'Try modifying the keywords to see conflict detection' });
+    toast({ title: t('neg.sampleLoaded'), description: t('neg.sampleLoadedDesc') });
   };
   
   const handleReset = () => {
     setNegativeInput('');
     setPositiveInput('');
-    toast({ title: 'Reset complete' });
+    toast({ title: t('neg.resetComplete') });
   };
   
   const handleCopyResults = async () => {
     const text = processedKeywords.join('\n');
     await copy(text);
-    toast({ title: 'Copied to clipboard', description: `${processedKeywords.length} keywords copied` });
+    toast({ title: t('neg.copiedToClipboard'), description: t('neg.keywordsCopied', { count: processedKeywords.length }) });
   };
   
   const handleExportTxt = () => {
     exportTxt(processedKeywords, 'negative-keywords');
-    toast({ title: 'Exported', description: 'negative-keywords.txt downloaded' });
+    toast({ title: t('neg.exported'), description: t('neg.txtDownloaded') });
   };
   
   const handleExportCsv = () => {
     const data = processedKeywords.map(kw => [kw]);
     exportCsv(data, 'negative-keywords');
-    toast({ title: 'Exported', description: 'negative-keywords.csv downloaded' });
+    toast({ title: t('neg.exported'), description: t('neg.csvDownloaded') });
   };
   
   const handleExportWithConflicts = () => {
@@ -266,7 +266,7 @@ export default function NegativeKeywords() {
       ...conflicts.map(c => `[${c.severity.toUpperCase()}] ${c.message}`),
     ];
     exportTxt(lines, 'negative-keywords-report');
-    toast({ title: 'Exported', description: 'Full report with conflicts downloaded' });
+    toast({ title: t('neg.exported'), description: t('neg.reportDownloaded') });
   };
   
   if (isLoading) return <NegativeKeywordsSkeleton />;
@@ -294,11 +294,11 @@ export default function NegativeKeywords() {
       {/* Processing Options */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Processing Options</CardTitle>
+          <CardTitle className="text-base">{t('neg.processingOptions')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Output Format</Label>
+            <Label className="text-sm font-medium">{t('neg.outputFormat')}</Label>
             <RadioGroup
               value={outputFormat}
               onValueChange={(v) => setOutputFormat(v as OutputFormat)}
@@ -306,7 +306,7 @@ export default function NegativeKeywords() {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="broad" id="broad" />
-                <Label htmlFor="broad" className="font-normal cursor-pointer">Broad</Label>
+                <Label htmlFor="broad" className="font-normal cursor-pointer">{t('neg.broad')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="phrase" id="phrase" />
@@ -318,7 +318,7 @@ export default function NegativeKeywords() {
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="keep" id="keep" />
-                <Label htmlFor="keep" className="font-normal cursor-pointer">Keep Original</Label>
+                <Label htmlFor="keep" className="font-normal cursor-pointer">{t('neg.keepOriginal')}</Label>
               </div>
             </RadioGroup>
           </div>
@@ -332,7 +332,7 @@ export default function NegativeKeywords() {
                 checked={caseInsensitive}
                 onCheckedChange={(checked) => setCaseInsensitive(checked as boolean)}
               />
-              <Label htmlFor="case" className="font-normal cursor-pointer">Case insensitive</Label>
+              <Label htmlFor="case" className="font-normal cursor-pointer">{t('neg.caseInsensitive')}</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox 
@@ -340,7 +340,7 @@ export default function NegativeKeywords() {
                 checked={ignoreMatchType}
                 onCheckedChange={(checked) => setIgnoreMatchType(checked as boolean)}
               />
-              <Label htmlFor="matchtype" className="font-normal cursor-pointer">Ignore match type when deduplicating</Label>
+              <Label htmlFor="matchtype" className="font-normal cursor-pointer">{t('neg.ignoreMatchType')}</Label>
             </div>
           </div>
         </CardContent>
@@ -352,19 +352,19 @@ export default function NegativeKeywords() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Ban className="h-4 w-4 text-destructive" />
-              Negative Keywords
+              {t('neg.negativeKeywords')}
             </CardTitle>
-            <CardDescription>One keyword per line</CardDescription>
+            <CardDescription>{t('neg.onePerLine')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="Enter negative keywords...&#10;free&#10;&quot;cheap shoes&quot;&#10;[discount code]"
+              placeholder={t('neg.negPlaceholder')}
               value={negativeInput}
               onChange={(e) => setNegativeInput(e.target.value)}
               className="min-h-[200px] font-mono text-sm"
             />
             <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-              <Badge variant="outline">{negativeKeywords.length} keywords</Badge>
+              <Badge variant="outline">{negativeKeywords.length} {t('neg.keywords')}</Badge>
             </div>
           </CardContent>
         </Card>
@@ -373,20 +373,20 @@ export default function NegativeKeywords() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
-              Positive Keywords
-              <Badge variant="secondary" className="ml-1 text-xs">Optional</Badge>
+              {t('neg.positiveKeywords')}
+              <Badge variant="secondary" className="ml-1 text-xs">{t('neg.optional')}</Badge>
             </CardTitle>
-            <CardDescription>For conflict detection</CardDescription>
+            <CardDescription>{t('neg.forConflictDetection')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="Enter positive keywords to check for conflicts...&#10;buy running shoes&#10;best sneakers"
+              placeholder={t('neg.posPlaceholder')}
               value={positiveInput}
               onChange={(e) => setPositiveInput(e.target.value)}
               className="min-h-[200px] font-mono text-sm"
             />
             <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-              <Badge variant="outline">{positiveKeywords.length} keywords</Badge>
+              <Badge variant="outline">{positiveKeywords.length} {t('neg.keywords')}</Badge>
             </div>
           </CardContent>
         </Card>
@@ -397,12 +397,12 @@ export default function NegativeKeywords() {
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <CardTitle className="text-base">Results</CardTitle>
+              <CardTitle className="text-base">{t('common.results')}</CardTitle>
               <CardDescription className="mt-1">
-                {stats.unique} unique keywords
+                {stats.unique} {t('neg.uniqueKeywords')}
                 {stats.duplicatesRemoved > 0 && (
                   <span className="text-primary ml-1">
-                    ({stats.duplicatesRemoved} duplicates removed)
+                    ({stats.duplicatesRemoved} {t('neg.duplicatesRemoved')})
                   </span>
                 )}
               </CardDescription>
@@ -415,7 +415,7 @@ export default function NegativeKeywords() {
                 disabled={processedKeywords.length === 0}
               >
                 <Copy className="h-4 w-4 mr-1.5" />
-                Copy
+                {t('common.copy')}
               </Button>
               <Button 
                 variant="outline" 
@@ -447,7 +447,7 @@ export default function NegativeKeywords() {
               </pre>
             ) : (
               <p className="text-sm text-muted-foreground text-center py-8">
-                Enter negative keywords to see results
+                {t('neg.enterNegativeKeywords')}
               </p>
             )}
           </div>
@@ -461,12 +461,12 @@ export default function NegativeKeywords() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-warning-foreground" />
-                    Conflicts Detected ({conflicts.length})
+                    {t('neg.conflictsDetected')} ({conflicts.length})
                   </h3>
                   {conflicts.length > 0 && (
                     <Button variant="outline" size="sm" onClick={handleExportWithConflicts}>
                       <Download className="h-4 w-4 mr-1.5" />
-                      Export Report
+                      {t('neg.exportReport')}
                     </Button>
                   )}
                 </div>
@@ -474,9 +474,9 @@ export default function NegativeKeywords() {
                 {conflicts.length === 0 ? (
                   <Alert>
                     <CheckCircle2 className="h-4 w-4" />
-                    <AlertTitle>No conflicts found</AlertTitle>
+                    <AlertTitle>{t('neg.noConflicts')}</AlertTitle>
                     <AlertDescription>
-                      Your negative keywords don't conflict with the positive keywords.
+                      {t('neg.noConflictsDesc')}
                     </AlertDescription>
                   </Alert>
                 ) : (
@@ -502,9 +502,9 @@ export default function NegativeKeywords() {
                               conflict.severity === 'caution' && 'border-orange-500 text-orange-700 dark:text-orange-400'
                             )}
                           >
-                            {conflict.severity === 'critical' && '🔴 Critical'}
-                            {conflict.severity === 'warning' && '🟡 Warning'}
-                            {conflict.severity === 'caution' && '🟠 Caution'}
+                            {conflict.severity === 'critical' && t('neg.critical')}
+                            {conflict.severity === 'warning' && t('neg.warning')}
+                            {conflict.severity === 'caution' && t('neg.caution')}
                           </Badge>
                           {conflict.message}
                         </AlertDescription>
@@ -523,15 +523,15 @@ export default function NegativeKeywords() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Card className="p-3">
             <div className="text-2xl font-bold">{stats.totalInput}</div>
-            <div className="text-xs text-muted-foreground">Total Input</div>
+            <div className="text-xs text-muted-foreground">{t('neg.totalInput')}</div>
           </Card>
           <Card className="p-3">
             <div className="text-2xl font-bold text-primary">{stats.unique}</div>
-            <div className="text-xs text-muted-foreground">Unique</div>
+            <div className="text-xs text-muted-foreground">{t('neg.unique')}</div>
           </Card>
           <Card className="p-3">
             <div className="text-2xl font-bold text-muted-foreground">{stats.duplicatesRemoved}</div>
-            <div className="text-xs text-muted-foreground">Duplicates Removed</div>
+            <div className="text-xs text-muted-foreground">{t('neg.duplicatesRemovedLabel')}</div>
           </Card>
           <Card className="p-3">
             <div className={cn(
@@ -540,7 +540,7 @@ export default function NegativeKeywords() {
             )}>
               {stats.conflicts}
             </div>
-            <div className="text-xs text-muted-foreground">Conflicts Found</div>
+            <div className="text-xs text-muted-foreground">{t('neg.conflictsFound')}</div>
           </Card>
         </div>
       )}
