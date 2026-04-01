@@ -298,7 +298,7 @@ export default function NegativeKeywords() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Output Format</Label>
+            <Label className="text-sm font-medium">{t('neg.outputFormat')}</Label>
             <RadioGroup
               value={outputFormat}
               onValueChange={(v) => setOutputFormat(v as OutputFormat)}
