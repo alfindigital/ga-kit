@@ -719,7 +719,7 @@ export default function ROASCalculator() {
                   <Input
                     id="profitMargin"
                     type="number"
-                    placeholder="e.g., 40"
+                    placeholder={t('roas.egMargin')}
                     value={profitMargin}
                     onChange={(e) => setProfitMargin(e.target.value)}
                   />
