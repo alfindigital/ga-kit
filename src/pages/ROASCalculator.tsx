@@ -756,8 +756,8 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>CPA Thresholds</CardTitle>
-                <CardDescription>Your CPA limits for profitability</CardDescription>
+                <CardTitle>{t('roas.cpaThresholds')}</CardTitle>
+                <CardDescription>{t('roas.cpaThresholdsDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {cpaResult.length === 0 ? (
