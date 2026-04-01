@@ -306,7 +306,7 @@ export default function NegativeKeywords() {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="broad" id="broad" />
-                <Label htmlFor="broad" className="font-normal cursor-pointer">Broad</Label>
+                <Label htmlFor="broad" className="font-normal cursor-pointer">{t('neg.broad')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="phrase" id="phrase" />
