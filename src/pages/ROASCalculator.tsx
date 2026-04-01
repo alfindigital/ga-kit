@@ -626,8 +626,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Use your historical ROAS data for more accurate budget estimation.
-                    New campaigns may have lower ROAS initially.
+                    {t('roas.budgetInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
