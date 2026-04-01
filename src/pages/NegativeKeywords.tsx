@@ -466,7 +466,7 @@ export default function NegativeKeywords() {
                   {conflicts.length > 0 && (
                     <Button variant="outline" size="sm" onClick={handleExportWithConflicts}>
                       <Download className="h-4 w-4 mr-1.5" />
-                      Export Report
+                      {t('neg.exportReport')}
                     </Button>
                   )}
                 </div>
