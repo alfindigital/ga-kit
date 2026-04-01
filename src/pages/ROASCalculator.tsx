@@ -814,7 +814,7 @@ export default function ROASCalculator() {
                     <Input
                       id="monthlyBudget"
                       type="number"
-                      placeholder="e.g., 5000"
+                      placeholder={t('roas.egBudget')}
                       value={monthlyBudget}
                       onChange={(e) => setMonthlyBudget(e.target.value)}
                     />
