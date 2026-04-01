@@ -461,7 +461,7 @@ export default function NegativeKeywords() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-warning-foreground" />
-                    Conflicts Detected ({conflicts.length})
+                    {t('neg.conflictsDetected')} ({conflicts.length})
                   </h3>
                   {conflicts.length > 0 && (
                     <Button variant="outline" size="sm" onClick={handleExportWithConflicts}>
