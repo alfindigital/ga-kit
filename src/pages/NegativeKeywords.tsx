@@ -238,7 +238,7 @@ export default function NegativeKeywords() {
   const handleCopyResults = async () => {
     const text = processedKeywords.join('\n');
     await copy(text);
-    toast({ title: 'Copied to clipboard', description: `${processedKeywords.length} keywords copied` });
+    toast({ title: t('neg.copiedToClipboard'), description: t('neg.keywordsCopied', { count: processedKeywords.length }) });
   };
   
   const handleExportTxt = () => {
