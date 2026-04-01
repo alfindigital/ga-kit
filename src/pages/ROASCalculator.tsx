@@ -866,8 +866,7 @@ export default function ROASCalculator() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Use historical data for accuracy. Industry benchmarks:
-                    CPC $1-3, CVR 2-5%, AOV varies by industry.
+                    {t('roas.advancedInfo')}
                   </AlertDescription>
                 </Alert>
               </CardContent>
