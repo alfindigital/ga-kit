@@ -434,7 +434,7 @@ export default function ROASCalculator() {
           </TabsTrigger>
           <TabsTrigger value="cpa" className="flex items-center gap-1.5">
             <Target className="h-4 w-4" />
-            <span className="hidden sm:inline">Break-even CPA</span>
+            <span className="hidden sm:inline">{t('roas.breakEvenCpa')}</span>
           </TabsTrigger>
           <TabsTrigger value="advanced" className="flex items-center gap-1.5">
             <Calculator className="h-4 w-4" />
