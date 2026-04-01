@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
+import { TranslationKey } from '@/i18n/translations';
 
 interface AnimatedCounterProps {
   value: number;
@@ -35,12 +36,9 @@ function AnimatedCounter({ value, duration = 1000 }: AnimatedCounterProps) {
     const animate = () => {
       const now = Date.now();
       const progress = Math.min((now - startTime) / duration, 1);
-      
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const current = Math.round(start + (end - start) * easeOutQuart);
-      
       setDisplayValue(current);
-
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
@@ -54,82 +52,49 @@ function AnimatedCounter({ value, duration = 1000 }: AnimatedCounterProps) {
   return <span>{displayValue.toLocaleString()}</span>;
 }
 
-const statItems = [
-  {
-    key: 'utmsCreated' as const,
-    label: 'UTMs Created',
-    icon: Link2,
-    gradient: 'from-primary to-primary/60',
-    textColor: 'text-primary',
-  },
-  {
-    key: 'keywordsCombined' as const,
-    label: 'Keywords Combined',
-    icon: Combine,
-    gradient: 'from-accent to-accent/60',
-    textColor: 'text-accent',
-  },
-  {
-    key: 'keywordsMixed' as const,
-    label: 'Keywords Mixed',
-    icon: Shuffle,
-    gradient: 'from-accent to-accent/60',
-    textColor: 'text-accent',
-  },
-  {
-    key: 'qrCodesGenerated' as const,
-    label: 'QR Codes',
-    icon: QrCode,
-    gradient: 'from-tool-qr to-tool-qr/60',
-    textColor: 'text-tool-qr',
-  },
-  {
-    key: 'videosAnalyzed' as const,
-    label: 'Videos Analyzed',
-    icon: Youtube,
-    gradient: 'from-destructive to-destructive/60',
-    textColor: 'text-destructive',
-  },
+const statItems: { key: 'utmsCreated' | 'keywordsCombined' | 'keywordsMixed' | 'qrCodesGenerated' | 'videosAnalyzed'; labelKey: TranslationKey; icon: typeof Link2; gradient: string; textColor: string }[] = [
+  { key: 'utmsCreated', labelKey: 'stats.utmsCreated', icon: Link2, gradient: 'from-primary to-primary/60', textColor: 'text-primary' },
+  { key: 'keywordsCombined', labelKey: 'stats.keywordsCombined', icon: Combine, gradient: 'from-accent to-accent/60', textColor: 'text-accent' },
+  { key: 'keywordsMixed', labelKey: 'stats.keywordsMixed', icon: Shuffle, gradient: 'from-accent to-accent/60', textColor: 'text-accent' },
+  { key: 'qrCodesGenerated', labelKey: 'stats.qrCodes', icon: QrCode, gradient: 'from-tool-qr to-tool-qr/60', textColor: 'text-tool-qr' },
+  { key: 'videosAnalyzed', labelKey: 'stats.videosAnalyzed', icon: Youtube, gradient: 'from-destructive to-destructive/60', textColor: 'text-destructive' },
 ];
 
 export function QuickStats() {
   const { stats, resetStats } = useUsageStats();
+  const { t } = useTranslation();
   const totalActions = stats.utmsCreated + stats.keywordsCombined + stats.keywordsMixed + stats.qrCodesGenerated + stats.videosAnalyzed;
 
   const handleReset = () => {
     resetStats();
-    toast.success('Activity stats have been reset');
+    toast.success(t('stats.resetSuccess'));
   };
 
-  if (totalActions === 0) {
-    return null;
-  }
+  if (totalActions === 0) return null;
 
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <TrendingUp className="h-4 w-4" />
-          <span className="font-medium">Your Activity</span>
+          <span className="font-medium">{t('stats.yourActivity')}</span>
         </div>
         
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground">
               <RotateCcw className="h-3 w-3 mr-1" />
-              Reset
+              {t('stats.reset')}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Reset Activity Stats?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This will clear all your activity counters. This action cannot be undone.
-              </AlertDialogDescription>
+              <AlertDialogTitle>{t('stats.resetTitle')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('stats.resetDesc')}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleReset}>Reset Stats</AlertDialogAction>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleReset}>{t('stats.resetConfirm')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -143,9 +108,7 @@ export function QuickStats() {
           return (
             <Card 
               key={item.key}
-              className={cn(
-                "stat-card overflow-hidden stagger-enter"
-              )}
+              className={cn("stat-card overflow-hidden stagger-enter")}
               style={{ animationDelay: `${index * 60}ms` }}
             >
               <CardContent className="p-3 sm:p-4">
@@ -158,7 +121,7 @@ export function QuickStats() {
                       <AnimatedCounter value={value} />
                     </div>
                     <div className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                      {item.label}
+                      {t(item.labelKey)}
                     </div>
                   </div>
                 </div>

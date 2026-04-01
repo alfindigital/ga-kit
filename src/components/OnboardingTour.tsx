@@ -1,116 +1,112 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Joyride, { CallBackProps, STATUS, Step, ACTIONS, EVENTS, TooltipRenderProps } from 'react-joyride';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
 import { Sparkles, RotateCcw, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
-const tourSteps: Step[] = [
-  {
-    target: 'body',
-    content: (
-      <div className="text-center">
-        <div className="mb-4 text-4xl">🎉</div>
-        <h3 className="text-lg font-semibold mb-2 text-foreground">Welcome to GA Toolkit!</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Let's take a quick tour to discover all the powerful features at your fingertips.
-        </p>
-      </div>
-    ),
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="tools-grid"]',
-    content: (
-      <div>
-        <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-          <span className="text-lg">🛠️</span> Your Toolkit
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          All your marketing tools in one place: UTM Builder, QR Generator, Keyword Tools, and more!
-        </p>
-      </div>
-    ),
-    placement: 'top',
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="command-palette"]',
-    content: (
-      <div>
-        <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-          <span className="text-lg">⌘</span> Command Palette
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Press <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">Ctrl</kbd> + <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">K</kbd> anytime to quickly navigate, search, and execute actions!
-        </p>
-      </div>
-    ),
-    placement: 'bottom',
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="theme-toggle"]',
-    content: (
-      <div>
-        <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-          <span className="text-lg">🎨</span> Theme Switching
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Switch between light, dark, or system theme to match your preference.
-        </p>
-      </div>
-    ),
-    placement: 'bottom',
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="keyboard-shortcuts"]',
-    content: (
-      <div>
-        <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-          <span className="text-lg">⌨️</span> Keyboard Shortcuts
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Press <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">?</kbd> anytime to see all available keyboard shortcuts for power users!
-        </p>
-      </div>
-    ),
-    placement: 'bottom',
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="navigation"]',
-    content: (
-      <div>
-        <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-          <span className="text-lg">🧭</span> Quick Navigation
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Use <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">Ctrl</kbd> + <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">1-7</kbd> to jump directly to any tool!
-        </p>
-      </div>
-    ),
-    placement: 'bottom',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: (
-      <div className="text-center">
-        <div className="mb-4 text-4xl">🚀</div>
-        <h3 className="text-lg font-semibold mb-2 text-foreground">You're All Set!</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Start exploring the tools and boost your marketing workflow. You can always restart this tour from the settings.
-        </p>
-      </div>
-    ),
-    placement: 'center',
-    disableBeacon: true,
-  },
-];
+function useTourSteps(): Step[] {
+  const { t } = useTranslation();
+  return useMemo(() => [
+    {
+      target: 'body',
+      content: (
+        <div className="text-center">
+          <div className="mb-4 text-4xl">🎉</div>
+          <h3 className="text-lg font-semibold mb-2 text-foreground">{t('tour.welcome')}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.welcomeDesc')}</p>
+        </div>
+      ),
+      placement: 'center' as const,
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="tools-grid"]',
+      content: (
+        <div>
+          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
+            <span className="text-lg">🛠️</span> {t('tour.toolkit')}
+          </h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.toolkitDesc')}</p>
+        </div>
+      ),
+      placement: 'top' as const,
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="command-palette"]',
+      content: (
+        <div>
+          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
+            <span className="text-lg">⌘</span> {t('tour.commandPalette')}
+          </h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">Ctrl</kbd> + <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">K</kbd> {t('tour.commandPaletteDesc')}
+          </p>
+        </div>
+      ),
+      placement: 'bottom' as const,
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="theme-toggle"]',
+      content: (
+        <div>
+          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
+            <span className="text-lg">🎨</span> {t('tour.themeSwitching')}
+          </h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.themeSwitchingDesc')}</p>
+        </div>
+      ),
+      placement: 'bottom' as const,
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="keyboard-shortcuts"]',
+      content: (
+        <div>
+          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
+            <span className="text-lg">⌨️</span> {t('tour.keyboardShortcuts')}
+          </h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">?</kbd> {t('tour.keyboardShortcutsDesc')}
+          </p>
+        </div>
+      ),
+      placement: 'bottom' as const,
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="navigation"]',
+      content: (
+        <div>
+          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
+            <span className="text-lg">🧭</span> {t('tour.quickNav')}
+          </h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">Ctrl</kbd> + <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">1-7</kbd> {t('tour.quickNavDesc')}
+          </p>
+        </div>
+      ),
+      placement: 'bottom' as const,
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: (
+        <div className="text-center">
+          <div className="mb-4 text-4xl">🚀</div>
+          <h3 className="text-lg font-semibold mb-2 text-foreground">{t('tour.allSet')}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.allSetDesc')}</p>
+        </div>
+      ),
+      placement: 'center' as const,
+      disableBeacon: true,
+    },
+  ], [t]);
+}
 
 // Custom tooltip component with progress bar
 function CustomTooltip({
@@ -126,6 +122,7 @@ function CustomTooltip({
   isLastStep,
 }: TooltipRenderProps) {
   const { resolvedTheme } = useTheme();
+  const { t } = useTranslation();
   const isDark = resolvedTheme === 'dark';
   const progress = ((index + 1) / size) * 100;
   const stepsRemaining = size - index - 1;
@@ -146,36 +143,32 @@ function CustomTooltip({
           : '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 12px 24px -8px rgba(0, 0, 0, 0.08)',
       }}
     >
-      {/* Header with step counter and skip button */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs font-medium text-muted-foreground">
-          Step {index + 1} of {size}
+          {t('tour.stepOf', { current: index + 1, total: size })}
         </span>
         <button
           {...skipProps}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          Skip Tour
+          {t('tour.skipTour')}
         </button>
       </div>
 
-      {/* Progress bar */}
       <div className="mb-4">
         <Progress value={progress} className="h-1.5" />
         <p className="text-xs text-muted-foreground mt-1.5">
           {stepsRemaining === 0 
-            ? "Last step!" 
-            : `${stepsRemaining} step${stepsRemaining > 1 ? 's' : ''} remaining`
+            ? t('tour.lastStep')
+            : t('tour.stepsRemaining', { count: stepsRemaining })
           }
         </p>
       </div>
 
-      {/* Content */}
       <div className="mb-6">
         {step.content}
       </div>
 
-      {/* Navigation buttons */}
       <div className="flex items-center justify-between">
         <div>
           {index > 0 && (
@@ -186,7 +179,7 @@ function CustomTooltip({
               className="gap-1.5 text-muted-foreground hover:text-foreground"
             >
               <ChevronLeft className="h-4 w-4" />
-              Back
+              {t('tour.back')}
             </Button>
           )}
         </div>
@@ -197,12 +190,12 @@ function CustomTooltip({
         >
           {isLastStep ? (
             <>
-              Finish
+              {t('tour.finish')}
               <Sparkles className="h-4 w-4" />
             </>
           ) : (
             <>
-              Next
+              {t('tour.next')}
               <ChevronRight className="h-4 w-4" />
             </>
           )}
@@ -211,6 +204,7 @@ function CustomTooltip({
     </div>
   );
 }
+
 interface OnboardingTourProps {
   forceStart?: boolean;
   onComplete?: () => void;
@@ -221,9 +215,9 @@ export function OnboardingTour({ forceStart = false, onComplete }: OnboardingTou
   const [hasSeenTour, setHasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
   const [runTour, setRunTour] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const tourSteps = useTourSteps();
 
   useEffect(() => {
-    // Start tour for first-time users after a short delay
     if (!hasSeenTour || forceStart) {
       const timer = setTimeout(() => {
         setRunTour(true);
@@ -243,7 +237,6 @@ export function OnboardingTour({ forceStart = false, onComplete }: OnboardingTou
       onComplete?.();
     }
 
-    // Handle step navigation
     if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
       if (action === ACTIONS.NEXT) {
         setStepIndex(index + 1);
@@ -292,15 +285,12 @@ export function OnboardingTour({ forceStart = false, onComplete }: OnboardingTou
   );
 }
 
-// Button component to restart the tour
 export function RestartTourButton() {
   const [, setHasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
-  const [showTour, setShowTour] = useState(false);
+  const { t } = useTranslation();
 
   const handleRestartTour = () => {
     setHasSeenTour(false);
-    setShowTour(true);
-    // Reload after a brief moment to restart the tour
     setTimeout(() => {
       window.location.reload();
     }, 100);
@@ -314,15 +304,15 @@ export function RestartTourButton() {
       className="gap-2"
     >
       <RotateCcw className="h-4 w-4" />
-      Restart Tour
+      {t('tour.restartTour')}
     </Button>
   );
 }
 
-// Welcome banner for users who completed the tour
 export function WelcomeBanner() {
   const [hasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
   const [dismissed, setDismissed] = useLocalStorage('ga-toolkit-welcome-dismissed', false);
+  const { t } = useTranslation();
 
   if (!hasSeenTour || dismissed) return null;
 
@@ -331,9 +321,9 @@ export function WelcomeBanner() {
       <div className="flex items-start gap-3">
         <Sparkles className="h-5 w-5 text-primary mt-0.5" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-foreground">Welcome aboard! 🎉</p>
+          <p className="text-sm font-medium text-foreground">{t('tour.welcomeAboard')}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            You've completed the tour. Press <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">?</kbd> for shortcuts or <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">Ctrl+K</kbd> for quick actions.
+            {t('tour.welcomeAboardDesc')} <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">?</kbd> {t('tour.welcomeAboardDesc')} <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">Ctrl+K</kbd> {t('tour.forQuickActions')}
           </p>
         </div>
         <Button
@@ -342,7 +332,7 @@ export function WelcomeBanner() {
           onClick={() => setDismissed(true)}
           className="text-xs"
         >
-          Dismiss
+          {t('tour.dismiss')}
         </Button>
       </div>
     </div>
