@@ -2124,6 +2124,22 @@ const id: Record<string, string> = {
   'cmd.resetForm': 'Reset Formulir',
   'cmd.keyboardShortcuts': 'Pintasan Keyboard',
 
+  // ── Dialog Pintasan Keyboard ──
+  'kbd.title': 'Pintasan Keyboard',
+  'kbd.navigation': 'Navigasi',
+  'kbd.pageActions': 'Aksi Halaman',
+  'kbd.toggleHint': 'Tekan {{key}} untuk membuka/menutup dialog ini',
+  'kbd.openCommandPalette': 'Buka palet perintah',
+  'kbd.dashboard': 'Dasbor',
+  'kbd.showShortcuts': 'Tampilkan bantuan pintasan',
+  'kbd.copyResult': 'Salin hasil',
+  'kbd.resetForm': 'Reset formulir',
+  'kbd.loadSample': 'Muat data sampel',
+  'kbd.validateUrls': 'Validasi URL',
+  'kbd.generateHashes': 'Buat hash (URL Validator)',
+  'kbd.fetchData': 'Ambil data (YT Finder)',
+  'kbd.cancelRequest': 'Batalkan permintaan (YT Finder)',
+
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',
   'settings.subtitle': 'Sesuaikan pengalaman GA Toolkit Anda',
