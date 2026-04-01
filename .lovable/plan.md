@@ -1,76 +1,63 @@
 
 
-# Rombak Branding & UI/UX - Buat Lebih Hidup
+# PWA Enhancement Plan — GAKit
 
-## Ringkasan
+## Current State
 
-Merombak tampilan visual GA Toolkit agar lebih modern, colorful, dan terasa "hidup" dengan default **light theme**. Perubahan mencakup color palette baru, gradient backgrounds, card styling yang lebih menarik, header/footer redesign, dan micro-interactions.
+GAKit already has `vite-plugin-pwa` installed and configured with:
+- Manifest (name, icons, standalone display)
+- Workbox with precaching and Google Fonts runtime caching
+- PWA icons (192x192 and 512x512) in `/public`
 
-## Perubahan Utama
+**What's missing:**
+1. Safety guards for Lovable preview/iframe (service worker breaks preview)
+2. `devOptions: { enabled: false }` to prevent SW in dev mode
+3. `navigateFallbackDenylist` for `/~oauth`
+4. Install prompt UI (no way for users to trigger "Add to Home Screen")
+5. Offline fallback page
+6. i18n for install-related strings
 
-### 1. Default Theme ke Light
-- Ubah default value di `ThemeContext.tsx` dari `'system'` ke `'light'`
+## Plan
 
-### 2. Color Palette Baru (index.css)
-- Background light: gradient putih ke soft blue-gray (`220 25% 98%`)
-- Primary color: vibrant blue dengan gradient support
-- Accent: teal/emerald yang lebih fresh
-- Tambah CSS custom properties untuk gradient stops
-- Card: pure white dengan shadow lebih pronounced
-- Dark mode: tetap ada tapi disesuaikan agar kontras lebih baik
+### Step 1 — Fix vite.config.ts PWA config
 
-### 3. Header Redesign (Header.tsx)
-- Logo "GA" badge dengan gradient background (blue to indigo)
-- Active nav item dengan pill-shaped highlight + subtle glow
-- Glassmorphism effect yang lebih terlihat pada header
-- Tambah subtle bottom shadow/gradient border
+- Add `devOptions: { enabled: false }`
+- Add `navigateFallbackDenylist: [/^\/~oauth/]` to workbox config
 
-### 4. Dashboard Makeover (Dashboard.tsx)
-- Hero section: gradient text heading + animated gradient background blob
-- Tool cards: colorful left border accent per tool, hover shadow yang lebih dramatis dengan warna tool
-- Hover state: card lift + colored shadow glow effect
-- Feature bullets: colored dots per tool theme
-- "Launch" button: gradient background per tool color
-- Quick Access section: colored pill badges
+### Step 2 — Add iframe/preview guard in main.tsx
 
-### 5. QuickStats Upgrade (QuickStats.tsx)
-- Stat cards dengan gradient icon backgrounds
-- Angka dengan warna gradient
-- Subtle progress bar di bawah setiap stat
+Add conditional logic to **unregister** service workers when running inside an iframe or on a Lovable preview host (`id-preview--*`, `lovableproject.com`). This prevents the SW from interfering with the editor preview.
 
-### 6. Footer Redesign (Footer.tsx)
-- Gradient top border (multi-color)
-- Tambah social/branding elements yang lebih menarik
+### Step 3 — Create PWA Install hook (`useInstallPrompt`)
 
-### 7. Bottom Tab Nav (BottomTabNav.tsx)
-- Active tab: filled icon dengan colored pill background
-- Subtle gradient indicator bar di atas active tab
+A custom hook that:
+- Captures the `beforeinstallprompt` event
+- Exposes `canInstall`, `isInstalled` (display-mode: standalone check), and `promptInstall()` method
+- Detects iOS for manual install instructions
 
-### 8. Global CSS Enhancements (index.css)
-- Tambah decorative gradient blobs (CSS pseudo-elements)
-- Card hover glow effect utility class
-- Gradient border utility
-- Smoother transition defaults
+### Step 4 — Create Install Page (`/install`)
 
-### 9. Tailwind Config Updates (tailwind.config.ts)
-- Tambah gradient color stops
-- Tambah glow/colored shadow utilities
+A dedicated page with:
+- Install button (triggers native prompt on Android/Chrome)
+- iOS manual instructions (Share → Add to Home Screen)
+- Feature highlights (offline access, fast loading, no app store needed)
+- Already-installed state detection
+- Fully translated with `t()` keys
 
-## Detail Teknis
+### Step 5 — Add install banner/button to Settings page
 
-### Files yang diubah:
-1. **`src/contexts/ThemeContext.tsx`** - Default `'light'`
-2. **`src/index.css`** - Palette baru, gradient utilities, decorative elements
-3. **`tailwind.config.ts`** - Extended colors & shadow utilities
-4. **`src/components/layout/Header.tsx`** - Visual redesign
-5. **`src/components/layout/Footer.tsx`** - Gradient border, richer styling
-6. **`src/components/layout/BottomTabNav.tsx`** - Colored active states
-7. **`src/pages/Dashboard.tsx`** - Hero gradient, card redesign, colored accents
-8. **`src/components/QuickStats.tsx`** - Gradient stat cards
+Add an "Install App" card in Settings that links to `/install` or triggers the prompt directly, so users discover the installability.
 
-### Pendekatan:
-- Tidak mengubah struktur komponen, hanya styling
-- Semua perubahan backward-compatible dengan dark mode
-- Menggunakan CSS variables agar mudah di-maintain
-- Fokus pada: gradients, colored shadows, micro-animations, depth
+### Step 6 — Add translations
+
+Add i18n keys for all install-related strings (EN & ID):
+- `install.title`, `install.description`, `install.button`, `install.iosInstructions`, `install.alreadyInstalled`, `install.features.*`
+
+### Step 7 — Add offline fallback
+
+Configure workbox `offlineFallbackPage` or add a simple offline.html in `/public` so users see a branded page when offline and navigating to an uncached route.
+
+---
+
+**Important note:** PWA features (offline support, install prompt) will only work on the **published** version (`gakit.lovable.app`), not in the Lovable editor preview.
 
