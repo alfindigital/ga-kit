@@ -898,13 +898,6 @@ const en = {
   'settings.resetConfirmHint': 'Consider exporting your settings first.',
   'settings.yesReset': 'Yes, Reset Everything',
 
-  // ── Quick Stats ──
-  'stats.utmsCreated': 'UTMs Created',
-  'stats.keywordsCombined': 'Keywords Combined',
-  'stats.keywordsMixed': 'Keywords Mixed',
-  'stats.qrCodes': 'QR Codes',
-  'stats.videosAnalyzed': 'Videos Analyzed',
-
   // ── Header ──
   'header.theme': 'Theme',
   'header.fontSize': 'Font Size',
