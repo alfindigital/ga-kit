@@ -1100,6 +1100,29 @@ const en = {
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – concept v1',
+
+  // ── Install / PWA ──
+  'install.title': 'Install GAKit',
+  'install.description': 'Add GAKit to your home screen for quick access, offline support, and a native app experience.',
+  'install.alreadyInstalled': 'GAKit is installed!',
+  'install.alreadyInstalledDesc': 'You\'re already using GAKit as an installed app.',
+  'install.ctaTitle': 'Get the App',
+  'install.ctaDesc': 'Install GAKit directly from your browser — no app store needed.',
+  'install.button': 'Install App',
+  'install.iosTitle': 'Install on iOS',
+  'install.iosStep1': 'Tap the Share button',
+  'install.iosStep2': 'Tap "Add to Home Screen"',
+  'install.iosStep3': 'Tap "Add" to confirm',
+  'install.browserHint': 'Use Chrome or Edge on desktop/Android for the best install experience.',
+  'install.featureOffline': 'Works Offline',
+  'install.featureFast': 'Lightning Fast',
+  'install.featureNative': 'Native Feel',
+  'install.featureNoStore': 'No App Store',
+  'install.note': 'PWA install is available on the published site only, not in the editor preview.',
+  'install.settingsTitle': 'Install App',
+  'install.settingsDesc': 'Add GAKit to your home screen for quick access and offline support',
+  'install.settingsButton': 'Install',
+  'install.settingsGoToInstall': 'Install Guide',
 } as const;
 
 const id: Record<string, string> = {
@@ -2200,6 +2223,29 @@ const id: Record<string, string> = {
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – konsep v1',
+
+  // ── Install / PWA ──
+  'install.title': 'Instal GAKit',
+  'install.description': 'Tambahkan GAKit ke layar utama untuk akses cepat, dukungan offline, dan pengalaman seperti aplikasi native.',
+  'install.alreadyInstalled': 'GAKit sudah terinstal!',
+  'install.alreadyInstalledDesc': 'Anda sudah menggunakan GAKit sebagai aplikasi terinstal.',
+  'install.ctaTitle': 'Dapatkan Aplikasi',
+  'install.ctaDesc': 'Instal GAKit langsung dari browser — tanpa app store.',
+  'install.button': 'Instal Aplikasi',
+  'install.iosTitle': 'Instal di iOS',
+  'install.iosStep1': 'Ketuk tombol Bagikan',
+  'install.iosStep2': 'Ketuk "Tambahkan ke Layar Utama"',
+  'install.iosStep3': 'Ketuk "Tambah" untuk konfirmasi',
+  'install.browserHint': 'Gunakan Chrome atau Edge di desktop/Android untuk pengalaman instal terbaik.',
+  'install.featureOffline': 'Bekerja Offline',
+  'install.featureFast': 'Super Cepat',
+  'install.featureNative': 'Rasa Native',
+  'install.featureNoStore': 'Tanpa App Store',
+  'install.note': 'Instal PWA hanya tersedia di situs yang sudah dipublikasi, bukan di preview editor.',
+  'install.settingsTitle': 'Instal Aplikasi',
+  'install.settingsDesc': 'Tambahkan GAKit ke layar utama untuk akses cepat dan dukungan offline',
+  'install.settingsButton': 'Instal',
+  'install.settingsGoToInstall': 'Panduan Instal',
 };
 
 export const translations: Record<string, Record<string, string>> = { en, id };

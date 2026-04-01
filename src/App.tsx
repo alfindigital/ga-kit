@@ -21,6 +21,7 @@ import NegativeKeywords from "./pages/NegativeKeywords";
 import AdCopyValidator from "./pages/AdCopyValidator";
 import ROASCalculator from "./pages/ROASCalculator";
 import Settings from "./pages/Settings";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
                   <Route path="/roas-calculator" element={<ROASCalculator />} />
                   <Route path="/history" element={<UrlHistory />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/install" element={<Install />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Layout>

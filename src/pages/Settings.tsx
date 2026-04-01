@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useFontSize } from '@/contexts/FontSizeContext';
 import { useLanguage, LANGUAGES } from '@/contexts/LanguageContext';
@@ -12,8 +13,9 @@ import { Badge } from '@/components/ui/badge';
 import {
   Sun, Moon, Monitor, RotateCcw, Palette, Type, GraduationCap,
   Globe, Download, Upload, Trash2, AlertTriangle, CheckCircle2,
-  Settings as SettingsIcon,
+  Settings as SettingsIcon, Smartphone,
 } from 'lucide-react';
+import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { toast } from 'sonner';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -41,6 +43,8 @@ function collectSettings() {
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+  const { canInstall, isInstalled, promptInstall } = useInstallPrompt();
   const { fontSize, setFontSize } = useFontSize();
   const { language, setLanguage } = useLanguage();
   const { t } = useTranslation();
@@ -207,7 +211,26 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Tour */}
+      {/* Install App */}
+      {!isInstalled && (
+        <Card>
+          <SectionHeader icon={Smartphone} title={t('install.settingsTitle')} description={t('install.settingsDesc')} />
+          <CardContent>
+            <div className="flex flex-col sm:flex-row gap-3">
+              {canInstall && (
+                <Button onClick={promptInstall} className="gap-2">
+                  <Download className="h-4 w-4" />{t('install.settingsButton')}
+                </Button>
+              )}
+              <Button onClick={() => navigate('/install')} variant="outline" className="gap-2">
+                <Smartphone className="h-4 w-4" />{t('install.settingsGoToInstall')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+
       <Card>
         <SectionHeader icon={GraduationCap} title={t('settings.onboardingTour')} description={t('settings.onboardingTourDesc')} />
         <CardContent>
