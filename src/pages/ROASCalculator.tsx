@@ -763,7 +763,7 @@ export default function ROASCalculator() {
                 {cpaResult.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
                     <Target className="h-12 w-12 mb-4 opacity-50" />
-                    <p>Enter your AOV and profit margin</p>
+                    <p>{t('roas.enterAovMargin')}</p>
                   </div>
                 ) : (
                   <div className="grid gap-4">
