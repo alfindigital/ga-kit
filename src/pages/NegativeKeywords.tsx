@@ -249,7 +249,7 @@ export default function NegativeKeywords() {
   const handleExportCsv = () => {
     const data = processedKeywords.map(kw => [kw]);
     exportCsv(data, 'negative-keywords');
-    toast({ title: 'Exported', description: 'negative-keywords.csv downloaded' });
+    toast({ title: t('neg.exported'), description: t('neg.csvDownloaded') });
   };
   
   const handleExportWithConflicts = () => {
