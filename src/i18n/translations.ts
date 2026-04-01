@@ -1609,6 +1609,14 @@ const id: Record<string, string> = {
   'neg.critical': '🔴 Kritis',
   'neg.warning': '🟡 Peringatan',
   'neg.caution': '🟠 Perhatian',
+  'neg.conflictExact': '"{{neg}}" persis cocok dengan keyword positif "{{pos}}"',
+  'neg.conflictPhrase': 'Frase "{{neg}}" akan memblokir "{{pos}}"',
+  'neg.conflictBroad': 'Negatif broad "{{neg}}" mungkin memblokir "{{pos}}" (cocok: {{words}})',
+  'neg.reportHeader': '# Keyword Negatif',
+  'neg.reportGenBy': '# Dibuat oleh GA Toolkit',
+  'neg.reportClean': '## Keyword Bersih',
+  'neg.reportConflicts': '## Laporan Konflik',
+  'neg.reportTotalConflicts': 'Total Konflik: {{count}}',
 
   // ── Ad Copy Validator ──
   'adcopy.title': 'Validator Ad Copy',
