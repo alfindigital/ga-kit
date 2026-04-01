@@ -106,32 +106,29 @@ function removeDuplicates(
   return result;
 }
 
-function detectConflicts(negatives: ParsedKeyword[], positives: ParsedKeyword[]): Conflict[] {
+function detectConflicts(negatives: ParsedKeyword[], positives: ParsedKeyword[], t: (key: string, params?: Record<string, string | number>) => string): Conflict[] {
   const conflicts: Conflict[] = [];
   
   for (const neg of negatives) {
     for (const pos of positives) {
-      // Exact match check
       if (neg.normalized === pos.normalized) {
         conflicts.push({
           negativeKeyword: neg.original,
           positiveKeyword: pos.original,
           type: 'exact',
           severity: 'critical',
-          message: `"${neg.text}" exactly matches positive keyword "${pos.text}"`,
+          message: t('neg.conflictExact', { neg: neg.text, pos: pos.text }),
         });
       }
-      // Phrase contained check
       else if (neg.matchType === 'phrase' && pos.normalized.includes(neg.normalized)) {
         conflicts.push({
           negativeKeyword: neg.original,
           positiveKeyword: pos.original,
           type: 'phrase',
           severity: 'warning',
-          message: `Phrase "${neg.text}" will block "${pos.text}"`,
+          message: t('neg.conflictPhrase', { neg: neg.text, pos: pos.text }),
         });
       }
-      // Broad match check (any word match)
       else if (neg.matchType === 'broad') {
         const negWords = neg.normalized.split(/\s+/);
         const posWords = pos.normalized.split(/\s+/);
@@ -143,7 +140,7 @@ function detectConflicts(negatives: ParsedKeyword[], positives: ParsedKeyword[])
             positiveKeyword: pos.original,
             type: 'broad',
             severity: 'caution',
-            message: `Broad negative "${neg.text}" may block "${pos.text}" (matching: ${matchingWords.join(', ')})`,
+            message: t('neg.conflictBroad', { neg: neg.text, pos: pos.text, words: matchingWords.join(', ') }),
           });
         }
       }
