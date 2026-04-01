@@ -1603,6 +1603,25 @@ const id: Record<string, string> = {
   'roas.estProfit': 'Est. Laba',
   'roas.estProfitDesc': 'Estimasi laba bulanan',
 
+  // ── Tidak Ditemukan ──
+  'notFound.title': '404',
+  'notFound.message': 'Oops! Halaman tidak ditemukan',
+  'notFound.returnHome': 'Kembali ke Beranda',
+
+  // ── Riwayat URL ──
+  'urlHistory.title': 'Riwayat URL',
+  'urlHistory.subtitle': 'Semua URL yang dihasilkan di satu tempat',
+  'urlHistory.totalUrls': 'Total URL',
+  'urlHistory.utmUrls': 'URL UTM',
+  'urlHistory.qrCodes': 'Kode QR',
+  'urlHistory.ytSearches': 'Pencarian YT',
+  'urlHistory.starred': 'Berbintang',
+  'urlHistory.historyTab': 'Riwayat',
+  'urlHistory.analyticsTab': 'Analitik',
+  'urlHistory.allHistory': 'Semua Riwayat',
+  'urlHistory.loaded': 'Dimuat',
+  'urlHistory.redirecting': 'Mengarahkan ke {{tool}}',
+
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',
   'settings.subtitle': 'Sesuaikan pengalaman GA Toolkit Anda',
