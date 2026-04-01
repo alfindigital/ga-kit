@@ -874,8 +874,8 @@ export default function ROASCalculator() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Campaign Forecast</CardTitle>
-                <CardDescription>Estimated monthly performance</CardDescription>
+                <CardTitle>{t('roas.campaignForecast')}</CardTitle>
+                <CardDescription>{t('roas.campaignForecastDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {advancedResult.length === 0 ? (
