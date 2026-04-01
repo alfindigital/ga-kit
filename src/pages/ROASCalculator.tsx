@@ -400,7 +400,7 @@ export default function ROASCalculator() {
       >
         {currentScenario && (
           <Badge variant="outline">
-            Editing: {currentScenario.name}
+            {t('roas.editing', { name: currentScenario.name })}
           </Badge>
         )}
         <ScenarioManager
