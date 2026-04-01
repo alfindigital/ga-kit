@@ -900,12 +900,9 @@ export default function ROASCalculator() {
                           "text-lg font-bold",
                           result.isPositive ? "text-primary" : "text-destructive"
                         )}>
-                          {result.label.includes('$') || 
-                           result.label.includes('Revenue') || 
-                           result.label.includes('Profit') ||
-                           result.label.includes('CPA')
+                          {result._format === 'currency'
                             ? formatCurrency(result.value!)
-                            : result.label.includes('ROAS')
+                            : result._format === 'decimal'
                             ? formatNumber(result.value!)
                             : formatNumber(result.value!, 0)
                           }
