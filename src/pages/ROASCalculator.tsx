@@ -292,7 +292,7 @@ export default function ROASCalculator() {
         isPositive: true,
       },
     ];
-  }, [aov, profitMargin, targetProfit]);
+  }, [aov, profitMargin, targetProfit, t]);
 
   // Advanced Calculator
   const advancedResult = useMemo((): CalculatorResult[] => {
