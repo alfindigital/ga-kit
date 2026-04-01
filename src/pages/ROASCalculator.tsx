@@ -706,13 +706,13 @@ export default function ROASCalculator() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="profitMargin" className="flex items-center gap-2">
-                    Profit Margin (%)
+                    {t('roas.profitMargin')}
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Your gross profit margin before ad costs
+                        {t('roas.profitMarginTooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </Label>
