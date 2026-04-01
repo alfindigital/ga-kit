@@ -677,10 +677,10 @@ export default function ROASCalculator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="h-5 w-5 text-primary" />
-                  Break-even CPA Calculator
+                  {t('roas.cpaCalculator')}
                 </CardTitle>
                 <CardDescription>
-                  Find your maximum CPA to stay profitable
+                  {t('roas.cpaCalculatorDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
