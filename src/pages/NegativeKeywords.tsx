@@ -523,7 +523,7 @@ export default function NegativeKeywords() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Card className="p-3">
             <div className="text-2xl font-bold">{stats.totalInput}</div>
-            <div className="text-xs text-muted-foreground">Total Input</div>
+            <div className="text-xs text-muted-foreground">{t('neg.totalInput')}</div>
           </Card>
           <Card className="p-3">
             <div className="text-2xl font-bold text-primary">{stats.unique}</div>
