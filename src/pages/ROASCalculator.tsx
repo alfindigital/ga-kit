@@ -849,7 +849,7 @@ export default function ROASCalculator() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="avgOrderValue" className="flex items-center gap-2">
-                      Avg. Order Value ($)
+                      {t('roas.avgOrderValue')}
                     </Label>
                     <Input
                       id="avgOrderValue"
