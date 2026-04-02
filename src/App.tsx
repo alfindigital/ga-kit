@@ -49,6 +49,7 @@ const App = () => (
                   <Route path="/negative-keywords" element={<NegativeKeywords />} />
                   <Route path="/ad-copy-validator" element={<AdCopyValidator />} />
                   <Route path="/roas-calculator" element={<ROASCalculator />} />
+                  <Route path="/headline-analyzer" element={<HeadlineAnalyzer />} />
                   <Route path="/history" element={<UrlHistory />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/install" element={<Install />} />
