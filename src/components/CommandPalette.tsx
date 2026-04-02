@@ -26,6 +26,10 @@ import {
   Clock,
   Trash2,
   Type,
+  LinkIcon,
+  Ban,
+  FileCheck,
+  Calculator,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getRecentPages, clearRecentPages } from '@/hooks/useRecentPages';
@@ -41,6 +45,10 @@ const navigationItems = [
   { path: '/yt-finder', label: 'YT Finder', icon: Youtube, keywords: ['video', 'youtube'] },
   { path: '/qr-generator', label: 'QR Generator', icon: QrCode, keywords: ['code', 'scan'] },
   { path: '/headline-analyzer', label: 'Headline Analyzer', icon: Type, keywords: ['ab test', 'scoring', 'headline', 'copy'] },
+  { path: '/url-validator', label: 'URL Validator', icon: LinkIcon, keywords: ['validate', 'check', 'link', 'encoding'] },
+  { path: '/negative-keywords', label: 'Negative Keywords', icon: Ban, keywords: ['exclude', 'block', 'filter'] },
+  { path: '/ad-copy-validator', label: 'Ad Copy Validator', icon: FileCheck, keywords: ['rsa', 'ads', 'headline', 'description', 'sitelink'] },
+  { path: '/roas-calculator', label: 'ROAS Calculator', icon: Calculator, keywords: ['roi', 'budget', 'revenue', 'spend', 'cpa'] },
 ];
 
 interface CommandPaletteProps {
