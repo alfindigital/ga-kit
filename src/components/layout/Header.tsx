@@ -59,6 +59,7 @@ const navItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDas
   { path: '/negative-keywords', labelKey: 'nav.negatives', icon: Ban },
   { path: '/ad-copy-validator', labelKey: 'nav.adCopy', icon: FileText },
   { path: '/roas-calculator', labelKey: 'nav.roas', icon: Calculator },
+  { path: '/headline-analyzer', labelKey: 'nav.headline', icon: Lightbulb },
   { path: '/yt-finder', labelKey: 'nav.ytFinder', icon: Youtube },
   { path: '/qr-generator', labelKey: 'nav.qrCode', icon: QrCode },
   { path: '/url-validator', labelKey: 'nav.validator', icon: ShieldCheck },
