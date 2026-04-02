@@ -180,6 +180,67 @@ export default function HeadlineAnalyzer() {
     toast.success(t('common.resetComplete'));
   };
 
+  const buildReport = (sA: HeadlineScore, sB: HeadlineScore) => {
+    const lines = [
+      `=== Headline A/B Test Report ===`,
+      ``,
+      `Headline A: ${headlineA || '(empty)'}`,
+      `  Overall: ${sA.overall} (${getScoreGrade(sA.overall)})`,
+      `  Length: ${sA.length.score} — ${sA.length.charCount} chars, ${sA.length.wordCount} words`,
+      `  Power Words: ${sA.powerWords.score} — ${sA.powerWords.found.join(', ') || 'none'}`,
+      `  CTA: ${sA.cta.score} — ${sA.cta.found.join(', ') || 'none'}`,
+      `  Emotion: ${sA.emotion.score} — ${sA.emotion.found.join(', ') || 'none'}`,
+      `  Capitalization: ${sA.capitalization.score}`,
+      `  Numbers: ${sA.numbers.score}`,
+      ``,
+      `Headline B: ${headlineB || '(empty)'}`,
+      `  Overall: ${sB.overall} (${getScoreGrade(sB.overall)})`,
+      `  Length: ${sB.length.score} — ${sB.length.charCount} chars, ${sB.length.wordCount} words`,
+      `  Power Words: ${sB.powerWords.score} — ${sB.powerWords.found.join(', ') || 'none'}`,
+      `  CTA: ${sB.cta.score} — ${sB.cta.found.join(', ') || 'none'}`,
+      `  Emotion: ${sB.emotion.score} — ${sB.emotion.found.join(', ') || 'none'}`,
+      `  Capitalization: ${sB.capitalization.score}`,
+      `  Numbers: ${sB.numbers.score}`,
+      ``,
+      `Winner: ${sA.overall > sB.overall ? 'Headline A' : sA.overall < sB.overall ? 'Headline B' : 'Tie'} (${sA.overall} vs ${sB.overall})`,
+    ];
+    return lines.join('\n');
+  };
+
+  const handleCopyReport = () => {
+    copy(buildReport(scoreA, scoreB));
+  };
+
+  const handleDownloadCSV = () => {
+    const headers = ['Metric', 'Headline A', 'Headline B'];
+    const rows = [
+      ['Headline', `"${headlineA}"`, `"${headlineB}"`],
+      ['Overall Score', scoreA.overall, scoreB.overall],
+      ['Grade', getScoreGrade(scoreA.overall), getScoreGrade(scoreB.overall)],
+      ['Length Score', scoreA.length.score, scoreB.length.score],
+      ['Char Count', scoreA.length.charCount, scoreB.length.charCount],
+      ['Word Count', scoreA.length.wordCount, scoreB.length.wordCount],
+      ['Power Words Score', scoreA.powerWords.score, scoreB.powerWords.score],
+      ['Power Words Found', `"${scoreA.powerWords.found.join(', ')}"`, `"${scoreB.powerWords.found.join(', ')}"`],
+      ['CTA Score', scoreA.cta.score, scoreB.cta.score],
+      ['CTA Found', `"${scoreA.cta.found.join(', ')}"`, `"${scoreB.cta.found.join(', ')}"`],
+      ['Emotion Score', scoreA.emotion.score, scoreB.emotion.score],
+      ['Emotion Found', `"${scoreA.emotion.found.join(', ')}"`, `"${scoreB.emotion.found.join(', ')}"`],
+      ['Capitalization Score', scoreA.capitalization.score, scoreB.capitalization.score],
+      ['Numbers Score', scoreA.numbers.score, scoreB.numbers.score],
+      ['Winner', scoreA.overall > scoreB.overall ? 'A' : scoreA.overall < scoreB.overall ? 'B' : 'Tie', ''],
+    ];
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'headline-analysis.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('CSV downloaded');
+  };
+
   if (isLoading) return <ToolPageSkeleton />;
 
   const winner = headlineA && headlineB
