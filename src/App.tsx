@@ -20,6 +20,7 @@ import UrlValidator from "./pages/UrlValidator";
 import NegativeKeywords from "./pages/NegativeKeywords";
 import AdCopyValidator from "./pages/AdCopyValidator";
 import ROASCalculator from "./pages/ROASCalculator";
+import HeadlineAnalyzer from "./pages/HeadlineAnalyzer";
 import Settings from "./pages/Settings";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
@@ -48,6 +49,7 @@ const App = () => (
                   <Route path="/negative-keywords" element={<NegativeKeywords />} />
                   <Route path="/ad-copy-validator" element={<AdCopyValidator />} />
                   <Route path="/roas-calculator" element={<ROASCalculator />} />
+                  <Route path="/headline-analyzer" element={<HeadlineAnalyzer />} />
                   <Route path="/history" element={<UrlHistory />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/install" element={<Install />} />
