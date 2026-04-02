@@ -1334,7 +1334,7 @@ const id: Record<string, string> = {
   'headline.placeholderA': 'cth. Diskon 50% Hari Ini — Waktu Terbatas!',
   'headline.placeholderB': 'cth. Belanja Koleksi Terbaru Kami Sekarang',
   'headline.winner': 'Pemenang',
-  'headline.winnerDesc': 'Headline {winner} skor {scoreA} vs {scoreB}',
+  'headline.winnerDesc': 'Headline {{winner}} skor {{scoreA}} vs {{scoreB}}',
   'headline.tie': 'Seri!',
   'headline.tieDesc': 'Kedua headline mendapat skor sama. Coba ubah salah satu untuk menentukan pemenang.',
   'headline.tipsTitle': 'Tips Menulis Headline',
