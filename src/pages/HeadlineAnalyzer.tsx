@@ -241,6 +241,24 @@ export default function HeadlineAnalyzer() {
     toast.success('CSV downloaded');
   };
 
+  const handleShareLink = () => {
+    const params = new URLSearchParams({ a: headlineA, b: headlineB });
+    const url = `${window.location.origin}/headline-analyzer?${params.toString()}`;
+    navigator.clipboard.writeText(url).then(() => {
+      toast.success('Share link copied to clipboard!');
+    }).catch(() => {
+      toast.error('Failed to copy link');
+    });
+  };
+
+  const handleShareWhatsApp = () => {
+    const report = buildReport(scoreA, scoreB);
+    const params = new URLSearchParams({ a: headlineA, b: headlineB });
+    const shareUrl = `${window.location.origin}/headline-analyzer?${params.toString()}`;
+    const text = `${report}\n\n🔗 ${shareUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
   if (isLoading) return <ToolPageSkeleton />;
 
   const winner = headlineA && headlineB
