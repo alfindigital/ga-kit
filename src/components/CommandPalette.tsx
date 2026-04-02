@@ -30,16 +30,6 @@ import {
   Ban,
   FileCheck,
   Calculator,
-  QrCode,
-  Keyboard,
-  Sun,
-  Moon,
-  RotateCcw,
-  Beaker,
-  Copy,
-  Clock,
-  Trash2,
-  Type,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getRecentPages, clearRecentPages } from '@/hooks/useRecentPages';
