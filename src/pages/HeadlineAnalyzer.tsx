@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ToolPageHeader } from '@/components/ToolPageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,7 @@ import { toast } from 'sonner';
 import {
   RotateCcw, Sparkles, Trophy, AlertTriangle, CheckCircle2,
   Type, Zap, Heart, Target, BarChart3, ArrowRightLeft, Copy, Lightbulb,
-  ClipboardList, Download,
+  ClipboardList, Download, Share2, MessageCircle, Link,
 } from 'lucide-react';
 
 // ── Power words by category ──
@@ -162,8 +163,9 @@ export default function HeadlineAnalyzer() {
   const isLoading = usePageLoading(300);
   const { t } = useTranslation();
   const { copy } = useClipboard();
-  const [headlineA, setHeadlineA] = useState('');
-  const [headlineB, setHeadlineB] = useState('');
+  const [searchParams] = useSearchParams();
+  const [headlineA, setHeadlineA] = useState(() => searchParams.get('a') || '');
+  const [headlineB, setHeadlineB] = useState(() => searchParams.get('b') || '');
 
   const scoreA = useMemo(() => analyzeHeadline(headlineA), [headlineA]);
   const scoreB = useMemo(() => analyzeHeadline(headlineB), [headlineB]);
@@ -239,6 +241,24 @@ export default function HeadlineAnalyzer() {
     a.click();
     URL.revokeObjectURL(url);
     toast.success('CSV downloaded');
+  };
+
+  const handleShareLink = () => {
+    const params = new URLSearchParams({ a: headlineA, b: headlineB });
+    const url = `${window.location.origin}/headline-analyzer?${params.toString()}`;
+    navigator.clipboard.writeText(url).then(() => {
+      toast.success('Share link copied to clipboard!');
+    }).catch(() => {
+      toast.error('Failed to copy link');
+    });
+  };
+
+  const handleShareWhatsApp = () => {
+    const report = buildReport(scoreA, scoreB);
+    const params = new URLSearchParams({ a: headlineA, b: headlineB });
+    const shareUrl = `${window.location.origin}/headline-analyzer?${params.toString()}`;
+    const text = `${report}\n\n🔗 ${shareUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   if (isLoading) return <ToolPageSkeleton />;
@@ -392,6 +412,12 @@ export default function HeadlineAnalyzer() {
                     </Button>
                     <Button variant="outline" size="sm" onClick={handleDownloadCSV} className="gap-2">
                       <Download className="h-4 w-4" /> CSV
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleShareLink} className="gap-2">
+                      <Link className="h-4 w-4" /> Share Link
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleShareWhatsApp} className="gap-2 text-green-600 hover:text-green-700">
+                      <MessageCircle className="h-4 w-4" /> WhatsApp
                     </Button>
                   </>
                 )}
