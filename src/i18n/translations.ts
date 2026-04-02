@@ -1299,6 +1299,7 @@ const id: Record<string, string> = {
   'tool.adCopyValidator': 'Ad Copy Validator',
   'tool.roasCalculator': 'Kalkulator ROAS',
   'tool.urlHistory': 'Riwayat URL',
+  'tool.headlineAnalyzer': 'Headline Analyzer',
 
   // ── Deskripsi Tool ──
   'tool.utmBuilder.desc': 'Buat URL kampanye dengan parameter UTM',
