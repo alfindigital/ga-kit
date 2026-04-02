@@ -256,8 +256,8 @@ export default function HeadlineAnalyzer() {
   return (
     <div className="space-y-6">
       <ToolPageHeader
-        titleKey="tool.headlineAnalyzer"
-        descriptionKey="tool.headlineAnalyzer.desc"
+        title={t('tool.headlineAnalyzer')}
+        description={t('tool.headlineAnalyzer.desc')}
         icon={Sparkles}
       />
 
