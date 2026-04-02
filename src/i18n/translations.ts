@@ -112,6 +112,7 @@ const en = {
   'tool.negativeKeywords': 'Negative Keywords',
   'tool.adCopyValidator': 'Ad Copy Validator',
   'tool.roasCalculator': 'ROAS Calculator',
+  'tool.headlineAnalyzer': 'Headline Analyzer',
   'tool.urlHistory': 'URL History',
 
   // ── Tool Descriptions ──
