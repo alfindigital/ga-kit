@@ -25,6 +25,7 @@ import {
   Copy,
   Clock,
   Trash2,
+  Type,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getRecentPages, clearRecentPages } from '@/hooks/useRecentPages';
