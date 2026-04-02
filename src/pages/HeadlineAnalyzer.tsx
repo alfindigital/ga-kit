@@ -351,9 +351,9 @@ export default function HeadlineAnalyzer() {
           )}
 
           {winner === 'tie' && (
-            <Card className="border-yellow-500/30 bg-yellow-500/5">
+            <Card className="border-warning/30 bg-warning/5">
               <CardContent className="flex items-center gap-3 pt-6">
-                <ArrowRightLeft className="h-6 w-6 text-yellow-600 dark:text-yellow-400 shrink-0" />
+                <ArrowRightLeft className="h-6 w-6 text-warning shrink-0" />
                 <div>
                   <p className="font-medium">{t('headline.tie')}</p>
                   <p className="text-sm text-muted-foreground">{t('headline.tieDesc')}</p>
