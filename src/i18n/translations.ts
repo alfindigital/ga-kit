@@ -148,7 +148,7 @@ const en = {
   'headline.placeholderA': 'e.g. Get 50% Off Today — Limited Time!',
   'headline.placeholderB': 'e.g. Shop Our Latest Collection Now',
   'headline.winner': 'Winner',
-  'headline.winnerDesc': 'Headline {winner} scores {scoreA} vs {scoreB}',
+  'headline.winnerDesc': 'Headline {{winner}} scores {{scoreA}} vs {{scoreB}}',
   'headline.tie': 'It\'s a Tie!',
   'headline.tieDesc': 'Both headlines scored equally. Try tweaking one to find a winner.',
   'headline.tipsTitle': 'Headline Writing Tips',
