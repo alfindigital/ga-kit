@@ -190,15 +190,15 @@ export default function HeadlineAnalyzer() {
   }) => {
     const isEmpty = headline.trim().length === 0;
     const grade = getScoreGrade(score.overall);
-    const colorClass = variant === 'a' ? 'border-l-primary' : 'border-l-accent';
+  const colorClass = variant === 'a' ? 'border-l-primary' : 'border-l-accent';
 
     const criteria = [
-      { icon: Type, label: t('headline.length'), score: score.length.score, feedback: t(score.length.feedback as any), detail: `${score.length.charCount} ${t('common.characters')} · ${score.length.wordCount} ${t('headline.words')}` },
-      { icon: Zap, label: t('headline.powerWords'), score: score.powerWords.score, feedback: t(score.powerWords.feedback as any), detail: score.powerWords.found.length > 0 ? score.powerWords.found.join(', ') : '' },
-      { icon: Target, label: t('headline.cta'), score: score.cta.score, feedback: t(score.cta.feedback as any), detail: score.cta.found.length > 0 ? score.cta.found.join(', ') : '' },
-      { icon: Heart, label: t('headline.emotionalTriggers'), score: score.emotion.score, feedback: t(score.emotion.feedback as any), detail: score.emotion.found.length > 0 ? score.emotion.found.join(', ') : '' },
-      { icon: Type, label: t('headline.capitalization'), score: score.capitalization.score, feedback: t(score.capitalization.feedback as any), detail: '' },
-      { icon: BarChart3, label: t('headline.numbers'), score: score.numbers.score, feedback: t(score.numbers.feedback as any), detail: '' },
+      { icon: Type, label: t('headline.length' as any), score: score.length.score, feedback: t(score.length.feedback as any), detail: `${score.length.charCount} ${t('common.characters')} · ${score.length.wordCount} ${t('headline.words' as any)}` },
+      { icon: Zap, label: t('headline.powerWords' as any), score: score.powerWords.score, feedback: t(score.powerWords.feedback as any), detail: score.powerWords.found.length > 0 ? score.powerWords.found.join(', ') : '' },
+      { icon: Target, label: t('headline.cta' as any), score: score.cta.score, feedback: t(score.cta.feedback as any), detail: score.cta.found.length > 0 ? score.cta.found.join(', ') : '' },
+      { icon: Heart, label: t('headline.emotionalTriggers' as any), score: score.emotion.score, feedback: t(score.emotion.feedback as any), detail: score.emotion.found.length > 0 ? score.emotion.found.join(', ') : '' },
+      { icon: Type, label: t('headline.capitalization' as any), score: score.capitalization.score, feedback: t(score.capitalization.feedback as any), detail: '' },
+      { icon: BarChart3, label: t('headline.numbers' as any), score: score.numbers.score, feedback: t(score.numbers.feedback as any), detail: '' },
     ];
 
     return (
