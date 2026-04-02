@@ -24,7 +24,8 @@ import {
   ShieldCheck,
   Ban,
   FileText,
-  Calculator
+  Calculator,
+  Lightbulb,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
