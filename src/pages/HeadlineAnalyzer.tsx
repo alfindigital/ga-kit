@@ -388,7 +388,7 @@ export default function HeadlineAnalyzer() {
                       <Copy className="h-4 w-4" /> {t('common.copy')}
                     </Button>
                     <Button variant="outline" size="sm" onClick={handleCopyReport} className="gap-2">
-                      <ClipboardList className="h-4 w-4" /> {t('headline.copyReport') ?? 'Copy Report'}
+                      <ClipboardList className="h-4 w-4" /> Copy Report
                     </Button>
                     <Button variant="outline" size="sm" onClick={handleDownloadCSV} className="gap-2">
                       <Download className="h-4 w-4" /> CSV
