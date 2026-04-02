@@ -40,6 +40,7 @@ const navigationItems = [
   { path: '/keyword-tools', label: 'Keyword Tools', icon: Wrench, keywords: ['duplicate', 'case', 'replace'] },
   { path: '/yt-finder', label: 'YT Finder', icon: Youtube, keywords: ['video', 'youtube'] },
   { path: '/qr-generator', label: 'QR Generator', icon: QrCode, keywords: ['code', 'scan'] },
+  { path: '/headline-analyzer', label: 'Headline Analyzer', icon: Type, keywords: ['ab test', 'scoring', 'headline', 'copy'] },
 ];
 
 interface CommandPaletteProps {
