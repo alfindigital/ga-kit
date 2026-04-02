@@ -59,6 +59,7 @@ const toolDefs = [
   { id: 'negative-keywords', titleKey: 'tool.negativeKeywords' as const, descKey: 'tool.negativeKeywords.desc' as const, icon: Ban, path: '/negative-keywords', color: 'bg-destructive/10 text-destructive', features: ['Deduplicate', 'Match Types', 'Conflict Detection'] },
   { id: 'ad-copy-validator', titleKey: 'tool.adCopyValidator' as const, descKey: 'tool.adCopyValidator.desc' as const, icon: FileText, path: '/ad-copy-validator', color: 'bg-primary/10 text-primary', features: ['Character Limits', 'RSA Preview', 'Bulk Import'] },
   { id: 'roas-calculator', titleKey: 'tool.roasCalculator' as const, descKey: 'tool.roasCalculator.desc' as const, icon: Calculator, path: '/roas-calculator', color: 'bg-accent/10 text-accent', features: ['ROAS & ROI', 'Budget Planning', 'Break-even CPA'] },
+  { id: 'headline-analyzer', titleKey: 'tool.headlineAnalyzer' as const, descKey: 'tool.headlineAnalyzer.desc' as const, icon: Lightbulb, path: '/headline-analyzer', color: 'bg-warning/10 text-warning-foreground', features: ['A/B Compare', 'Power Words', 'CTA Detection'] },
   { id: 'url-history', titleKey: 'tool.urlHistory' as const, descKey: 'tool.urlHistory.desc' as const, icon: History, path: '/history', color: 'bg-muted text-muted-foreground', features: ['Search & Filter', 'Star Favorites', 'Export/Import'] },
 ];
 
