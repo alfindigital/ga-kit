@@ -322,9 +322,17 @@ export default function HeadlineAnalyzer() {
                   <RotateCcw className="h-4 w-4" /> {t('common.reset')}
                 </Button>
                 {headlineA && (
-                  <Button variant="outline" size="sm" onClick={() => copy(`A: ${headlineA}\nB: ${headlineB}`)} className="gap-2">
-                    <Copy className="h-4 w-4" /> {t('common.copy')}
-                  </Button>
+                  <>
+                    <Button variant="outline" size="sm" onClick={() => copy(`A: ${headlineA}\nB: ${headlineB}`)} className="gap-2">
+                      <Copy className="h-4 w-4" /> {t('common.copy')}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleCopyReport} className="gap-2">
+                      <ClipboardList className="h-4 w-4" /> {t('headline.copyReport') ?? 'Copy Report'}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleDownloadCSV} className="gap-2">
+                      <Download className="h-4 w-4" /> CSV
+                    </Button>
+                  </>
                 )}
               </div>
             </CardContent>
