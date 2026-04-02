@@ -43,6 +43,7 @@ const toolColors: Record<string, { border: string; shadow: string; gradient: str
   'negative-keywords': { border: 'border-l-destructive',   shadow: 'hover:shadow-glow-destructive',  gradient: 'from-destructive to-destructive/70', dot: 'bg-destructive' },
   'ad-copy-validator': { border: 'border-l-primary',       shadow: 'hover:shadow-glow-primary',      gradient: 'from-primary to-primary/70',      dot: 'bg-primary' },
   'roas-calculator':   { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
+  'headline-analyzer': { border: 'border-l-warning',       shadow: '',                                gradient: 'from-warning to-warning/70',      dot: 'bg-warning' },
   'url-history':       { border: 'border-l-muted-foreground', shadow: '',                             gradient: 'from-muted-foreground to-muted-foreground/70', dot: 'bg-muted-foreground' },
 };
 
