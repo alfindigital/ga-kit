@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import {
   RotateCcw, Sparkles, Trophy, AlertTriangle, CheckCircle2,
   Type, Zap, Heart, Target, BarChart3, ArrowRightLeft, Copy, Lightbulb,
-  ClipboardList, Download,
+  ClipboardList, Download, Share2, MessageCircle, Link,
 } from 'lucide-react';
 
 // ── Power words by category ──
