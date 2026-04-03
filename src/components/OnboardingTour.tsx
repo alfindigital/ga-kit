@@ -6,112 +6,129 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
 import { Sparkles, RotateCcw, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 function useTourSteps(): Step[] {
   const { t } = useTranslation();
-  return useMemo(() => [
-    {
+  const isMobile = useIsMobile();
+
+  return useMemo(() => {
+    const steps: Step[] = [
+      {
+        target: 'body',
+        content: (
+          <div className="text-center">
+            <div className="mb-3 text-3xl">🎉</div>
+            <h3 className="text-base font-semibold mb-1.5 text-foreground">{t('tour.welcome')}</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">{t('tour.welcomeDesc')}</p>
+          </div>
+        ),
+        placement: 'center' as const,
+        disableBeacon: true,
+      },
+      {
+        target: '[data-tour="tools-grid"]',
+        content: (
+          <div>
+            <h3 className="font-semibold mb-1.5 text-foreground flex items-center gap-2 text-sm">
+              🛠️ {t('tour.toolkit')}
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">{t('tour.toolkitDesc')}</p>
+            <p className="text-xs text-muted-foreground mt-1.5">
+              ⭐ Tap bintang untuk pin ke Quick Access.
+            </p>
+          </div>
+        ),
+        placement: 'top' as const,
+        disableBeacon: true,
+      },
+      {
+        target: '[data-tour="command-palette"]',
+        content: (
+          <div>
+            <h3 className="font-semibold mb-1.5 text-foreground flex items-center gap-2 text-sm">
+              ⌘ {t('tour.commandPalette')}
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {isMobile 
+                ? 'Tap logo untuk kembali ke Dashboard.' 
+                : <><kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-secondary border border-border rounded">Ctrl+K</kbd> {t('tour.commandPaletteDesc')}</>
+              }
+            </p>
+          </div>
+        ),
+        placement: 'bottom' as const,
+        disableBeacon: true,
+      },
+      {
+        target: '[data-tour="theme-toggle"]',
+        content: (
+          <div>
+            <h3 className="font-semibold mb-1.5 text-foreground flex items-center gap-2 text-sm">
+              🎨 {t('tour.themeSwitching')}
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">{t('tour.themeSwitchingDesc')}</p>
+          </div>
+        ),
+        placement: 'bottom' as const,
+        disableBeacon: true,
+      },
+    ];
+
+    // Desktop-only steps
+    if (!isMobile) {
+      steps.push(
+        {
+          target: '[data-tour="keyboard-shortcuts"]',
+          content: (
+            <div>
+              <h3 className="font-semibold mb-1.5 text-foreground flex items-center gap-2 text-sm">
+                ⌨️ {t('tour.keyboardShortcuts')}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-secondary border border-border rounded">?</kbd> {t('tour.keyboardShortcutsDesc')}
+              </p>
+            </div>
+          ),
+          placement: 'bottom' as const,
+          disableBeacon: true,
+        },
+        {
+          target: '[data-tour="navigation"]',
+          content: (
+            <div>
+              <h3 className="font-semibold mb-1.5 text-foreground flex items-center gap-2 text-sm">
+                🧭 {t('tour.quickNav')}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-secondary border border-border rounded">Ctrl+1-7</kbd> {t('tour.quickNavDesc')}
+              </p>
+            </div>
+          ),
+          placement: 'bottom' as const,
+          disableBeacon: true,
+        }
+      );
+    }
+
+    // Final step
+    steps.push({
       target: 'body',
       content: (
         <div className="text-center">
-          <div className="mb-4 text-4xl">🎉</div>
-          <h3 className="text-lg font-semibold mb-2 text-foreground">{t('tour.welcome')}</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.welcomeDesc')}</p>
+          <div className="mb-3 text-3xl">🚀</div>
+          <h3 className="text-base font-semibold mb-1.5 text-foreground">{t('tour.allSet')}</h3>
+          <p className="text-xs text-muted-foreground leading-relaxed">{t('tour.allSetDesc')}</p>
         </div>
       ),
       placement: 'center' as const,
       disableBeacon: true,
-    },
-    {
-      target: '[data-tour="tools-grid"]',
-      content: (
-        <div>
-          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-            <span className="text-lg">🛠️</span> {t('tour.toolkit')}
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.toolkitDesc')}</p>
-          <p className="text-xs text-muted-foreground mt-2">
-            ⭐ Tap bintang di kartu tool untuk pin ke Quick Access.
-          </p>
-        </div>
-      ),
-      placement: 'top' as const,
-      disableBeacon: true,
-    },
-    {
-      target: '[data-tour="command-palette"]',
-      content: (
-        <div>
-          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-            <span className="text-lg">⌘</span> {t('tour.commandPalette')}
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">Ctrl</kbd> + <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">K</kbd> {t('tour.commandPaletteDesc')}
-          </p>
-        </div>
-      ),
-      placement: 'bottom' as const,
-      disableBeacon: true,
-    },
-    {
-      target: '[data-tour="theme-toggle"]',
-      content: (
-        <div>
-          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-            <span className="text-lg">🎨</span> {t('tour.themeSwitching')}
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.themeSwitchingDesc')}</p>
-        </div>
-      ),
-      placement: 'bottom' as const,
-      disableBeacon: true,
-    },
-    {
-      target: '[data-tour="keyboard-shortcuts"]',
-      content: (
-        <div>
-          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-            <span className="text-lg">⌨️</span> {t('tour.keyboardShortcuts')}
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">?</kbd> {t('tour.keyboardShortcutsDesc')}
-          </p>
-        </div>
-      ),
-      placement: 'bottom' as const,
-      disableBeacon: true,
-    },
-    {
-      target: '[data-tour="navigation"]',
-      content: (
-        <div>
-          <h3 className="font-semibold mb-2 text-foreground flex items-center gap-2">
-            <span className="text-lg">🧭</span> {t('tour.quickNav')}
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">Ctrl</kbd> + <kbd className="px-2 py-1 text-xs font-mono bg-secondary border border-border rounded-md shadow-sm">1-7</kbd> {t('tour.quickNavDesc')}
-          </p>
-        </div>
-      ),
-      placement: 'bottom' as const,
-      disableBeacon: true,
-    },
-    {
-      target: 'body',
-      content: (
-        <div className="text-center">
-          <div className="mb-4 text-4xl">🚀</div>
-          <h3 className="text-lg font-semibold mb-2 text-foreground">{t('tour.allSet')}</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.allSetDesc')}</p>
-        </div>
-      ),
-      placement: 'center' as const,
-      disableBeacon: true,
-    },
-  ], [t]);
+    });
+
+    return steps;
+  }, [t, isMobile]);
 }
 
-// Custom tooltip component with progress bar
 function CustomTooltip({
   continuous,
   index,
@@ -128,41 +145,35 @@ function CustomTooltip({
   const { t } = useTranslation();
   const isDark = resolvedTheme === 'dark';
   const progress = ((index + 1) / size) * 100;
-  const stepsRemaining = size - index - 1;
 
   return (
     <div
       {...tooltipProps}
       className={`
-        max-w-sm rounded-xl p-6 border shadow-2xl
-        ${isDark 
-          ? 'bg-card border-border/50' 
-          : 'bg-card border-border'
-        }
+        w-[calc(100vw-2rem)] max-w-xs rounded-xl p-4 sm:p-5 border shadow-2xl
+        ${isDark ? 'bg-card border-border/50' : 'bg-card border-border'}
       `}
       style={{
-        boxShadow: isDark 
-          ? '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 12px 24px -8px rgba(0, 0, 0, 0.4)' 
-          : '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 12px 24px -8px rgba(0, 0, 0, 0.08)',
+        boxShadow: isDark
+          ? '0 25px 50px -12px rgba(0, 0, 0, 0.6)'
+          : '0 25px 50px -12px rgba(0, 0, 0, 0.12)',
       }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-xs font-medium text-muted-foreground">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-medium text-muted-foreground">
           {index + 1}/{size}
         </span>
         <button
           {...skipProps}
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors p-1 -m-1"
         >
           <X className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="mb-4">
-        <Progress value={progress} className="h-1.5" />
-      </div>
+      <Progress value={progress} className="h-1 mb-3" />
 
-      <div className="mb-6">
+      <div className="mb-4">
         {step.content}
       </div>
 
@@ -173,9 +184,9 @@ function CustomTooltip({
               {...backProps}
               variant="ghost"
               size="sm"
-              className="gap-1.5 text-muted-foreground hover:text-foreground"
+              className="gap-1 text-xs text-muted-foreground hover:text-foreground h-8 px-2"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-3.5 w-3.5" />
               {t('tour.back')}
             </Button>
           )}
@@ -183,17 +194,17 @@ function CustomTooltip({
         <Button
           {...primaryProps}
           size="sm"
-          className="gap-1.5"
+          className="gap-1 text-xs h-8 px-3"
         >
           {isLastStep ? (
             <>
               {t('tour.finish')}
-              <Sparkles className="h-4 w-4" />
+              <Sparkles className="h-3.5 w-3.5" />
             </>
           ) : (
             <>
               {t('tour.next')}
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3.5 w-3.5" />
             </>
           )}
         </Button>
@@ -264,16 +275,16 @@ export function OnboardingTour({ forceStart = false, onComplete }: OnboardingTou
         },
         spotlight: {
           borderRadius: '12px',
-          boxShadow: isDark 
-            ? '0 0 0 4px rgba(96, 165, 250, 0.25)' 
+          boxShadow: isDark
+            ? '0 0 0 4px rgba(96, 165, 250, 0.25)'
             : '0 0 0 4px rgba(59, 130, 246, 0.2)',
         },
       }}
       floaterProps={{
         styles: {
           floater: {
-            filter: isDark 
-              ? 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4))' 
+            filter: isDark
+              ? 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4))'
               : 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1))',
           },
         },
