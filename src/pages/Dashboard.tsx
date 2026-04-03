@@ -174,17 +174,7 @@ export default function Dashboard() {
             })}
           </div>
         </section>
-      ) : (
-        <section className="rounded-xl border border-dashed border-muted p-4 sm:p-5 flex items-start gap-3 animate-fade-in bg-muted/20">
-          <Star className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
-          <div>
-            <p className="text-sm font-medium text-foreground">{t('dashboard.pinFavourites')}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {t('dashboard.pinFavouritesDesc')}
-            </p>
-          </div>
-        </section>
-      )}
+      ) : null}
 
       {/* Hero Section */}
       <section className="relative text-center py-8 sm:py-10 lg:py-14 overflow-hidden">
