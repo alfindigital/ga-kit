@@ -328,11 +328,11 @@ export function WelcomeBanner() {
         </div>
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={() => setDismissed(true)}
-          className="text-xs"
+          className="h-7 w-7 shrink-0"
         >
-          {t('tour.dismiss')}
+          <X className="h-4 w-4" />
         </Button>
       </div>
     </div>
