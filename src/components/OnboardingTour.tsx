@@ -30,6 +30,9 @@ function useTourSteps(): Step[] {
             <span className="text-lg">🛠️</span> {t('tour.toolkit')}
           </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">{t('tour.toolkitDesc')}</p>
+          <p className="text-xs text-muted-foreground mt-2">
+            ⭐ Tap bintang di kartu tool untuk pin ke Quick Access.
+          </p>
         </div>
       ),
       placement: 'top' as const,
