@@ -157,12 +157,6 @@ function CustomTooltip({
 
       <div className="mb-4">
         <Progress value={progress} className="h-1.5" />
-        <p className="text-xs text-muted-foreground mt-1.5">
-          {stepsRemaining === 0 
-            ? t('tour.lastStep')
-            : t('tour.stepsRemaining', { count: stepsRemaining })
-          }
-        </p>
       </div>
 
       <div className="mb-6">
