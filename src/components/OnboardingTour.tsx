@@ -145,24 +145,18 @@ function CustomTooltip({
     >
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs font-medium text-muted-foreground">
-          {t('tour.stepOf', { current: index + 1, total: size })}
+          {index + 1}/{size}
         </span>
         <button
           {...skipProps}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors"
         >
-          {t('tour.skipTour')}
+          <X className="h-4 w-4" />
         </button>
       </div>
 
       <div className="mb-4">
         <Progress value={progress} className="h-1.5" />
-        <p className="text-xs text-muted-foreground mt-1.5">
-          {stepsRemaining === 0 
-            ? t('tour.lastStep')
-            : t('tour.stepsRemaining', { count: stepsRemaining })
-          }
-        </p>
       </div>
 
       <div className="mb-6">
