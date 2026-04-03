@@ -87,9 +87,9 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full glass gradient-border">
       <div className="container px-3 sm:px-4 lg:px-6 flex h-12 sm:h-14 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 font-bold text-base sm:text-lg active:scale-95 transition-transform" data-tour="command-palette">
-          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg border-2 border-primary">
-            <span className="text-primary text-xs sm:text-sm font-bold tracking-tight">G</span>
+        <Link to="/" className="flex items-center gap-2 font-bold text-base sm:text-lg active:scale-95 transition-transform" data-tour="command-palette">
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent shadow-glow-primary">
+            <Rocket className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-primary-foreground" />
           </div>
           <span className="flex items-baseline gap-0.5">
             <span className="text-primary font-extrabold tracking-tight text-base sm:text-lg">GAKit</span>
