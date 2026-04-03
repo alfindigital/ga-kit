@@ -87,12 +87,13 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full glass gradient-border">
       <div className="container px-3 sm:px-4 lg:px-6 flex h-12 sm:h-14 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-bold text-base sm:text-lg active:scale-95 transition-transform" data-tour="command-palette">
-          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-ga-indigo shadow-glow-primary">
-            <span className="text-primary-foreground text-xs sm:text-sm font-bold">GA</span>
+        <Link to="/" className="flex items-center gap-2.5 font-bold text-base sm:text-lg active:scale-95 transition-transform" data-tour="command-palette">
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg border-2 border-primary">
+            <span className="text-primary text-xs sm:text-sm font-bold tracking-tight">G</span>
           </div>
-          <span className="hidden xs:inline">
-            <span className="gradient-text font-extrabold">GA</span> <span className="text-foreground/80">Toolkit</span>
+          <span className="flex items-baseline gap-0.5">
+            <span className="text-primary font-extrabold tracking-tight text-base sm:text-lg">GAKit</span>
+            <span className="hidden sm:inline text-muted-foreground font-normal text-xs ml-1 tracking-wide">Ads Toolkit</span>
           </span>
         </Link>
 
