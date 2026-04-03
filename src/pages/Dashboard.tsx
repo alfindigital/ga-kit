@@ -176,26 +176,6 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      {/* Hero Section */}
-      <section className="relative text-center py-8 sm:py-10 lg:py-14 overflow-hidden">
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute -top-20 -left-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />
-          <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-tool-qr/3 rounded-full blur-3xl" />
-        </div>
-
-        <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
-          <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary animate-pulse-gentle" />
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold">
-            <span className="gradient-text">GA</span>{' '}
-            <span className="text-foreground">Toolkit</span>
-          </h1>
-          <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-accent animate-pulse-gentle" />
-        </div>
-        <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
-          {t('dashboard.subtitle')}
-        </p>
-      </section>
 
       {/* Tools Grid */}
       <section data-tour="tools-grid" className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
