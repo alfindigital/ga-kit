@@ -151,6 +151,7 @@ function CustomTooltip({
       {...tooltipProps}
       className={`
         w-[calc(100vw-2rem)] max-w-xs rounded-xl p-4 sm:p-5 border shadow-2xl
+        animate-scale-in transition-all duration-300 ease-out
         ${isDark ? 'bg-card border-border/50' : 'bg-card border-border'}
       `}
       style={{
