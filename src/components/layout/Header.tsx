@@ -100,19 +100,24 @@ export function Header() {
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-200",
-                  isActive
-                    ? "bg-primary text-primary-foreground shadow-glow-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary active:scale-95"
-                )}
-              >
-                <item.icon className="h-3.5 w-3.5" />
-                <span>{t(item.labelKey)}</span>
-              </Link>
+              <Tooltip key={item.path}>
+                <TooltipTrigger asChild>
+                  <Link
+                    to={item.path}
+                    className={cn(
+                      "flex items-center justify-center h-8 w-8 rounded-lg transition-all duration-200",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-glow-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary active:scale-95"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">
+                  {t(item.labelKey)}
+                </TooltipContent>
+              </Tooltip>
             );
           })}
         </nav>
