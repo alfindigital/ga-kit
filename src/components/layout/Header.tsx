@@ -92,10 +92,7 @@ export function Header() {
           <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent shadow-glow-primary">
             <Rocket className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-primary-foreground" />
           </div>
-          <span className="flex items-baseline gap-0.5">
-            <span className="text-primary font-extrabold tracking-tight text-base sm:text-lg">GAKit</span>
-            <span className="hidden sm:inline text-muted-foreground font-normal text-xs ml-1 tracking-wide">Ads Toolkit</span>
-          </span>
+          <span className="text-primary font-extrabold tracking-tight text-base sm:text-lg">GAKit</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -103,19 +100,24 @@ export function Header() {
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-200",
-                  isActive
-                    ? "bg-primary text-primary-foreground shadow-glow-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary active:scale-95"
-                )}
-              >
-                <item.icon className="h-3.5 w-3.5" />
-                <span>{t(item.labelKey)}</span>
-              </Link>
+              <Tooltip key={item.path}>
+                <TooltipTrigger asChild>
+                  <Link
+                    to={item.path}
+                    className={cn(
+                      "flex items-center justify-center h-8 w-8 rounded-lg transition-all duration-200",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-glow-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary active:scale-95"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">
+                  {t(item.labelKey)}
+                </TooltipContent>
+              </Tooltip>
             );
           })}
         </nav>
