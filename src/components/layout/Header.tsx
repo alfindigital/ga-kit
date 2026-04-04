@@ -105,13 +105,13 @@ export function Header() {
                   <Link
                     to={item.path}
                     className={cn(
-                      "flex items-center justify-center h-8 w-8 rounded-lg transition-all duration-200",
+                      "flex items-center justify-center h-9 w-9 rounded-lg transition-all duration-200",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-glow-primary"
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary active:scale-95"
                     )}
                   >
-                    <item.icon className="h-4 w-4" />
+                    <item.icon className="h-5 w-5" />
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="text-xs">
