@@ -259,6 +259,7 @@ export function OnboardingTour({ forceStart = false, onComplete }: OnboardingTou
 
   return (
     <Joyride
+      disableCloseOnEsc={false}
       steps={tourSteps}
       run={runTour}
       stepIndex={stepIndex}
