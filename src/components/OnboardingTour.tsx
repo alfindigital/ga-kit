@@ -236,6 +236,20 @@ export function OnboardingTour({ forceStart = false, onComplete }: OnboardingTou
     }
   }, [hasSeenTour, forceStart]);
 
+  // Close tour on ESC key
+  useEffect(() => {
+    if (!runTour) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setRunTour(false);
+        setHasSeenTour(true);
+        onComplete?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [runTour, setHasSeenTour, onComplete]);
+
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status, action, index, type } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
