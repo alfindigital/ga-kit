@@ -92,10 +92,7 @@ export function Header() {
           <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent shadow-glow-primary">
             <Rocket className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-primary-foreground" />
           </div>
-          <span className="flex items-baseline gap-0.5">
-            <span className="text-primary font-extrabold tracking-tight text-base sm:text-lg">GAKit</span>
-            <span className="hidden sm:inline text-muted-foreground font-normal text-xs ml-1 tracking-wide">Ads Toolkit</span>
-          </span>
+          <span className="text-primary font-extrabold tracking-tight text-base sm:text-lg">GAKit</span>
         </Link>
 
         {/* Desktop Navigation */}
