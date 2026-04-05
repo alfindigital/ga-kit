@@ -56,21 +56,12 @@ const navItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDas
 
 export function Header() {
   const location = useLocation();
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const { fontSize, setFontSize } = useFontSize();
-  const [, setHasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
+  const { resolvedTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const { stats } = useUrlHistory();
   const { t } = useTranslation();
-
-  const handleRestartTour = () => {
-    setHasSeenTour(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full glass gradient-border">
