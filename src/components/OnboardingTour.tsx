@@ -361,6 +361,4 @@ export function WelcomeBanner() {
       </div>
     </div>
   );
-});
-
-WelcomeBanner.displayName = "WelcomeBanner";
+}

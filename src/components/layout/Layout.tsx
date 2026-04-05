@@ -58,6 +58,4 @@ export function Layout({ children }: LayoutProps) {
       <OnboardingTour />
     </div>
   );
-});
-
-Layout.displayName = "Layout";
+}

@@ -119,6 +119,4 @@ export function KeyboardShortcutsDialog({ open: controlledOpen, onOpenChange }: 
       </DialogContent>
     </Dialog>
   );
-});
-
-KeyboardShortcutsDialog.displayName = "KeyboardShortcutsDialog";
+}
