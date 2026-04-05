@@ -1,3 +1,4 @@
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,13 +28,13 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = React.forwardRef<HTMLDivElement>((_props, ref) => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <FontSizeProvider>
         <LanguageProvider>
           <TooltipProvider>
-            <div className="min-h-screen">
+            <div ref={ref} className="min-h-screen">
               <Toaster />
               <Sonner />
               <BrowserRouter>
@@ -64,6 +65,8 @@ const App = () => (
       </FontSizeProvider>
     </ThemeProvider>
   </QueryClientProvider>
-);
+));
+
+App.displayName = "App";
 
 export default App;
