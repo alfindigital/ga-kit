@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, History, Link2, QrCode, Youtube, Star, BarChart3, List, TrendingUp } from 'lucide-react';
+import { ArrowLeft, History, Link2, QrCode, Youtube, Star, BarChart3, List, TrendingUp, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UrlHistoryPanel } from '@/components/UrlHistoryPanel';
 import { HistoryAnalytics } from '@/components/HistoryAnalytics';
+import { QuickStats } from '@/components/QuickStats';
 import { useUrlHistory, UrlHistoryItem } from '@/hooks/useUrlHistory';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { ToolPageSkeleton } from '@/components/skeletons';
@@ -19,7 +20,7 @@ export default function UrlHistory() {
   const { t } = useTranslation();
   const isLoading = usePageLoading(400);
   const { stats, allHistory } = useUrlHistory();
-  const [activeTab, setActiveTab] = useState<'history' | 'analytics'>('history');
+  const [activeTab, setActiveTab] = useState<'history' | 'analytics' | 'activity'>('history');
 
   if (isLoading) return <ToolPageSkeleton />;
 
@@ -129,8 +130,8 @@ export default function UrlHistory() {
       </div>
 
       {/* Tabs for History and Analytics */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'history' | 'analytics')}>
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'history' | 'analytics' | 'activity')}>
+        <TabsList className="grid w-full max-w-lg grid-cols-3">
           <TabsTrigger value="history" className="gap-2">
             <List className="h-4 w-4" />
             {t('urlHistory.historyTab')}
@@ -138,6 +139,10 @@ export default function UrlHistory() {
           <TabsTrigger value="analytics" className="gap-2">
             <TrendingUp className="h-4 w-4" />
             {t('urlHistory.analyticsTab')}
+          </TabsTrigger>
+          <TabsTrigger value="activity" className="gap-2">
+            <Activity className="h-4 w-4" />
+            {t('stats.yourActivity')}
           </TabsTrigger>
         </TabsList>
 
@@ -155,6 +160,10 @@ export default function UrlHistory() {
 
         <TabsContent value="analytics" className="mt-4">
           <HistoryAnalytics history={allHistory} />
+        </TabsContent>
+
+        <TabsContent value="activity" className="mt-4">
+          <QuickStats />
         </TabsContent>
       </Tabs>
     </div>
