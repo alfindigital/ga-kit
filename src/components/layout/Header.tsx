@@ -191,51 +191,23 @@ export function Header() {
             </TooltipContent>
           </Tooltip>
           
-          {/* Theme Toggle */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9" data-tour="theme-toggle">
-                {resolvedTheme === 'dark' ? (
-                  <Moon className="h-4 w-4" />
-                ) : (
-                  <Sun className="h-4 w-4" />
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t('header.theme')}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setTheme('light')}>
-                <Sun className="h-4 w-4 mr-2" />
-                {t('settings.light')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
-                <Moon className="h-4 w-4 mr-2" />
-                {t('settings.dark')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
-                <Monitor className="h-4 w-4 mr-2" />
-                {t('settings.system')}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>{t('header.fontSize')}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setFontSize('sm')}>
-                <span className="text-xs mr-2">A</span> {t('common.small')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFontSize('md')}>
-                <span className="text-sm mr-2">A</span> {t('common.medium')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFontSize('lg')}>
-                <span className="text-base mr-2">A</span> {t('common.large')}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleRestartTour}>
-                <RotateCcw className="h-4 w-4 mr-2" />
-                {t('header.restartTour')}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Theme Toggle - simple icon linking to settings */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/settings">
+                <Button variant="ghost" size="icon" className="h-9 w-9 sm:hidden" data-tour="theme-toggle">
+                  {resolvedTheme === 'dark' ? (
+                    <Moon className="h-4 w-4" />
+                  ) : (
+                    <Sun className="h-4 w-4" />
+                  )}
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t('header.settings')}</p>
+            </TooltipContent>
+          </Tooltip>
 
           {/* Mobile Menu Button */}
           <Button
