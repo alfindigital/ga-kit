@@ -119,4 +119,6 @@ export const KeyboardShortcutsDialog = React.forwardRef<HTMLDivElement, Keyboard
       </DialogContent>
     </Dialog>
   );
-}
+});
+
+KeyboardShortcutsDialog.displayName = "KeyboardShortcutsDialog";

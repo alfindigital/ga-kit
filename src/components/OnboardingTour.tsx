@@ -361,4 +361,6 @@ export const WelcomeBanner = React.forwardRef<HTMLDivElement>(function WelcomeBa
       </div>
     </div>
   );
-}
+});
+
+WelcomeBanner.displayName = "WelcomeBanner";
