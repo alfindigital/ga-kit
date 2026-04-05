@@ -1,13 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useFontSize } from '@/contexts/FontSizeContext';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useTranslation } from '@/hooks/useTranslation';
 import { 
   Sun, 
   Moon, 
-  Monitor, 
   Menu,
   Link2,
   Shuffle,
@@ -18,7 +15,6 @@ import {
   LayoutDashboard,
   X,
   Keyboard,
-  RotateCcw,
   History,
   Settings,
   ShieldCheck,
@@ -29,14 +25,6 @@ import {
   Rocket,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
 import {
   Sheet,
   SheetContent,
@@ -68,21 +56,12 @@ const navItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDas
 
 export function Header() {
   const location = useLocation();
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const { fontSize, setFontSize } = useFontSize();
-  const [, setHasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
+  const { resolvedTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const { stats } = useUrlHistory();
   const { t } = useTranslation();
-
-  const handleRestartTour = () => {
-    setHasSeenTour(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full glass gradient-border">
@@ -191,51 +170,23 @@ export function Header() {
             </TooltipContent>
           </Tooltip>
           
-          {/* Theme Toggle */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9" data-tour="theme-toggle">
-                {resolvedTheme === 'dark' ? (
-                  <Moon className="h-4 w-4" />
-                ) : (
-                  <Sun className="h-4 w-4" />
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t('header.theme')}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setTheme('light')}>
-                <Sun className="h-4 w-4 mr-2" />
-                {t('settings.light')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
-                <Moon className="h-4 w-4 mr-2" />
-                {t('settings.dark')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
-                <Monitor className="h-4 w-4 mr-2" />
-                {t('settings.system')}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>{t('header.fontSize')}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setFontSize('sm')}>
-                <span className="text-xs mr-2">A</span> {t('common.small')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFontSize('md')}>
-                <span className="text-sm mr-2">A</span> {t('common.medium')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFontSize('lg')}>
-                <span className="text-base mr-2">A</span> {t('common.large')}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleRestartTour}>
-                <RotateCcw className="h-4 w-4 mr-2" />
-                {t('header.restartTour')}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Theme Toggle - simple icon linking to settings */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/settings">
+                <Button variant="ghost" size="icon" className="h-9 w-9 sm:hidden" data-tour="theme-toggle">
+                  {resolvedTheme === 'dark' ? (
+                    <Moon className="h-4 w-4" />
+                  ) : (
+                    <Sun className="h-4 w-4" />
+                  )}
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t('header.settings')}</p>
+            </TooltipContent>
+          </Tooltip>
 
           {/* Mobile Menu Button */}
           <Button
