@@ -33,30 +33,32 @@ const App = () => (
       <FontSizeProvider>
         <LanguageProvider>
           <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/utm-builder" element={<UTMBuilder />} />
-                  <Route path="/keyword-combiner" element={<KeywordCombiner />} />
-                  <Route path="/keyword-mixer" element={<KeywordMixer />} />
-                  <Route path="/keyword-tools" element={<KeywordTools />} />
-                  <Route path="/yt-finder" element={<YTFinder />} />
-                  <Route path="/qr-generator" element={<QRGenerator />} />
-                  <Route path="/url-validator" element={<UrlValidator />} />
-                  <Route path="/negative-keywords" element={<NegativeKeywords />} />
-                  <Route path="/ad-copy-validator" element={<AdCopyValidator />} />
-                  <Route path="/roas-calculator" element={<ROASCalculator />} />
-                  <Route path="/headline-analyzer" element={<HeadlineAnalyzer />} />
-                  <Route path="/history" element={<UrlHistory />} />
-                  
-                  <Route path="/install" element={<Install />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Layout>
-            </BrowserRouter>
+            <div className="min-h-screen">
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/utm-builder" element={<UTMBuilder />} />
+                    <Route path="/keyword-combiner" element={<KeywordCombiner />} />
+                    <Route path="/keyword-mixer" element={<KeywordMixer />} />
+                    <Route path="/keyword-tools" element={<KeywordTools />} />
+                    <Route path="/yt-finder" element={<YTFinder />} />
+                    <Route path="/qr-generator" element={<QRGenerator />} />
+                    <Route path="/url-validator" element={<UrlValidator />} />
+                    <Route path="/negative-keywords" element={<NegativeKeywords />} />
+                    <Route path="/ad-copy-validator" element={<AdCopyValidator />} />
+                    <Route path="/roas-calculator" element={<ROASCalculator />} />
+                    <Route path="/headline-analyzer" element={<HeadlineAnalyzer />} />
+                    <Route path="/history" element={<UrlHistory />} />
+                    
+                    <Route path="/install" element={<Install />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Layout>
+              </BrowserRouter>
+            </div>
           </TooltipProvider>
         </LanguageProvider>
       </FontSizeProvider>
