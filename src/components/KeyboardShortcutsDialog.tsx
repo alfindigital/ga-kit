@@ -36,7 +36,7 @@ const PAGE_SHORTCUT_ITEMS: { keys: string[]; tKey: TranslationKey }[] = [
   { keys: ['Shift', 'X'], tKey: 'kbd.cancelRequest' },
 ];
 
-export const KeyboardShortcutsDialog = React.forwardRef<HTMLDivElement, KeyboardShortcutsDialogProps>(function KeyboardShortcutsDialog({ open: controlledOpen, onOpenChange } = {}, ref) {
+export function KeyboardShortcutsDialog({ open: controlledOpen, onOpenChange }: KeyboardShortcutsDialogProps = {}) {
   const [internalOpen, setInternalOpen] = useState(false);
   const { t } = useTranslation();
   
