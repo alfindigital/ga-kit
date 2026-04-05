@@ -64,7 +64,7 @@ const toolDefs = [
   { id: 'url-history', titleKey: 'tool.urlHistory' as const, descKey: 'tool.urlHistory.desc' as const, icon: History, path: '/history', color: 'bg-muted text-muted-foreground', features: ['Search & Filter', 'Star Favorites', 'Export/Import'] },
 ];
 
-export default function Dashboard() {
+const Dashboard = React.forwardRef<HTMLDivElement>(function Dashboard(_props, ref) {
   const isLoading = usePageLoading(400);
   const { favorites, toggleFavorite, isFavorite, reorderFavorites } = useFavoriteTools();
   const { t } = useTranslation();
