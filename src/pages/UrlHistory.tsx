@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UrlHistoryPanel } from '@/components/UrlHistoryPanel';
 import { HistoryAnalytics } from '@/components/HistoryAnalytics';
+import { QuickStats } from '@/components/QuickStats';
 import { useUrlHistory, UrlHistoryItem } from '@/hooks/useUrlHistory';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { ToolPageSkeleton } from '@/components/skeletons';
