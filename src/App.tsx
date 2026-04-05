@@ -21,7 +21,7 @@ import NegativeKeywords from "./pages/NegativeKeywords";
 import AdCopyValidator from "./pages/AdCopyValidator";
 import ROASCalculator from "./pages/ROASCalculator";
 import HeadlineAnalyzer from "./pages/HeadlineAnalyzer";
-import Settings from "./pages/Settings";
+
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
