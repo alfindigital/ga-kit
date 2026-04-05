@@ -272,6 +272,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+              </div>
             </section>
           </div>
         </ScrollArea>
