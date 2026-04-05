@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/sheet';
 import { useState } from 'react';
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
+import { SettingsDialog } from '@/components/SettingsDialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { UrlHistoryPanel } from '@/components/UrlHistoryPanel';
 import { useUrlHistory } from '@/hooks/useUrlHistory';
@@ -60,6 +61,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const { stats } = useUrlHistory();
   const { t } = useTranslation();
 
@@ -152,36 +154,23 @@ export function Header() {
             </TooltipContent>
           </Tooltip>
 
-          {/* Settings Link */}
+          {/* Settings Button */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link to="/settings">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-9 w-9 hidden sm:flex"
-                >
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{t('header.settings')}</p>
-            </TooltipContent>
-          </Tooltip>
-          
-          {/* Theme Toggle - simple icon linking to settings */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link to="/settings">
-                <Button variant="ghost" size="icon" className="h-9 w-9 sm:hidden" data-tour="theme-toggle">
-                  {resolvedTheme === 'dark' ? (
-                    <Moon className="h-4 w-4" />
-                  ) : (
-                    <Sun className="h-4 w-4" />
-                  )}
-                </Button>
-              </Link>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-9 w-9"
+                onClick={() => setSettingsOpen(true)}
+                data-tour="theme-toggle"
+              >
+                <Settings className="h-4 w-4 hidden sm:block" />
+                {resolvedTheme === 'dark' ? (
+                  <Moon className="h-4 w-4 sm:hidden" />
+                ) : (
+                  <Sun className="h-4 w-4 sm:hidden" />
+                )}
+              </Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>{t('header.settings')}</p>
@@ -221,26 +210,22 @@ export function Header() {
                 <span>{t(item.labelKey)}</span>
               </Link>
             ))}
-            {/* Settings link in mobile menu */}
-            <Link
-              to="/settings"
-              onClick={() => setMobileMenuOpen(false)}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 animate-fade-in active:scale-[0.98]",
-                location.pathname === '/settings'
-                  ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-glow-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-              )}
+            {/* Settings button in mobile menu */}
+            <button
+              onClick={() => { setMobileMenuOpen(false); setSettingsOpen(true); }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 animate-fade-in active:scale-[0.98] text-muted-foreground hover:text-foreground hover:bg-secondary"
               style={{ animationDelay: `${navItems.length * 30}ms` }}
             >
               <Settings className="h-4 w-4" />
               <span>{t('nav.settings')}</span>
-            </Link>
+            </button>
           </nav>
         </div>
       )}
       {/* Keyboard Shortcuts Dialog */}
       <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+      {/* Settings Dialog */}
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </header>
   );
 }
