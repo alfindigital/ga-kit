@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { 
   Search, Star, Trash2, Copy, ExternalLink, Clock, Link2, QrCode, Youtube,
-  Filter, X, Download, Upload, Check, Pencil, ChevronDown, StarOff, Keyboard
+  Filter, X, Download, Upload, Check, Pencil, ChevronDown, StarOff
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
