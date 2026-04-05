@@ -139,15 +139,17 @@ export function Header() {
           {/* Keyboard Shortcuts */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-9 w-9 hidden sm:flex"
-                onClick={() => setShortcutsOpen(true)}
-                data-tour="keyboard-shortcuts"
-              >
-                <Keyboard className="h-4 w-4" />
-              </Button>
+              <div className="hidden sm:flex">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-9 w-9"
+                  onClick={() => setShortcutsOpen(true)}
+                  data-tour="keyboard-shortcuts"
+                >
+                  <Keyboard className="h-4 w-4" />
+                </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent>
               <p>{t('header.keyboardShortcuts')} <kbd className="ml-1 px-1 py-0.5 text-xs bg-muted rounded">?</kbd></p>
@@ -157,20 +159,22 @@ export function Header() {
           {/* Settings Button */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-9 w-9"
-                onClick={() => setSettingsOpen(true)}
-                data-tour="theme-toggle"
-              >
-                <Settings className="h-4 w-4 hidden sm:block" />
-                {resolvedTheme === 'dark' ? (
-                  <Moon className="h-4 w-4 sm:hidden" />
-                ) : (
-                  <Sun className="h-4 w-4 sm:hidden" />
-                )}
-              </Button>
+              <div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-9 w-9"
+                  onClick={() => setSettingsOpen(true)}
+                  data-tour="theme-toggle"
+                >
+                  <Settings className="h-4 w-4 hidden sm:block" />
+                  {resolvedTheme === 'dark' ? (
+                    <Moon className="h-4 w-4 sm:hidden" />
+                  ) : (
+                    <Sun className="h-4 w-4 sm:hidden" />
+                  )}
+                </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent>
               <p>{t('header.settings')}</p>
