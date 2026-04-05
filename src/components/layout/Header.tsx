@@ -1,13 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useFontSize } from '@/contexts/FontSizeContext';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useTranslation } from '@/hooks/useTranslation';
 import { 
   Sun, 
   Moon, 
-  Monitor, 
   Menu,
   Link2,
   Shuffle,
@@ -18,7 +15,6 @@ import {
   LayoutDashboard,
   X,
   Keyboard,
-  RotateCcw,
   History,
   Settings,
   ShieldCheck,
@@ -29,14 +25,6 @@ import {
   Rocket,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
 import {
   Sheet,
   SheetContent,
