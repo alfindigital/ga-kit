@@ -27,7 +27,7 @@ import { cn } from '@/lib/utils';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { DashboardSkeleton } from '@/components/skeletons';
 import { WelcomeBanner } from '@/components/OnboardingTour';
-import { QuickStats } from '@/components/QuickStats';
+
 import { useFavoriteTools } from '@/hooks/useFavoriteTools';
 import { useTranslation } from '@/hooks/useTranslation';
 import { toast } from 'sonner';
