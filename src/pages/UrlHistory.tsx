@@ -20,7 +20,7 @@ export default function UrlHistory() {
   const { t } = useTranslation();
   const isLoading = usePageLoading(400);
   const { stats, allHistory } = useUrlHistory();
-  const [activeTab, setActiveTab] = useState<'history' | 'analytics'>('history');
+  const [activeTab, setActiveTab] = useState<'history' | 'analytics' | 'activity'>('history');
 
   if (isLoading) return <ToolPageSkeleton />;
 
