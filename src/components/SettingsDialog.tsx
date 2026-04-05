@@ -256,6 +256,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                 <AlertTriangle className="h-4 w-4" />
                 {t('settings.dangerZone')}
               </div>
+              <div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive" size="sm" className="gap-1.5 text-xs"><Trash2 className="h-3.5 w-3.5" />{t('settings.resetEverything')}</Button>
@@ -271,6 +272,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+              </div>
             </section>
           </div>
         </ScrollArea>
