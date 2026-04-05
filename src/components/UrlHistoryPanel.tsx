@@ -237,30 +237,6 @@ export function UrlHistoryPanel({ onLoadUrl, toolFilter, compact = false, maxHei
 
           <div className="flex-1" />
 
-          <Tooltip>
-            <TooltipTrigger asChild><Button variant="ghost" size="sm" className="h-8 w-8 p-0"><Keyboard className="h-3.5 w-3.5" /></Button></TooltipTrigger>
-            <TooltipContent side="bottom" className="max-w-xs">
-              <div className="space-y-1.5 text-xs">
-                <p className="font-medium mb-2">{t('histPanel.kbShortcuts')}</p>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                  <span className="text-muted-foreground">{t('histPanel.kbNavigate')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">↑/↓</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbFirstLast')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Home/End</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbLoadItem')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Enter</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbToggleSelect')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Space</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbSelectAll')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Ctrl+A</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbClearSelection')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Esc</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbDeleteSelected')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Delete</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbStarSelected')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">S</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbUnstarSelected')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">U</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbCopyUrls')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">C</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbExtendSelection')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+↑/↓</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbJump10')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">PgUp/Dn</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbSelect10')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Shift+PgUp/Dn</kbd>
-                  <span className="text-muted-foreground">{t('histPanel.kbFocusSearch')}</span><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">/</kbd>
-                </div>
-              </div>
-            </TooltipContent>
-          </Tooltip>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild><Button variant="ghost" size="sm" className="h-8 text-xs"><ChevronDown className="h-3.5 w-3.5 mr-1" />{t('histPanel.sort')}</Button></DropdownMenuTrigger>
