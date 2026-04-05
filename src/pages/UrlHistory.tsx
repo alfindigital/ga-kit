@@ -161,6 +161,10 @@ export default function UrlHistory() {
         <TabsContent value="analytics" className="mt-4">
           <HistoryAnalytics history={allHistory} />
         </TabsContent>
+
+        <TabsContent value="activity" className="mt-4">
+          <QuickStats />
+        </TabsContent>
       </Tabs>
     </div>
   );
