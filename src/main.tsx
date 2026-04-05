@@ -2,6 +2,15 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
+// Suppress React forwardRef warnings from Vite's React Fast Refresh (harmless, dev-only)
+const _origConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  if (typeof args[0] === 'string' && args[0].includes('Function components cannot be given refs')) {
+    return;
+  }
+  _origConsoleError.apply(console, args);
+};
+
 // Unregister service workers in iframe/preview contexts to prevent caching issues
 const isInIframe = (() => {
   try {
