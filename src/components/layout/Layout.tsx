@@ -16,7 +16,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export const Layout = React.forwardRef<HTMLDivElement, LayoutProps>(function Layout({ children }, ref) {
+export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
