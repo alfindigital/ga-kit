@@ -333,7 +333,7 @@ export function RestartTourButton() {
   );
 }
 
-export function WelcomeBanner() {
+export const WelcomeBanner = React.forwardRef<HTMLDivElement>(function WelcomeBanner(_props, ref) {
   const [hasSeenTour] = useLocalStorage('ga-toolkit-tour-completed', false);
   const [dismissed, setDismissed] = useLocalStorage('ga-toolkit-welcome-dismissed', false);
   const { t } = useTranslation();
