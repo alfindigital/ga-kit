@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, History, Link2, QrCode, Youtube, Star, BarChart3, List, TrendingUp } from 'lucide-react';
+import { ArrowLeft, History, Link2, QrCode, Youtube, Star, BarChart3, List, TrendingUp, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
