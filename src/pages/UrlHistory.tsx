@@ -130,8 +130,8 @@ export default function UrlHistory() {
       </div>
 
       {/* Tabs for History and Analytics */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'history' | 'analytics')}>
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'history' | 'analytics' | 'activity')}>
+        <TabsList className="grid w-full max-w-lg grid-cols-3">
           <TabsTrigger value="history" className="gap-2">
             <List className="h-4 w-4" />
             {t('urlHistory.historyTab')}
@@ -139,6 +139,10 @@ export default function UrlHistory() {
           <TabsTrigger value="analytics" className="gap-2">
             <TrendingUp className="h-4 w-4" />
             {t('urlHistory.analyticsTab')}
+          </TabsTrigger>
+          <TabsTrigger value="activity" className="gap-2">
+            <Activity className="h-4 w-4" />
+            {t('stats.yourActivity')}
           </TabsTrigger>
         </TabsList>
 
