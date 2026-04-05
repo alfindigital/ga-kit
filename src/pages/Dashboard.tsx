@@ -251,8 +251,4 @@ export default function Dashboard() {
       </section>
     </div>
   );
-});
-
-Dashboard.displayName = "Dashboard";
-
-export default Dashboard;
+}
