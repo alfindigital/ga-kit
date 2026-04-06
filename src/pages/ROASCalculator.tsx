@@ -377,16 +377,18 @@ export default function ROASCalculator() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    const isID = language === 'id';
+    return new Intl.NumberFormat(isID ? 'id-ID' : 'en-US', {
       style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      currency: isID ? 'IDR' : 'USD',
+      minimumFractionDigits: isID ? 0 : 2,
+      maximumFractionDigits: isID ? 0 : 2,
     }).format(value);
   };
 
   const formatNumber = (value: number, decimals = 2) => {
-    return new Intl.NumberFormat('en-US', {
+    const isID = language === 'id';
+    return new Intl.NumberFormat(isID ? 'id-ID' : 'en-US', {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
     }).format(value);
