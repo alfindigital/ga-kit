@@ -396,12 +396,6 @@ export default function HeadlineAnalyzer() {
                     <Button variant="outline" size="sm" onClick={handleDownloadCSV} className="gap-2">
                       <Download className="h-4 w-4" /> CSV
                     </Button>
-                    <Button variant="outline" size="sm" onClick={handleShareLink} className="gap-2">
-                      <Link className="h-4 w-4" /> Share Link
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={handleShareWhatsApp} className="gap-2 text-green-600 hover:text-green-700">
-                      <MessageCircle className="h-4 w-4" /> WhatsApp
-                    </Button>
                   </>
                 )}
               </div>
