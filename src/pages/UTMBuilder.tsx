@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Copy, Plus, Trash2, Save, History, X, RotateCcw, Check, Link2, AlertCircle, ClipboardPaste, Zap, Download, QrCode, Beaker, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ToolPageHeader } from '@/components/ToolPageHeader';
@@ -110,6 +110,7 @@ const formatUtmValue = (value: string): string => {
 
 export default function UTMBuilder() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [params, setParams] = useState<UTMParams>(DEFAULT_PARAMS);
   const [selectedValueTrack, setSelectedValueTrack] = useState<string[]>([]);
   const [presets, setPresets] = useLocalStorage<Preset[]>('utm-presets', []);
@@ -129,6 +130,27 @@ export default function UTMBuilder() {
   const { validate, touch, getFieldState, clearErrors } = useValidation({
     url: [validators.url('Please enter a valid URL')],
   });
+
+  // Load history item from navigation state
+  useEffect(() => {
+    const historyItem = (location.state as any)?.historyItem;
+    if (historyItem && historyItem.toolType === 'utm') {
+      try {
+        const url = new URL(historyItem.url);
+        setParams({
+          url: historyItem.originalUrl || url.origin + url.pathname,
+          source: url.searchParams.get('utm_source') || historyItem.metadata?.source || '',
+          medium: url.searchParams.get('utm_medium') || historyItem.metadata?.medium || '',
+          campaign: url.searchParams.get('utm_campaign') || historyItem.metadata?.campaign || '',
+          term: url.searchParams.get('utm_term') || historyItem.metadata?.term || '',
+          content: url.searchParams.get('utm_content') || historyItem.metadata?.content || '',
+          customParams: [],
+        });
+        // Clear the state so it doesn't reload on re-render
+        window.history.replaceState({}, '');
+      } catch {}
+    }
+  }, [location.state]);
 
   const urlState = getFieldState('url');
 

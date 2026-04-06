@@ -289,7 +289,7 @@ export function UrlHistoryPanel({ onLoadUrl, toolFilter, compact = false, maxHei
               return (
                 <div key={item.id} ref={(el) => { if (el) itemRefs.current.set(item.id, el); else itemRefs.current.delete(item.id); }}
                   className={cn("flex items-start gap-2 p-3 hover:bg-muted/50 transition-colors group cursor-pointer", selectedIds.has(item.id) && "bg-muted/30", isFocused && "ring-2 ring-primary ring-inset bg-primary/5")}
-                  onClick={() => setFocusedIndex(index)} onDoubleClick={() => onLoadUrl?.(item)}
+                  onClick={() => { setFocusedIndex(index); if (onLoadUrl) { onLoadUrl(item); toast({ title: t('histPanel.loaded'), description: t('histPanel.loadedDesc') }); } }}
                 >
                   <Checkbox checked={selectedIds.has(item.id)} onCheckedChange={(checked) => handleSelectItem(item.id, !!checked)} className="mt-0.5" onClick={(e) => e.stopPropagation()} />
                   <div className={cn("p-1.5 rounded-md flex-shrink-0", TOOL_COLORS[item.toolType])}><Icon className="h-3.5 w-3.5" /></div>

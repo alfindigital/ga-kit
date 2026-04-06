@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
 import { 
@@ -50,6 +50,7 @@ const navItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDas
 
 export function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -122,7 +123,12 @@ export function Header() {
               <UrlHistoryPanel 
                 compact 
                 maxHeight="calc(85vh - 80px)"
-                onLoadUrl={() => setHistoryOpen(false)}
+                onLoadUrl={(item) => {
+                  setHistoryOpen(false);
+                  const toolPaths: Record<string, string> = { 'utm': '/utm-builder', 'qr': '/qr-generator', 'yt-finder': '/yt-finder' };
+                  const path = toolPaths[item.toolType] || '/';
+                  navigate(path, { state: { historyItem: item } });
+                }}
               />
             </DialogContent>
           </Dialog>
