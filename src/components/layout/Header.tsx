@@ -1,10 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { 
-  Sun, 
-  Moon, 
   Menu,
   Link2,
   Shuffle,
@@ -57,13 +54,12 @@ const navItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDas
 
 export function Header() {
   const location = useLocation();
-  const { resolvedTheme } = useTheme();
+  const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { stats } = useUrlHistory();
-  const { t } = useTranslation();
 
   return (
     <header className="sticky top-0 z-50 w-full glass gradient-border">
@@ -167,12 +163,7 @@ export function Header() {
                   onClick={() => setSettingsOpen(true)}
                   data-tour="theme-toggle"
                 >
-                  <Settings className="h-4 w-4 hidden sm:block" />
-                  {resolvedTheme === 'dark' ? (
-                    <Moon className="h-4 w-4 sm:hidden" />
-                  ) : (
-                    <Sun className="h-4 w-4 sm:hidden" />
-                  )}
+                  <Settings className="h-4 w-4" />
                 </Button>
               </div>
             </TooltipTrigger>
