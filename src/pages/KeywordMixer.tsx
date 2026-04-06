@@ -114,7 +114,7 @@ export default function KeywordMixer() {
         )}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="space-y-4">
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
           {/* Prefixes */}
           <Card className={cn(
