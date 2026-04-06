@@ -178,6 +178,7 @@ export default function HeadlineAnalyzer() {
   const isLoading = usePageLoading(300);
   const { t } = useTranslation();
   const { copy } = useClipboard();
+  const { language } = useLanguage();
   const [searchParams] = useSearchParams();
   const [headlineA, setHeadlineA] = useState(() => searchParams.get('a') || '');
   const [headlineB, setHeadlineB] = useState(() => searchParams.get('b') || '');
