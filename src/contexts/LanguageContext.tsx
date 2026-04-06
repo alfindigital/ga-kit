@@ -1,14 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
 
-export type Language = 'en' | 'id' | 'es' | 'pt' | 'fr' | 'de';
+export type Language = 'en' | 'id';
 
 export const LANGUAGES: { value: Language; label: string; flag: string }[] = [
   { value: 'en', label: 'English', flag: '🇺🇸' },
   { value: 'id', label: 'Bahasa Indonesia', flag: '🇮🇩' },
-  { value: 'es', label: 'Español', flag: '🇪🇸' },
-  { value: 'pt', label: 'Português', flag: '🇧🇷' },
-  { value: 'fr', label: 'Français', flag: '🇫🇷' },
-  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
 ];
 
 interface LanguageContextType {

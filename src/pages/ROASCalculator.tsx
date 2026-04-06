@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { ROASCalculatorSkeleton } from '@/components/skeletons';
 import { useROASScenarios, ROASScenarioData } from '@/hooks/useROASScenarios';
@@ -30,6 +31,7 @@ interface CalculatorResult {
 export default function ROASCalculator() {
   const isLoading = usePageLoading(400);
   const { t } = useTranslation();
+  const { language } = useLanguage();
   
   // Scenario management
   const {
@@ -375,16 +377,18 @@ export default function ROASCalculator() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    const isID = language === 'id';
+    return new Intl.NumberFormat(isID ? 'id-ID' : 'en-US', {
       style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      currency: isID ? 'IDR' : 'USD',
+      minimumFractionDigits: isID ? 0 : 2,
+      maximumFractionDigits: isID ? 0 : 2,
     }).format(value);
   };
 
   const formatNumber = (value: number, decimals = 2) => {
-    return new Intl.NumberFormat('en-US', {
+    const isID = language === 'id';
+    return new Intl.NumberFormat(isID ? 'id-ID' : 'en-US', {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
     }).format(value);
