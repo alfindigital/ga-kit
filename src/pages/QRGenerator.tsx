@@ -330,7 +330,7 @@ export default function QRGenerator() {
                         : "border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary"
                     )}>
                       <Download className="h-4 w-4 rotate-180" />
-                      {logo ? t('qr.logoSelected') || 'Logo selected ✓' : t('qr.chooseLogo') || 'Upload Logo'}
+                      {logo ? 'Logo selected ✓' : 'Upload Logo'}
                     </div>
                     <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
                   </label>
