@@ -701,7 +701,7 @@ export default function YTFinder() {
               <BarChart3 className="h-4 w-4 text-primary" />
               <h3 className="text-sm font-medium">{t('yt.channelAnalytics')}</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 place-items-center">
               {/* Stats */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center p-3 bg-background rounded-lg border">
