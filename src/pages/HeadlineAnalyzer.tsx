@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useClipboard } from '@/hooks/useClipboard';
 import { ToolPageSkeleton } from '@/components/skeletons';
@@ -21,13 +22,27 @@ import {
 } from 'lucide-react';
 
 // ── Power words by category ──
-const POWER_WORDS = {
-  urgency: ['now', 'today', 'hurry', 'limited', 'fast', 'instant', 'quick', 'immediately', 'deadline', 'expires', 'last chance', 'don\'t miss', 'act now', 'rush', 'running out', 'sekarang', 'segera', 'cepat', 'terbatas', 'buruan'],
-  curiosity: ['secret', 'discover', 'revealed', 'hidden', 'unlock', 'surprising', 'shocking', 'unbelievable', 'mystery', 'insider', 'rahasia', 'temukan', 'terungkap', 'tersembunyi'],
-  value: ['free', 'save', 'bonus', 'exclusive', 'premium', 'guaranteed', 'proven', 'best', 'top', 'ultimate', 'gratis', 'hemat', 'bonus', 'eksklusif', 'terbaik', 'diskon'],
-  trust: ['official', 'certified', 'trusted', 'verified', 'authentic', 'reliable', 'safe', 'secure', 'professional', 'expert', 'resmi', 'terpercaya', 'aman', 'profesional'],
-  emotion: ['amazing', 'incredible', 'powerful', 'love', 'beautiful', 'brilliant', 'stunning', 'life-changing', 'transform', 'dream', 'luar biasa', 'menakjubkan', 'impian'],
+const POWER_WORDS_EN: Record<string, string[]> = {
+  urgency: ['now', 'today', 'hurry', 'limited', 'fast', 'instant', 'quick', 'immediately', 'deadline', 'expires', 'last chance', 'don\'t miss', 'act now', 'rush', 'running out'],
+  curiosity: ['secret', 'discover', 'revealed', 'hidden', 'unlock', 'surprising', 'shocking', 'unbelievable', 'mystery', 'insider'],
+  value: ['free', 'save', 'bonus', 'exclusive', 'premium', 'guaranteed', 'proven', 'best', 'top', 'ultimate'],
+  trust: ['official', 'certified', 'trusted', 'verified', 'authentic', 'reliable', 'safe', 'secure', 'professional', 'expert'],
+  emotion: ['amazing', 'incredible', 'powerful', 'love', 'beautiful', 'brilliant', 'stunning', 'life-changing', 'transform', 'dream'],
 };
+
+const POWER_WORDS_ID: Record<string, string[]> = {
+  urgency: ['sekarang', 'segera', 'cepat', 'terbatas', 'buruan', 'jangan lewatkan', 'waktu terbatas', 'hari ini', 'kesempatan terakhir', 'habis'],
+  curiosity: ['rahasia', 'temukan', 'terungkap', 'tersembunyi', 'mengejutkan', 'tak terduga', 'misteri', 'belum banyak tahu', 'fakta', 'terbongkar'],
+  value: ['gratis', 'hemat', 'bonus', 'eksklusif', 'premium', 'terjamin', 'terbukti', 'terbaik', 'termurah', 'diskon'],
+  trust: ['resmi', 'bersertifikat', 'terpercaya', 'terverifikasi', 'asli', 'aman', 'profesional', 'ahli', 'dijamin', 'teruji'],
+  emotion: ['luar biasa', 'menakjubkan', 'dahsyat', 'cinta', 'indah', 'brilian', 'memukau', 'mengubah hidup', 'impian', 'spektakuler'],
+};
+
+// Combined for analysis (both languages detected)
+const POWER_WORDS: Record<string, string[]> = {};
+for (const cat of Object.keys(POWER_WORDS_EN)) {
+  POWER_WORDS[cat] = [...POWER_WORDS_EN[cat], ...POWER_WORDS_ID[cat]];
+}
 
 const CTA_WORDS = ['buy', 'get', 'try', 'start', 'join', 'sign up', 'subscribe', 'download', 'learn', 'shop', 'order', 'claim', 'grab', 'explore', 'book', 'call', 'click', 'register', 'beli', 'dapatkan', 'coba', 'mulai', 'gabung', 'daftar', 'unduh', 'pelajari', 'pesan', 'klaim'];
 
@@ -163,6 +178,7 @@ export default function HeadlineAnalyzer() {
   const isLoading = usePageLoading(300);
   const { t } = useTranslation();
   const { copy } = useClipboard();
+  const { language } = useLanguage();
   const [searchParams] = useSearchParams();
   const [headlineA, setHeadlineA] = useState(() => searchParams.get('a') || '');
   const [headlineB, setHeadlineB] = useState(() => searchParams.get('b') || '');
@@ -478,16 +494,19 @@ export default function HeadlineAnalyzer() {
               <CardDescription>{t('headline.powerWordsRefDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {Object.entries(POWER_WORDS).map(([cat, words]) => (
-                <div key={cat}>
-                  <p className="text-sm font-medium capitalize mb-1.5">{t(`headline.cat.${cat}` as any)}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {words.filter(w => /^[a-z]/.test(w)).slice(0, 10).map(w => (
-                      <Badge key={w} variant="outline" className="text-xs">{w}</Badge>
-                    ))}
+              {Object.keys(POWER_WORDS_EN).map((cat) => {
+                const words = language === 'id' ? POWER_WORDS_ID[cat] : POWER_WORDS_EN[cat];
+                return (
+                  <div key={cat}>
+                    <p className="text-sm font-medium capitalize mb-1.5">{t(`headline.cat.${cat}` as any)}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {words.slice(0, 10).map(w => (
+                        <Badge key={w} variant="outline" className="text-xs">{w}</Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </CardContent>
           </Card>
         </TabsContent>
