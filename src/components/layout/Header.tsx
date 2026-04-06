@@ -50,6 +50,7 @@ const navItems: { path: string; labelKey: TranslationKey; icon: typeof LayoutDas
 
 export function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
