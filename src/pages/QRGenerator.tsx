@@ -321,8 +321,19 @@ export default function QRGenerator() {
 
               <div>
                 <Label className="text-xs sm:text-sm">{t('qr.logo')}</Label>
-                <div className="flex gap-2">
-                  <Input type="file" accept="image/*" onChange={handleLogoUpload} className="flex-1 text-sm" />
+                <div className="flex gap-2 items-center">
+                  <label className="flex-1 cursor-pointer">
+                    <div className={cn(
+                      "flex items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-3 text-sm font-medium transition-colors",
+                      logo 
+                        ? "border-primary bg-primary/5 text-primary" 
+                        : "border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary"
+                    )}>
+                      <Download className="h-4 w-4 rotate-180" />
+                      {logo ? 'Logo selected ✓' : 'Upload Logo'}
+                    </div>
+                    <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                  </label>
                   {logo && (
                     <Button variant="ghost" size="icon" onClick={() => setLogo(null)} className="h-9 w-9 flex-shrink-0">
                       <X className="h-4 w-4" />
