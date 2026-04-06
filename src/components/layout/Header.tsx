@@ -60,7 +60,6 @@ export function Header() {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { stats } = useUrlHistory();
-  const { t } = useTranslation();
 
   return (
     <header className="sticky top-0 z-50 w-full glass gradient-border">
