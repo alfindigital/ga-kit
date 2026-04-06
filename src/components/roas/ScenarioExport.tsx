@@ -55,9 +55,9 @@ export function ScenarioExport({ scenarios, onImport }: ScenarioExportProps) {
       <input ref={fileInputRef} type="file" accept=".json,.csv,.xlsx" className="hidden" onChange={handleFileChange} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-1" />
-            {t('export.export')}
+          <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" title={t('export.export')}>
+            <Download className="h-4 w-4" />
+            <span className="hidden sm:inline ml-1">{t('export.export')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
