@@ -22,13 +22,27 @@ import {
 } from 'lucide-react';
 
 // ── Power words by category ──
-const POWER_WORDS = {
-  urgency: ['now', 'today', 'hurry', 'limited', 'fast', 'instant', 'quick', 'immediately', 'deadline', 'expires', 'last chance', 'don\'t miss', 'act now', 'rush', 'running out', 'sekarang', 'segera', 'cepat', 'terbatas', 'buruan'],
-  curiosity: ['secret', 'discover', 'revealed', 'hidden', 'unlock', 'surprising', 'shocking', 'unbelievable', 'mystery', 'insider', 'rahasia', 'temukan', 'terungkap', 'tersembunyi'],
-  value: ['free', 'save', 'bonus', 'exclusive', 'premium', 'guaranteed', 'proven', 'best', 'top', 'ultimate', 'gratis', 'hemat', 'bonus', 'eksklusif', 'terbaik', 'diskon'],
-  trust: ['official', 'certified', 'trusted', 'verified', 'authentic', 'reliable', 'safe', 'secure', 'professional', 'expert', 'resmi', 'terpercaya', 'aman', 'profesional'],
-  emotion: ['amazing', 'incredible', 'powerful', 'love', 'beautiful', 'brilliant', 'stunning', 'life-changing', 'transform', 'dream', 'luar biasa', 'menakjubkan', 'impian'],
+const POWER_WORDS_EN: Record<string, string[]> = {
+  urgency: ['now', 'today', 'hurry', 'limited', 'fast', 'instant', 'quick', 'immediately', 'deadline', 'expires', 'last chance', 'don\'t miss', 'act now', 'rush', 'running out'],
+  curiosity: ['secret', 'discover', 'revealed', 'hidden', 'unlock', 'surprising', 'shocking', 'unbelievable', 'mystery', 'insider'],
+  value: ['free', 'save', 'bonus', 'exclusive', 'premium', 'guaranteed', 'proven', 'best', 'top', 'ultimate'],
+  trust: ['official', 'certified', 'trusted', 'verified', 'authentic', 'reliable', 'safe', 'secure', 'professional', 'expert'],
+  emotion: ['amazing', 'incredible', 'powerful', 'love', 'beautiful', 'brilliant', 'stunning', 'life-changing', 'transform', 'dream'],
 };
+
+const POWER_WORDS_ID: Record<string, string[]> = {
+  urgency: ['sekarang', 'segera', 'cepat', 'terbatas', 'buruan', 'jangan lewatkan', 'waktu terbatas', 'hari ini', 'kesempatan terakhir', 'habis'],
+  curiosity: ['rahasia', 'temukan', 'terungkap', 'tersembunyi', 'mengejutkan', 'tak terduga', 'misteri', 'belum banyak tahu', 'fakta', 'terbongkar'],
+  value: ['gratis', 'hemat', 'bonus', 'eksklusif', 'premium', 'terjamin', 'terbukti', 'terbaik', 'termurah', 'diskon'],
+  trust: ['resmi', 'bersertifikat', 'terpercaya', 'terverifikasi', 'asli', 'aman', 'profesional', 'ahli', 'dijamin', 'teruji'],
+  emotion: ['luar biasa', 'menakjubkan', 'dahsyat', 'cinta', 'indah', 'brilian', 'memukau', 'mengubah hidup', 'impian', 'spektakuler'],
+};
+
+// Combined for analysis (both languages detected)
+const POWER_WORDS: Record<string, string[]> = {};
+for (const cat of Object.keys(POWER_WORDS_EN)) {
+  POWER_WORDS[cat] = [...POWER_WORDS_EN[cat], ...POWER_WORDS_ID[cat]];
+}
 
 const CTA_WORDS = ['buy', 'get', 'try', 'start', 'join', 'sign up', 'subscribe', 'download', 'learn', 'shop', 'order', 'claim', 'grab', 'explore', 'book', 'call', 'click', 'register', 'beli', 'dapatkan', 'coba', 'mulai', 'gabung', 'daftar', 'unduh', 'pelajari', 'pesan', 'klaim'];
 
