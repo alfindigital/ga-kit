@@ -494,16 +494,19 @@ export default function HeadlineAnalyzer() {
               <CardDescription>{t('headline.powerWordsRefDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {Object.entries(POWER_WORDS).map(([cat, words]) => (
-                <div key={cat}>
-                  <p className="text-sm font-medium capitalize mb-1.5">{t(`headline.cat.${cat}` as any)}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {words.filter(w => /^[a-z]/.test(w)).slice(0, 10).map(w => (
-                      <Badge key={w} variant="outline" className="text-xs">{w}</Badge>
-                    ))}
+              {Object.keys(POWER_WORDS_EN).map((cat) => {
+                const words = language === 'id' ? POWER_WORDS_ID[cat] : POWER_WORDS_EN[cat];
+                return (
+                  <div key={cat}>
+                    <p className="text-sm font-medium capitalize mb-1.5">{t(`headline.cat.${cat}` as any)}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {words.slice(0, 10).map(w => (
+                        <Badge key={w} variant="outline" className="text-xs">{w}</Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </CardContent>
           </Card>
         </TabsContent>
