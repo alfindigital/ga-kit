@@ -131,9 +131,9 @@ export function ScenarioCompare({ scenarios }: ScenarioCompareProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" disabled={scenarios.length < 2}>
-          <GitCompareArrows className="h-4 w-4 mr-1" />
-          {t('compare.compare')}
+        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" disabled={scenarios.length < 2} title={t('compare.compare')}>
+          <GitCompareArrows className="h-4 w-4" />
+          <span className="hidden sm:inline ml-1">{t('compare.compare')}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
