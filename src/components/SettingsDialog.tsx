@@ -276,7 +276,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             </section>
           </div>
         </ScrollArea>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
