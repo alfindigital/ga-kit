@@ -31,6 +31,7 @@ interface CalculatorResult {
 export default function ROASCalculator() {
   const isLoading = usePageLoading(400);
   const { t } = useTranslation();
+  const { language } = useLanguage();
   
   // Scenario management
   const {
