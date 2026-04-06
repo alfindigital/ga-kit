@@ -122,7 +122,12 @@ export function Header() {
               <UrlHistoryPanel 
                 compact 
                 maxHeight="calc(85vh - 80px)"
-                onLoadUrl={() => setHistoryOpen(false)}
+                onLoadUrl={(item) => {
+                  setHistoryOpen(false);
+                  const toolPaths: Record<string, string> = { 'utm': '/utm-builder', 'qr': '/qr-generator', 'yt-finder': '/yt-finder' };
+                  const path = toolPaths[item.toolType] || '/';
+                  navigate(path, { state: { historyItem: item } });
+                }}
               />
             </DialogContent>
           </Dialog>
