@@ -23,12 +23,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from '@/components/ui/dialog';
 import { useState } from 'react';
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
 import { SettingsDialog } from '@/components/SettingsDialog';
