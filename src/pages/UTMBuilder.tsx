@@ -110,6 +110,7 @@ const formatUtmValue = (value: string): string => {
 
 export default function UTMBuilder() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [params, setParams] = useState<UTMParams>(DEFAULT_PARAMS);
   const [selectedValueTrack, setSelectedValueTrack] = useState<string[]>([]);
   const [presets, setPresets] = useLocalStorage<Preset[]>('utm-presets', []);
