@@ -23,12 +23,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from '@/components/ui/dialog';
 import { useState } from 'react';
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
 import { SettingsDialog } from '@/components/SettingsDialog';
@@ -102,35 +98,34 @@ export function Header() {
         {/* Settings & Mobile Menu */}
         <div className="flex items-center gap-1 sm:gap-2">
           {/* URL History */}
-          <Sheet open={historyOpen} onOpenChange={setHistoryOpen}>
-            <SheetTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-9 w-9 hidden sm:flex relative"
-              >
-                <History className="h-4 w-4" />
-                {stats.total > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-gradient-to-r from-primary to-accent text-[10px] text-primary-foreground flex items-center justify-center">
-                    {stats.total > 99 ? '99+' : stats.total}
-                  </span>
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="w-[400px] sm:w-[540px] p-0">
-              <SheetHeader className="p-4 border-b">
-                <SheetTitle className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-9 w-9 hidden sm:flex relative"
+            onClick={() => setHistoryOpen(true)}
+          >
+            <History className="h-4 w-4" />
+            {stats.total > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-gradient-to-r from-primary to-accent text-[10px] text-primary-foreground flex items-center justify-center">
+                {stats.total > 99 ? '99+' : stats.total}
+              </span>
+            )}
+          </Button>
+          <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+            <DialogContent className="sm:max-w-[600px] p-0 flex flex-col max-h-[85vh]">
+              <DialogHeader className="p-4 border-b">
+                <DialogTitle className="flex items-center gap-2">
                   <History className="h-5 w-5" />
                   {t('header.urlHistory')}
-                </SheetTitle>
-              </SheetHeader>
+                </DialogTitle>
+              </DialogHeader>
               <UrlHistoryPanel 
                 compact 
-                maxHeight="calc(100vh - 140px)"
+                maxHeight="calc(85vh - 80px)"
                 onLoadUrl={() => setHistoryOpen(false)}
               />
-            </SheetContent>
-          </Sheet>
+            </DialogContent>
+          </Dialog>
 
           {/* Keyboard Shortcuts */}
           <Tooltip>
