@@ -797,7 +797,7 @@ export default function YTFinder() {
         </Card>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4">
         <Card>
           <CardHeader className="p-3">
             <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
