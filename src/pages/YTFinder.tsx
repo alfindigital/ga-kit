@@ -697,7 +697,7 @@ export default function YTFinder() {
       {successResults.length > 0 && (
         <Card className="bg-muted/30">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center justify-center gap-2 mb-3">
               <BarChart3 className="h-4 w-4 text-primary" />
               <h3 className="text-sm font-medium">{t('yt.channelAnalytics')}</h3>
             </div>
