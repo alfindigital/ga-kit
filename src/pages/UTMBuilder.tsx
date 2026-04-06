@@ -131,6 +131,27 @@ export default function UTMBuilder() {
     url: [validators.url('Please enter a valid URL')],
   });
 
+  // Load history item from navigation state
+  useEffect(() => {
+    const historyItem = (location.state as any)?.historyItem;
+    if (historyItem && historyItem.toolType === 'utm') {
+      try {
+        const url = new URL(historyItem.url);
+        setParams({
+          url: historyItem.originalUrl || url.origin + url.pathname,
+          source: url.searchParams.get('utm_source') || historyItem.metadata?.source || '',
+          medium: url.searchParams.get('utm_medium') || historyItem.metadata?.medium || '',
+          campaign: url.searchParams.get('utm_campaign') || historyItem.metadata?.campaign || '',
+          term: url.searchParams.get('utm_term') || historyItem.metadata?.term || '',
+          content: url.searchParams.get('utm_content') || historyItem.metadata?.content || '',
+          customParams: [],
+        });
+        // Clear the state so it doesn't reload on re-render
+        window.history.replaceState({}, '');
+      } catch {}
+    }
+  }, [location.state]);
+
   const urlState = getFieldState('url');
 
   const handleUrlChange = useCallback((value: string) => {
