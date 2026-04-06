@@ -163,12 +163,7 @@ export function Header() {
                   onClick={() => setSettingsOpen(true)}
                   data-tour="theme-toggle"
                 >
-                  <Settings className="h-4 w-4 hidden sm:block" />
-                  {resolvedTheme === 'dark' ? (
-                    <Moon className="h-4 w-4 sm:hidden" />
-                  ) : (
-                    <Sun className="h-4 w-4 sm:hidden" />
-                  )}
+                  <Settings className="h-4 w-4" />
                 </Button>
               </div>
             </TooltipTrigger>
