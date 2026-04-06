@@ -12,8 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from '@/components/ui/sheet';
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from '@/components/ui/dialog';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -126,16 +126,16 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   ] as const;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:w-[420px] p-0 flex flex-col">
-        <SheetHeader className="p-4 pb-2 border-b">
-          <SheetTitle className="flex items-center gap-2">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[480px] p-0 flex flex-col max-h-[85vh]">
+        <DialogHeader className="p-4 pb-2 border-b">
+          <DialogTitle className="flex items-center gap-2">
             <SettingsIcon className="h-5 w-5 text-primary" />
             {t('settings.title')}
-          </SheetTitle>
-        </SheetHeader>
+          </DialogTitle>
+        </DialogHeader>
 
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 max-h-[calc(85vh-60px)]">
           <div className="p-4 space-y-5">
             {/* Appearance */}
             <section className="space-y-2">
@@ -276,7 +276,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             </section>
           </div>
         </ScrollArea>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
