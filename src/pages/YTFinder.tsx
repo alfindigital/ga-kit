@@ -697,11 +697,11 @@ export default function YTFinder() {
       {successResults.length > 0 && (
         <Card className="bg-muted/30">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center justify-center gap-2 mb-3">
               <BarChart3 className="h-4 w-4 text-primary" />
               <h3 className="text-sm font-medium">{t('yt.channelAnalytics')}</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 place-items-center">
               {/* Stats */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center p-3 bg-background rounded-lg border">
@@ -749,7 +749,7 @@ export default function YTFinder() {
               
               {/* Pie Chart */}
               {pieChartData.length > 1 && (
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center gap-4">
                   <div className="w-32 h-32">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
