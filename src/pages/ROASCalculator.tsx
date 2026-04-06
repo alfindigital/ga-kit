@@ -424,9 +424,9 @@ export default function ROASCalculator() {
         />
         <ScenarioCompare scenarios={scenarios} />
         <ScenarioExport scenarios={scenarios} onImport={importScenarios} />
-        <Button variant="outline" size="sm" onClick={resetAll}>
-          <RotateCcw className="h-4 w-4 mr-1" />
-          {t('roas.resetAll')}
+        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={resetAll} title={t('roas.resetAll')}>
+          <RotateCcw className="h-4 w-4" />
+          <span className="hidden sm:inline ml-1">{t('roas.resetAll')}</span>
         </Button>
       </ToolPageHeader>
 

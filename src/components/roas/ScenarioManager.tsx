@@ -52,13 +52,13 @@ export function ScenarioManager({
   const hasData = Object.values(currentData).some(v => v !== '' && v !== '20');
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5 sm:gap-2">
       {/* Save Dialog */}
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm" disabled={!hasData}>
-            <Save className="h-4 w-4 mr-1" />
-            {t('scenario.save')}
+          <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" disabled={!hasData} title={t('scenario.save')}>
+            <Save className="h-4 w-4" />
+            <span className="hidden sm:inline ml-1">{t('scenario.save')}</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
@@ -89,20 +89,20 @@ export function ScenarioManager({
       </Dialog>
 
       {currentScenarioId && hasData && (
-        <Button variant="outline" size="sm" onClick={handleUpdateCurrent}>
-          <Save className="h-4 w-4 mr-1" />
-          {t('scenario.update')}
+        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3" onClick={handleUpdateCurrent} title={t('scenario.update')}>
+          <Save className="h-4 w-4" />
+          <span className="hidden sm:inline ml-1">{t('scenario.update')}</span>
         </Button>
       )}
 
       {/* Load Dialog */}
       <Dialog open={loadDialogOpen} onOpenChange={setLoadDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm" disabled={scenarios.length === 0}>
-            <FolderOpen className="h-4 w-4 mr-1" />
-            {t('scenario.load')}
+          <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 relative" disabled={scenarios.length === 0} title={t('scenario.load')}>
+            <FolderOpen className="h-4 w-4" />
+            <span className="hidden sm:inline ml-1">{t('scenario.load')}</span>
             {scenarios.length > 0 && (
-              <Badge variant="secondary" className="ml-1.5 h-5 px-1.5">{scenarios.length}</Badge>
+              <Badge variant="secondary" className="hidden sm:inline-flex ml-1.5 h-5 px-1.5">{scenarios.length}</Badge>
             )}
           </Button>
         </DialogTrigger>
