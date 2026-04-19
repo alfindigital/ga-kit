@@ -14,16 +14,24 @@
   }
 
   :root {
-    /* Brand Gradient Stops */
+    /* ============================================
+       BRAND PALETTE — 3 TONES ONLY
+       1. Primary  : Blue   (action, brand)
+       2. Accent   : Teal   (secondary highlight)
+       3. Neutral  : Slate  (text, surfaces, borders)
+       Destructive/warning kept ONLY for system feedback.
+       ============================================ */
+
+    /* Brand tokens — all aliases collapse to primary/accent */
     --ga-blue: 217 91% 50%;
-    --ga-green: 160 60% 45%;
-    --ga-yellow: 43 96% 56%;
-    --ga-red: 4 84% 57%;
-    --ga-indigo: 238 66% 55%;
-    --ga-teal: 172 66% 50%;
+    --ga-green: 172 66% 42%;
+    --ga-yellow: 217 91% 50%;
+    --ga-red: 217 91% 50%;
+    --ga-indigo: 217 91% 50%;
+    --ga-teal: 172 66% 42%;
 
     /* Base */
-    --background: 220 30% 97%;
+    --background: 220 20% 98%;
     --foreground: 222 25% 12%;
 
     /* Cards & Surfaces */
@@ -33,33 +41,33 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 25% 12%;
 
-    /* Primary - Vibrant Blue */
+    /* Primary — Brand Blue */
     --primary: 217 91% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary */
-    --secondary: 220 20% 93%;
+    /* Secondary — Neutral surface */
+    --secondary: 220 16% 94%;
     --secondary-foreground: 222 25% 12%;
 
     /* Muted */
-    --muted: 220 20% 94%;
-    --muted-foreground: 220 12% 46%;
+    --muted: 220 16% 94%;
+    --muted-foreground: 220 10% 46%;
 
-    /* Accent - Fresh Teal */
-    --accent: 160 60% 45%;
+    /* Accent — Brand Teal */
+    --accent: 172 66% 42%;
     --accent-foreground: 0 0% 100%;
 
-    /* Destructive */
-    --destructive: 4 84% 57%;
+    /* Destructive (system only) */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Warning */
-    --warning: 43 96% 56%;
+    /* Warning (system only) */
+    --warning: 38 92% 50%;
     --warning-foreground: 222 25% 12%;
 
     /* Borders & Inputs */
-    --border: 220 18% 90%;
-    --input: 220 18% 90%;
+    --border: 220 14% 90%;
+    --input: 220 14% 90%;
     --ring: 217 91% 50%;
 
     --radius: 0.75rem;
@@ -69,82 +77,82 @@
     --sidebar-foreground: 222 25% 12%;
     --sidebar-primary: 217 91% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 94%;
+    --sidebar-accent: 220 16% 94%;
     --sidebar-accent-foreground: 222 25% 12%;
-    --sidebar-border: 220 18% 90%;
+    --sidebar-border: 220 14% 90%;
     --sidebar-ring: 217 91% 50%;
 
-    /* Tool-specific colors */
+    /* Tool-specific colors — all collapsed to primary/accent */
     --tool-utm: 217 91% 50%;
-    --tool-keyword: 160 60% 45%;
-    --tool-youtube: 4 84% 57%;
-    --tool-qr: 270 60% 55%;
+    --tool-keyword: 172 66% 42%;
+    --tool-youtube: 217 91% 50%;
+    --tool-qr: 172 66% 42%;
   }
 
   .dark {
-    /* Brand Gradient Stops - brighter for dark bg */
-    --ga-blue: 217 91% 62%;
-    --ga-green: 160 60% 52%;
-    --ga-yellow: 43 96% 62%;
-    --ga-red: 4 84% 62%;
-    --ga-indigo: 238 66% 65%;
+    /* Brand tokens — collapsed to primary/accent */
+    --ga-blue: 217 92% 65%;
+    --ga-green: 172 66% 55%;
+    --ga-yellow: 217 92% 65%;
+    --ga-red: 217 92% 65%;
+    --ga-indigo: 217 92% 65%;
     --ga-teal: 172 66% 55%;
 
-    /* Base - deep navy with subtle blue tint */
-    --background: 225 30% 6%;
-    --foreground: 220 20% 93%;
+    /* Base */
+    --background: 225 28% 7%;
+    --foreground: 220 18% 93%;
 
-    /* Cards & Surfaces - lifted from bg with subtle warmth */
-    --card: 225 25% 10%;
-    --card-foreground: 220 20% 93%;
+    /* Cards & Surfaces */
+    --card: 225 24% 11%;
+    --card-foreground: 220 18% 93%;
 
-    --popover: 225 25% 12%;
-    --popover-foreground: 220 20% 93%;
+    --popover: 225 24% 12%;
+    --popover-foreground: 220 18% 93%;
 
-    /* Primary - luminous blue */
+    /* Primary — luminous blue */
     --primary: 217 92% 65%;
     --primary-foreground: 225 30% 6%;
 
-    /* Secondary - subtle surface lift */
-    --secondary: 225 22% 16%;
-    --secondary-foreground: 220 20% 90%;
+    /* Secondary */
+    --secondary: 225 20% 16%;
+    --secondary-foreground: 220 18% 90%;
 
-    /* Muted - noticeably brighter for skeleton contrast in dark mode */
-    --muted: 225 18% 28%;
-    --muted-foreground: 220 14% 58%;
+    /* Muted */
+    --muted: 225 18% 22%;
+    --muted-foreground: 220 12% 60%;
 
-    /* Accent - glowing teal */
-    --accent: 160 65% 48%;
+    /* Accent — glowing teal */
+    --accent: 172 66% 55%;
     --accent-foreground: 225 30% 6%;
 
     /* Destructive */
-    --destructive: 4 84% 62%;
+    --destructive: 0 72% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Warning - warmer glow */
-    --warning: 43 96% 58%;
+    /* Warning */
+    --warning: 38 92% 56%;
     --warning-foreground: 225 30% 6%;
 
-    /* Borders & Inputs - subtle glow edges */
+    /* Borders & Inputs */
     --border: 225 18% 18%;
     --input: 225 18% 18%;
     --ring: 217 92% 65%;
 
     /* Sidebar */
-    --sidebar-background: 225 28% 8%;
-    --sidebar-foreground: 220 20% 93%;
+    --sidebar-background: 225 26% 9%;
+    --sidebar-foreground: 220 18% 93%;
     --sidebar-primary: 217 92% 65%;
     --sidebar-primary-foreground: 225 30% 6%;
-    --sidebar-accent: 225 22% 16%;
-    --sidebar-accent-foreground: 220 20% 90%;
+    --sidebar-accent: 225 20% 16%;
+    --sidebar-accent-foreground: 220 18% 90%;
     --sidebar-border: 225 18% 18%;
     --sidebar-ring: 217 92% 65%;
 
-    /* Tool-specific colors - brighter for dark */
+    /* Tool-specific colors — collapsed */
     --tool-utm: 217 92% 65%;
-    --tool-keyword: 160 65% 52%;
-    --tool-youtube: 4 84% 62%;
-    --tool-qr: 270 65% 65%;
+    --tool-keyword: 172 66% 55%;
+    --tool-youtube: 217 92% 65%;
+    --tool-qr: 172 66% 55%;
   }
 
   /* Font size variants */
