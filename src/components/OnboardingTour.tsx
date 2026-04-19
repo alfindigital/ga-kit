@@ -347,7 +347,7 @@ export function WelcomeBanner() {
         <div className="flex-1">
           <p className="text-sm font-medium text-foreground">{t('tour.welcomeAboard')}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            {t('tour.welcomeAboardDesc')} <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">?</kbd> {t('tour.welcomeAboardDesc')} <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">Ctrl+K</kbd> {t('tour.forQuickActions')}
+            {t('tour.pressKey')} <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">?</kbd> {t('tour.welcomeAboardDesc')} <kbd className="px-1.5 py-0.5 text-xs font-mono bg-secondary border border-border rounded-md">Ctrl+K</kbd> {t('tour.forQuickActions')}
           </p>
         </div>
         <Button
