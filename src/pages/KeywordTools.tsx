@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
 import { useTranslation } from '@/hooks/useTranslation';
