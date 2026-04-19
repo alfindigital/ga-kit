@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { FontSizeProvider } from "@/contexts/FontSizeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ShortcutsProvider } from "@/contexts/ShortcutsContext";
 import { Layout } from "@/components/layout";
 
 import Dashboard from "./pages/Dashboard";
