@@ -2363,6 +2363,7 @@ const id: Record<string, string> = {
   'nav.home': 'Beranda',
   'nav.combine': 'Kombinasi',
   'nav.headline': 'Headline',
+  'nav.more': 'Lainnya',
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – konsep v1',
