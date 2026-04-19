@@ -169,10 +169,8 @@ export default function YTFinder() {
     }
   }, [loading, toast, t]);
 
-  useKeyboardShortcuts([
-    { key: 'f', shift: true, action: handleFetchShortcut, description: 'Fetch video data' },
-    { key: 'x', shift: true, action: handleCancelShortcut, description: 'Cancel ongoing request' },
-  ]);
+  useShortcutAction('page.fetch', handleFetchShortcut);
+  useShortcutAction('page.cancel', handleCancelShortcut);
 
   // Moved above early return to comply with Rules of Hooks
   const successResults = results.filter(r => r.status === 'success');
