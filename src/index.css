@@ -201,8 +201,13 @@
     font-weight: 700;
   }
 
-  h1 { letter-spacing: -0.028em; }
-  h2 { letter-spacing: -0.024em; }
+  /* Hero / dashboard headings — extra bold for punch */
+  h1, h2 {
+    font-weight: 800;
+  }
+
+  h1 { letter-spacing: -0.03em; }
+  h2 { letter-spacing: -0.026em; }
 
   /* Numeric tabular alignment for stats/counters */
   .tabular-nums,

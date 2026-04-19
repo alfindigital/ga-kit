@@ -32,7 +32,7 @@ export function ToolPageHeader({
             <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{title}</h1>
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight">{title}</h1>
             <p className="text-xs sm:text-sm text-muted-foreground">{description}</p>
           </div>
         </div>
