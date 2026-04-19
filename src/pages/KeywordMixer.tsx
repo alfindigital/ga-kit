@@ -73,11 +73,9 @@ export default function KeywordMixer() {
 
   const handleReset = () => { setBase(''); setPrefixes(''); setSuffixes(''); };
 
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: () => results.length > 0 && copy(results.join('\n')), description: 'Copy results' },
-    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  useShortcutAction('page.copy', () => { if (results.length > 0) copy(results.join('\n')); });
+  useShortcutAction('page.reset', handleReset);
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <KeywordMixerSkeleton />;
 
