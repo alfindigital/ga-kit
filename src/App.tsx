@@ -33,6 +33,7 @@ const App = () => (
     <ThemeProvider>
       <FontSizeProvider>
         <LanguageProvider>
+          <ShortcutsProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
