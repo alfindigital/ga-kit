@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
@@ -27,6 +27,20 @@ export function Layout({ children }: LayoutProps) {
   
   // Track recently visited pages
   useRecentPages();
+
+  // Global "?" shortcut to toggle keyboard shortcuts dialog
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const isQuestion = e.key === '?' || (e.key === '/' && e.shiftKey);
+      if (!isQuestion) return;
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      e.preventDefault();
+      setShortcutsOpen((o) => !o);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const handleRefresh = useCallback(async () => {
     // Simulate refresh delay
