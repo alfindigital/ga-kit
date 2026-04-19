@@ -11,7 +11,11 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('light');
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === 'undefined') return 'light';
+    const stored = localStorage.getItem('ga-toolkit-theme') as Theme | null;
+    return stored ?? 'light';
+  });
 
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
