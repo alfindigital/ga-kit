@@ -884,6 +884,7 @@ const en = {
   'tour.finish': 'Finish',
   'tour.restartTour': 'Restart Tour',
   'tour.welcomeAboard': 'Welcome aboard! 🎉',
+  'tour.pressKey': 'Press',
   'tour.welcomeAboardDesc': 'for shortcuts or',
   'tour.forQuickActions': 'for quick actions.',
   'tour.dismiss': 'Dismiss',
