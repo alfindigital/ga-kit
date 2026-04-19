@@ -1,5 +1,6 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import {
   CommandDialog,
   CommandEmpty,
