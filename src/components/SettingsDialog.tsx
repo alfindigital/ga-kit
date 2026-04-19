@@ -145,9 +145,18 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               </div>
               <RadioGroup value={theme} onValueChange={(v) => setTheme(v as 'light' | 'dark' | 'system')} className="grid grid-cols-3 gap-2">
                 {themeOptions.map(({ value, label, Icon }) => (
-                  <Label key={value} htmlFor={`sd-theme-${value}`} className="flex flex-col items-center gap-1.5 rounded-lg border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors [&:has([data-state=checked])]:border-primary">
+                  <Label
+                    key={value}
+                    htmlFor={`sd-theme-${value}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 p-3 h-[72px] cursor-pointer transition-colors ${
+                      theme === value
+                        ? 'border-primary bg-primary/5 text-primary'
+                        : 'border-muted bg-popover text-foreground hover:bg-muted/50'
+                    }`}
+                  >
                     <RadioGroupItem value={value} id={`sd-theme-${value}`} className="sr-only" />
-                    <Icon className="h-5 w-5" /><span className="text-xs font-medium">{label}</span>
+                    <Icon className="h-5 w-5" />
+                    <span className="text-xs font-medium">{label}</span>
                   </Label>
                 ))}
               </RadioGroup>
@@ -163,9 +172,18 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               </div>
               <RadioGroup value={fontSize} onValueChange={(v) => setFontSize(v as 'sm' | 'md' | 'lg')} className="grid grid-cols-3 gap-2">
                 {fontOptions.map(({ value, label, sizeClass }) => (
-                  <Label key={value} htmlFor={`sd-font-${value}`} className="flex flex-col items-center gap-1.5 rounded-lg border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors [&:has([data-state=checked])]:border-primary">
+                  <Label
+                    key={value}
+                    htmlFor={`sd-font-${value}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 p-3 h-[72px] cursor-pointer transition-colors ${
+                      fontSize === value
+                        ? 'border-primary bg-primary/5 text-primary'
+                        : 'border-muted bg-popover text-foreground hover:bg-muted/50'
+                    }`}
+                  >
                     <RadioGroupItem value={value} id={`sd-font-${value}`} className="sr-only" />
-                    <span className={`${sizeClass} font-bold`}>A</span><span className="text-xs font-medium">{label}</span>
+                    <span className={`${sizeClass} font-bold leading-none`}>A</span>
+                    <span className="text-xs font-medium">{label}</span>
                   </Label>
                 ))}
               </RadioGroup>
