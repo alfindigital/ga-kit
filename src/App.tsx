@@ -60,6 +60,7 @@ const App = () => (
               </Layout>
             </BrowserRouter>
           </TooltipProvider>
+          </ShortcutsProvider>
         </LanguageProvider>
       </FontSizeProvider>
     </ThemeProvider>
