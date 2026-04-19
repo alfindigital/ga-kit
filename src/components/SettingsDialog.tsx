@@ -120,9 +120,9 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   ] as const;
 
   const fontOptions = [
-    { value: 'sm', label: t('common.small'), sizeClass: 'text-xs' },
+    { value: 'sm', label: t('common.small'), sizeClass: 'text-sm' },
     { value: 'md', label: t('common.medium'), sizeClass: 'text-base' },
-    { value: 'lg', label: t('common.large'), sizeClass: 'text-xl' },
+    { value: 'lg', label: t('common.large'), sizeClass: 'text-lg' },
   ] as const;
 
   return (
