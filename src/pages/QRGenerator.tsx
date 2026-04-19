@@ -201,11 +201,9 @@ export default function QRGenerator() {
   };
 
   // Keyboard shortcuts
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: () => qrDataUrl && copy(qrDataUrl, 'Data URL copied'), description: 'Copy QR' },
-    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  useShortcutAction('page.copy', () => { if (qrDataUrl) copy(qrDataUrl, 'Data URL copied'); });
+  useShortcutAction('page.reset', handleReset);
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <QRGeneratorSkeleton />;
 
