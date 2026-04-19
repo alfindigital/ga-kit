@@ -54,8 +54,7 @@ export function Layout({ children }: LayoutProps) {
           </PageTransition>
         </PullToRefresh>
       </main>
-      
-      <Footer />
+
       <BottomTabNav />
       <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       <CommandPalette onOpenShortcuts={() => setShortcutsOpen(true)} />
