@@ -93,12 +93,10 @@ export default function KeywordCombiner() {
   // Reset function
   const handleReset = () => setLists(['', '', '']);
 
-  // Keyboard shortcuts
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: () => combinations.length > 0 && copy(combinations.join('\n')), description: 'Copy results' },
-    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  // Keyboard shortcuts (editable via Settings → Keyboard Shortcuts dialog)
+  useShortcutAction('page.copy', () => { if (combinations.length > 0) copy(combinations.join('\n')); });
+  useShortcutAction('page.reset', handleReset);
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <KeywordCombinerSkeleton />;
 
