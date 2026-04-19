@@ -2071,6 +2071,7 @@ const id: Record<string, string> = {
   'tour.finish': 'Selesai',
   'tour.restartTour': 'Mulai Ulang Tur',
   'tour.welcomeAboard': 'Selamat bergabung! 🎉',
+  'tour.pressKey': 'Tekan',
   'tour.welcomeAboardDesc': 'untuk pintasan atau',
   'tour.forQuickActions': 'untuk aksi cepat.',
   'tour.dismiss': 'Tutup',
