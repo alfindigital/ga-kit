@@ -79,16 +79,7 @@ export function CommandPalette({ onOpenShortcuts }: CommandPaletteProps) {
     return navigationItems.filter(item => !recentPages.includes(item.path));
   }, [recentPages]);
 
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
-  }, []);
+  useShortcutAction('global.commandPalette', () => setOpen((o) => !o));
 
   const runCommand = (command: () => void) => {
     setOpen(false);
