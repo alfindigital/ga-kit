@@ -35,7 +35,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
 import { UrlValidatorSkeleton } from '@/components/skeletons';
@@ -1055,11 +1055,9 @@ export default function UrlValidator() {
   }, [bulkResults, filter]);
   
   // Keyboard shortcuts
-  useKeyboardShortcuts([
-    { key: 'v', shift: true, action: () => singleUrl ? handleSingleValidate() : handleBulkValidate(), description: 'Validate URL(s)' },
-    { key: 'r', shift: true, action: () => { handleClearSingle(); handleClearBulk(); }, description: 'Reset form' },
-    { key: 'h', shift: true, action: handleGenerateHashes, description: 'Generate hashes' },
-  ]);
+  useShortcutAction('page.validate', () => { singleUrl ? handleSingleValidate() : handleBulkValidate(); });
+  useShortcutAction('page.reset', () => { handleClearSingle(); handleClearBulk(); });
+  useShortcutAction('page.hashes', handleGenerateHashes);
   
   if (isLoading) return <UrlValidatorSkeleton />;
   

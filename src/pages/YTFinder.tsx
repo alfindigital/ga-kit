@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useUrlHistory } from '@/hooks/useUrlHistory';
 import { Copy, RotateCcw, Youtube, ExternalLink, AlertTriangle, Search, X, History, Trash2, Clock, Pencil, Check, Star, Filter, ArrowUpDown, ArrowUp, ArrowDown, Download, Upload, Keyboard, BarChart3, Users, TrendingUp, FileText } from 'lucide-react';
 import { ToolPageHeader } from '@/components/ToolPageHeader';
@@ -169,10 +169,8 @@ export default function YTFinder() {
     }
   }, [loading, toast, t]);
 
-  useKeyboardShortcuts([
-    { key: 'f', shift: true, action: handleFetchShortcut, description: 'Fetch video data' },
-    { key: 'x', shift: true, action: handleCancelShortcut, description: 'Cancel ongoing request' },
-  ]);
+  useShortcutAction('page.fetch', handleFetchShortcut);
+  useShortcutAction('page.cancel', handleCancelShortcut);
 
   // Moved above early return to comply with Rules of Hooks
   const successResults = results.filter(r => r.status === 'success');

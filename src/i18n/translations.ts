@@ -1103,6 +1103,12 @@ const en = {
   'kbd.generateHashes': 'Generate hashes (URL Validator)',
   'kbd.fetchData': 'Fetch data (YT Finder)',
   'kbd.cancelRequest': 'Cancel request (YT Finder)',
+  'kbd.editShortcut': 'Edit shortcut',
+  'kbd.pressKeys': 'Press keys…',
+  'kbd.conflict': 'Already used by "{{action}}"',
+  'kbd.updated': 'Shortcut updated',
+  'kbd.resetAll': 'Reset all',
+  'kbd.resetAllDone': 'All shortcuts reset to defaults',
 
   // ── Settings ──
   'settings.title': 'Settings',
@@ -2291,6 +2297,12 @@ const id: Record<string, string> = {
   'kbd.generateHashes': 'Buat hash (URL Validator)',
   'kbd.fetchData': 'Ambil data (YT Finder)',
   'kbd.cancelRequest': 'Batalkan permintaan (YT Finder)',
+  'kbd.editShortcut': 'Edit pintasan',
+  'kbd.pressKeys': 'Tekan tombol…',
+  'kbd.conflict': 'Sudah dipakai oleh "{{action}}"',
+  'kbd.updated': 'Pintasan diperbarui',
+  'kbd.resetAll': 'Reset semua',
+  'kbd.resetAllDone': 'Semua pintasan direset ke default',
 
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',

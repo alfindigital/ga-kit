@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
@@ -93,12 +93,10 @@ export default function KeywordCombiner() {
   // Reset function
   const handleReset = () => setLists(['', '', '']);
 
-  // Keyboard shortcuts
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: () => combinations.length > 0 && copy(combinations.join('\n')), description: 'Copy results' },
-    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  // Keyboard shortcuts (editable via Settings → Keyboard Shortcuts dialog)
+  useShortcutAction('page.copy', () => { if (combinations.length > 0) copy(combinations.join('\n')); });
+  useShortcutAction('page.reset', handleReset);
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <KeywordCombinerSkeleton />;
 

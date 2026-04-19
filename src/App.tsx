@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { FontSizeProvider } from "@/contexts/FontSizeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ShortcutsProvider } from "@/contexts/ShortcutsContext";
 import { Layout } from "@/components/layout";
 
 import Dashboard from "./pages/Dashboard";
@@ -32,6 +33,7 @@ const App = () => (
     <ThemeProvider>
       <FontSizeProvider>
         <LanguageProvider>
+          <ShortcutsProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -58,6 +60,7 @@ const App = () => (
               </Layout>
             </BrowserRouter>
           </TooltipProvider>
+          </ShortcutsProvider>
         </LanguageProvider>
       </FontSizeProvider>
     </ThemeProvider>

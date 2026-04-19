@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useClipboard } from '@/hooks/useClipboard';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
@@ -466,11 +466,9 @@ export default function UTMBuilder() {
   };
 
   // Keyboard shortcuts
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: handleCopy, description: 'Copy URL' },
-    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  useShortcutAction('page.copy', handleCopy);
+  useShortcutAction('page.reset', handleReset);
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <UTMBuilderSkeleton />;
 

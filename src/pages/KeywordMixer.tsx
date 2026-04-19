@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
@@ -73,11 +73,9 @@ export default function KeywordMixer() {
 
   const handleReset = () => { setBase(''); setPrefixes(''); setSuffixes(''); };
 
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: () => results.length > 0 && copy(results.join('\n')), description: 'Copy results' },
-    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  useShortcutAction('page.copy', () => { if (results.length > 0) copy(results.join('\n')); });
+  useShortcutAction('page.reset', handleReset);
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <KeywordMixerSkeleton />;
 
