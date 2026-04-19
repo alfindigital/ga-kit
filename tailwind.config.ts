@@ -91,7 +91,7 @@ export default {
         'glow-primary': '0 0 20px -5px hsl(var(--primary) / 0.3)',
         'glow-accent': '0 0 20px -5px hsl(var(--accent) / 0.3)',
         'glow-destructive': '0 0 20px -5px hsl(var(--destructive) / 0.3)',
-        'glow-purple': '0 0 20px -5px hsl(270 60% 55% / 0.3)',
+        'glow-purple': '0 0 20px -5px hsl(var(--accent) / 0.3)',
         'elevated': '0 8px 30px -8px hsl(var(--foreground) / 0.08), 0 2px 8px -2px hsl(var(--foreground) / 0.04)',
         'elevated-lg': '0 16px 50px -12px hsl(var(--foreground) / 0.12), 0 4px 16px -4px hsl(var(--foreground) / 0.06)',
         'dark-glow': '0 0 30px -5px hsl(var(--primary) / 0.2), 0 0 60px -10px hsl(var(--accent) / 0.1)',

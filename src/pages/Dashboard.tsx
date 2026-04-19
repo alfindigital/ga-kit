@@ -33,18 +33,18 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { toast } from 'sonner';
 
 const toolColors: Record<string, { border: string; shadow: string; gradient: string; dot: string }> = {
-  'utm-builder':       { border: 'border-l-primary',       shadow: 'hover:shadow-glow-primary',      gradient: 'from-primary to-primary/70',      dot: 'bg-primary' },
-  'keyword-combiner':  { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'keyword-mixer':     { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'keyword-tools':     { border: 'border-l-warning',       shadow: '',                                gradient: 'from-warning to-warning/70',      dot: 'bg-warning' },
-  'yt-finder':         { border: 'border-l-destructive',   shadow: 'hover:shadow-glow-destructive',  gradient: 'from-destructive to-destructive/70', dot: 'bg-destructive' },
-  'qr-generator':      { border: 'border-l-tool-qr',      shadow: 'hover:shadow-glow-purple',       gradient: 'from-tool-qr to-tool-qr/70',     dot: 'bg-tool-qr' },
-  'url-validator':     { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'negative-keywords': { border: 'border-l-destructive',   shadow: 'hover:shadow-glow-destructive',  gradient: 'from-destructive to-destructive/70', dot: 'bg-destructive' },
-  'ad-copy-validator': { border: 'border-l-primary',       shadow: 'hover:shadow-glow-primary',      gradient: 'from-primary to-primary/70',      dot: 'bg-primary' },
-  'roas-calculator':   { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'headline-analyzer': { border: 'border-l-warning',       shadow: '',                                gradient: 'from-warning to-warning/70',      dot: 'bg-warning' },
-  'url-history':       { border: 'border-l-muted-foreground', shadow: '',                             gradient: 'from-muted-foreground to-muted-foreground/70', dot: 'bg-muted-foreground' },
+  'utm-builder':       { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'keyword-combiner':  { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'keyword-mixer':     { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'keyword-tools':     { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'yt-finder':         { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'qr-generator':      { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'url-validator':     { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'negative-keywords': { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'ad-copy-validator': { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'roas-calculator':   { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'headline-analyzer': { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'url-history':       { border: 'border-l-muted-foreground', shadow: '', gradient: 'from-muted-foreground to-muted-foreground/70', dot: 'bg-muted-foreground' },
 };
 
 // Tool definitions with i18n keys
@@ -52,14 +52,14 @@ const toolDefs = [
   { id: 'utm-builder', titleKey: 'tool.utmBuilder' as const, descKey: 'tool.utmBuilder.desc' as const, icon: Link2, path: '/utm-builder', color: 'bg-primary/10 text-primary', features: ['UTM Parameters', 'ValueTrack Macros', 'Live Preview'] },
   { id: 'keyword-combiner', titleKey: 'tool.keywordCombiner' as const, descKey: 'tool.keywordCombiner.desc' as const, icon: Combine, path: '/keyword-combiner', color: 'bg-accent/10 text-accent', features: ['Multi-column Lists', 'Match Types', 'Export Options'] },
   { id: 'keyword-mixer', titleKey: 'tool.keywordMixer' as const, descKey: 'tool.keywordMixer.desc' as const, icon: Shuffle, path: '/keyword-mixer', color: 'bg-accent/10 text-accent', features: ['Prefix/Suffix', 'De-duplicate', 'Bulk Processing'] },
-  { id: 'keyword-tools', titleKey: 'tool.keywordTools' as const, descKey: 'tool.keywordTools.desc' as const, icon: Wrench, path: '/keyword-tools', color: 'bg-warning/10 text-warning-foreground', features: ['De-duplicate', 'Case Convert', 'Bulk Replace'] },
-  { id: 'yt-finder', titleKey: 'tool.ytFinder' as const, descKey: 'tool.ytFinder.desc' as const, icon: Youtube, path: '/yt-finder', color: 'bg-destructive/10 text-destructive', features: ['Bulk URLs', 'oEmbed API', 'Export Data'] },
-  { id: 'qr-generator', titleKey: 'tool.qrGenerator' as const, descKey: 'tool.qrGenerator.desc' as const, icon: QrCode, path: '/qr-generator', color: 'bg-tool-qr/10 text-tool-qr', features: ['Custom Colors', 'Logo Support', 'PNG/SVG Export'] },
+  { id: 'keyword-tools', titleKey: 'tool.keywordTools' as const, descKey: 'tool.keywordTools.desc' as const, icon: Wrench, path: '/keyword-tools', color: 'bg-primary/10 text-primary', features: ['De-duplicate', 'Case Convert', 'Bulk Replace'] },
+  { id: 'yt-finder', titleKey: 'tool.ytFinder' as const, descKey: 'tool.ytFinder.desc' as const, icon: Youtube, path: '/yt-finder', color: 'bg-accent/10 text-accent', features: ['Bulk URLs', 'oEmbed API', 'Export Data'] },
+  { id: 'qr-generator', titleKey: 'tool.qrGenerator' as const, descKey: 'tool.qrGenerator.desc' as const, icon: QrCode, path: '/qr-generator', color: 'bg-primary/10 text-primary', features: ['Custom Colors', 'Logo Support', 'PNG/SVG Export'] },
   { id: 'url-validator', titleKey: 'tool.urlValidator' as const, descKey: 'tool.urlValidator.desc' as const, icon: ShieldCheck, path: '/url-validator', color: 'bg-accent/10 text-accent', features: ['Format Check', 'Bulk Validation', 'Quick Actions'] },
-  { id: 'negative-keywords', titleKey: 'tool.negativeKeywords' as const, descKey: 'tool.negativeKeywords.desc' as const, icon: Ban, path: '/negative-keywords', color: 'bg-destructive/10 text-destructive', features: ['Deduplicate', 'Match Types', 'Conflict Detection'] },
+  { id: 'negative-keywords', titleKey: 'tool.negativeKeywords' as const, descKey: 'tool.negativeKeywords.desc' as const, icon: Ban, path: '/negative-keywords', color: 'bg-accent/10 text-accent', features: ['Deduplicate', 'Match Types', 'Conflict Detection'] },
   { id: 'ad-copy-validator', titleKey: 'tool.adCopyValidator' as const, descKey: 'tool.adCopyValidator.desc' as const, icon: FileText, path: '/ad-copy-validator', color: 'bg-primary/10 text-primary', features: ['Character Limits', 'RSA Preview', 'Bulk Import'] },
   { id: 'roas-calculator', titleKey: 'tool.roasCalculator' as const, descKey: 'tool.roasCalculator.desc' as const, icon: Calculator, path: '/roas-calculator', color: 'bg-accent/10 text-accent', features: ['ROAS & ROI', 'Budget Planning', 'Break-even CPA'] },
-  { id: 'headline-analyzer', titleKey: 'tool.headlineAnalyzer' as const, descKey: 'tool.headlineAnalyzer.desc' as const, icon: Lightbulb, path: '/headline-analyzer', color: 'bg-warning/10 text-warning-foreground', features: ['A/B Compare', 'Power Words', 'CTA Detection'] },
+  { id: 'headline-analyzer', titleKey: 'tool.headlineAnalyzer' as const, descKey: 'tool.headlineAnalyzer.desc' as const, icon: Lightbulb, path: '/headline-analyzer', color: 'bg-primary/10 text-primary', features: ['A/B Compare', 'Power Words', 'CTA Detection'] },
   { id: 'url-history', titleKey: 'tool.urlHistory' as const, descKey: 'tool.urlHistory.desc' as const, icon: History, path: '/history', color: 'bg-muted text-muted-foreground', features: ['Search & Filter', 'Star Favorites', 'Export/Import'] },
 ];
 
