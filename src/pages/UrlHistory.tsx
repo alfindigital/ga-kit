@@ -95,7 +95,7 @@ export default function UrlHistory() {
         <Card>
           <CardContent className="p-3 sm:p-4">
             <div className="flex items-center gap-2">
-              <QrCode className="h-4 w-4 text-purple-500" />
+              <QrCode className="h-4 w-4 text-accent" />
               <div>
                 <p className="text-2xl font-bold">{stats.byTool.qr}</p>
                 <p className="text-xs text-muted-foreground">{t('urlHistory.qrCodes')}</p>
@@ -119,7 +119,7 @@ export default function UrlHistory() {
         <Card>
           <CardContent className="p-3 sm:p-4">
             <div className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-yellow-500" />
+              <Star className="h-4 w-4 text-warning" />
               <div>
                 <p className="text-2xl font-bold">{stats.starred}</p>
                 <p className="text-xs text-muted-foreground">{t('urlHistory.starred')}</p>

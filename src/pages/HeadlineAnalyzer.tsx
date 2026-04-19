@@ -154,9 +154,9 @@ function analyzeHeadline(headline: string): HeadlineScore {
 }
 
 function getScoreColor(score: number) {
-  if (score >= 80) return 'text-green-600 dark:text-green-400';
-  if (score >= 50) return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-red-600 dark:text-red-400';
+  if (score >= 80) return 'text-accent';
+  if (score >= 50) return 'text-warning';
+  return 'text-destructive';
 }
 
 function getScoreGrade(score: number) {
@@ -169,9 +169,9 @@ function getScoreGrade(score: number) {
 }
 
 function getProgressColor(score: number) {
-  if (score >= 80) return '[&>div]:bg-green-500';
-  if (score >= 50) return '[&>div]:bg-yellow-500';
-  return '[&>div]:bg-red-500';
+  if (score >= 80) return '[&>div]:bg-accent';
+  if (score >= 50) return '[&>div]:bg-warning/100';
+  return '[&>div]:bg-destructive';
 }
 
 export default function HeadlineAnalyzer() {

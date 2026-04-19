@@ -483,20 +483,20 @@ export default function NegativeKeywords() {
                         key={index} 
                         variant={conflict.severity === 'critical' ? 'destructive' : 'default'}
                         className={cn(
-                          conflict.severity === 'warning' && 'border-yellow-500/50 bg-yellow-50/50 dark:bg-yellow-950/20',
-                          conflict.severity === 'caution' && 'border-orange-500/50 bg-orange-50/50 dark:bg-orange-950/20'
+                          conflict.severity === 'warning' && 'border-warning/50 bg-warning/10/50 ',
+                          conflict.severity === 'caution' && 'border-warning/50 bg-warning/10 '
                         )}
                       >
                         {conflict.severity === 'critical' && <AlertCircle className="h-4 w-4" />}
-                        {conflict.severity === 'warning' && <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />}
-                        {conflict.severity === 'caution' && <Info className="h-4 w-4 text-orange-600 dark:text-orange-400" />}
+                        {conflict.severity === 'warning' && <AlertTriangle className="h-4 w-4 text-warning" />}
+                        {conflict.severity === 'caution' && <Info className="h-4 w-4 text-warning" />}
                         <AlertDescription className="text-sm">
                           <Badge 
                             variant={conflict.severity === 'critical' ? 'destructive' : 'outline'}
                             className={cn(
                               'mr-2 text-xs',
-                              conflict.severity === 'warning' && 'border-yellow-500 text-yellow-700 dark:text-yellow-400',
-                              conflict.severity === 'caution' && 'border-orange-500 text-orange-700 dark:text-orange-400'
+                              conflict.severity === 'warning' && 'border-warning text-warning',
+                              conflict.severity === 'caution' && 'border-warning text-warning'
                             )}
                           >
                             {conflict.severity === 'critical' && t('neg.critical')}
@@ -533,7 +533,7 @@ export default function NegativeKeywords() {
           <Card className="p-3">
             <div className={cn(
               "text-2xl font-bold",
-              stats.criticalConflicts > 0 ? "text-destructive" : stats.conflicts > 0 ? "text-yellow-600 dark:text-yellow-400" : "text-primary"
+              stats.criticalConflicts > 0 ? "text-destructive" : stats.conflicts > 0 ? "text-warning" : "text-primary"
             )}>
               {stats.conflicts}
             </div>
