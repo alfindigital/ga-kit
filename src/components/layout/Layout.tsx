@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
-import { Footer } from './Footer';
 
 import { BottomTabNav } from './BottomTabNav';
 import { PageTransition } from '../PageTransition';
