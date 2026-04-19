@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useClipboard } from '@/hooks/useClipboard';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useToast } from '@/hooks/use-toast';
 import { useExport } from '@/hooks/useExport';
 import { usePageLoading } from '@/hooks/usePageLoading';
