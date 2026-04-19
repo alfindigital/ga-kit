@@ -1168,6 +1168,7 @@ const en = {
   'nav.home': 'Home',
   'nav.combine': 'Combine',
   'nav.headline': 'Headline',
+  'nav.more': 'More',
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – concept v1',
@@ -2362,6 +2363,7 @@ const id: Record<string, string> = {
   'nav.home': 'Beranda',
   'nav.combine': 'Kombinasi',
   'nav.headline': 'Headline',
+  'nav.more': 'Lainnya',
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – konsep v1',
