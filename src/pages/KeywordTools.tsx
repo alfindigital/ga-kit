@@ -54,10 +54,8 @@ export default function KeywordTools() {
   const replaceCount = findText ? (replaceInput.split(caseSensitive ? findText : new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')).length - 1) : 0;
 
   // Keyboard shortcuts — must be called before any early return
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: () => dupeResult.length > 0 && copy(dupeResult.join('\n')), description: 'Copy results' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  useShortcutAction('page.copy', () => { if (dupeResult.length > 0) copy(dupeResult.join('\n')); });
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <KeywordToolsSkeleton />;
 
