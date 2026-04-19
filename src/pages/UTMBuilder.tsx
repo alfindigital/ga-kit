@@ -466,11 +466,9 @@ export default function UTMBuilder() {
   };
 
   // Keyboard shortcuts
-  useKeyboardShortcuts([
-    { key: 'c', shift: true, action: handleCopy, description: 'Copy URL' },
-    { key: 'r', shift: true, action: handleReset, description: 'Reset form' },
-    { key: 's', shift: true, action: loadSampleData, description: 'Load sample' },
-  ]);
+  useShortcutAction('page.copy', handleCopy);
+  useShortcutAction('page.reset', handleReset);
+  useShortcutAction('page.sample', loadSampleData);
 
   if (isLoading) return <UTMBuilderSkeleton />;
 
