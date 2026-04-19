@@ -28,6 +28,19 @@ export function Layout({ children }: LayoutProps) {
   // Track recently visited pages
   useRecentPages();
 
+  // Global "?" shortcut to toggle keyboard shortcuts dialog
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== '?') return;
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      e.preventDefault();
+      setShortcutsOpen((o) => !o);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
   const handleRefresh = useCallback(async () => {
     // Simulate refresh delay
     await new Promise(resolve => setTimeout(resolve, 800));
