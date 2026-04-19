@@ -2297,6 +2297,12 @@ const id: Record<string, string> = {
   'kbd.generateHashes': 'Buat hash (URL Validator)',
   'kbd.fetchData': 'Ambil data (YT Finder)',
   'kbd.cancelRequest': 'Batalkan permintaan (YT Finder)',
+  'kbd.editShortcut': 'Edit pintasan',
+  'kbd.pressKeys': 'Tekan tombol…',
+  'kbd.conflict': 'Sudah dipakai oleh "{{action}}"',
+  'kbd.updated': 'Pintasan diperbarui',
+  'kbd.resetAll': 'Reset semua',
+  'kbd.resetAllDone': 'Semua pintasan direset ke default',
 
   // ── Pengaturan ──
   'settings.title': 'Pengaturan',
