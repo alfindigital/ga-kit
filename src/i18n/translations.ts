@@ -1168,6 +1168,7 @@ const en = {
   'nav.home': 'Home',
   'nav.combine': 'Combine',
   'nav.headline': 'Headline',
+  'nav.more': 'More',
 
   // ── Footer ──
   'footer.tagline': 'GAtool.site – concept v1',
