@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
@@ -9,7 +9,7 @@ import { PullToRefresh } from '../PullToRefresh';
 import { KeyboardShortcutsDialog } from '../KeyboardShortcutsDialog';
 import { CommandPalette } from '../CommandPalette';
 import { OnboardingTour } from '../OnboardingTour';
-import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useRecentPages } from '@/hooks/useRecentPages';
 import { toast } from '@/hooks/use-toast';
 
@@ -21,34 +21,23 @@ export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  
-  // Enable global keyboard shortcuts
-  useGlobalShortcuts();
-  
+
   // Track recently visited pages
   useRecentPages();
 
-  // Global "?" shortcut to toggle keyboard shortcuts dialog
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      const isQuestion = e.key === '?' || (e.key === '/' && e.shiftKey);
-      if (!isQuestion) return;
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
-      e.preventDefault();
-      setShortcutsOpen((o) => !o);
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, []);
+  // Global navigation shortcuts (editable via Keyboard Shortcuts dialog)
+  useShortcutAction('nav.dashboard', () => navigate('/'));
+  useShortcutAction('nav.utmBuilder', () => navigate('/utm-builder'));
+  useShortcutAction('nav.qrGenerator', () => navigate('/qr-generator'));
+  useShortcutAction('nav.keywordCombiner', () => navigate('/keyword-combiner'));
+  useShortcutAction('nav.keywordMixer', () => navigate('/keyword-mixer'));
+  useShortcutAction('nav.keywordTools', () => navigate('/keyword-tools'));
+  useShortcutAction('nav.ytFinder', () => navigate('/yt-finder'));
+  useShortcutAction('global.showShortcuts', () => setShortcutsOpen((o) => !o));
 
   const handleRefresh = useCallback(async () => {
-    // Simulate refresh delay
     await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Re-navigate to trigger a re-render
     navigate(location.pathname, { replace: true });
-    
     toast({
       title: "Refreshed",
       description: "Page content updated",
