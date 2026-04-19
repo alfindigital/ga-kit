@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useClipboard } from '@/hooks/useClipboard';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useShortcutAction } from '@/contexts/ShortcutsContext';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useToast } from '@/hooks/use-toast';
 import { usePageLoading } from '@/hooks/usePageLoading';
