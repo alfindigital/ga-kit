@@ -122,7 +122,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
         <Card>
           <CardContent className="p-3 sm:p-4">
             <div className="flex items-center gap-2">
-              <TrendingUp className={`h-4 w-4 ${weekOverWeekChange >= 0 ? 'text-green-500' : 'text-destructive'}`} />
+              <TrendingUp className={`h-4 w-4 ${weekOverWeekChange >= 0 ? 'text-accent' : 'text-destructive'}`} />
               <div>
                 <p className="text-xl sm:text-2xl font-bold">{weekOverWeekChange >= 0 ? '+' : ''}{weekOverWeekChange}%</p>
                 <p className="text-xs text-muted-foreground">{t('analytics.vsLastWeek')}</p>

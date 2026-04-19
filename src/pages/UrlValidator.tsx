@@ -1125,20 +1125,20 @@ export default function UrlValidator() {
                 <Card className={cn(
                   "border-2",
                   singleResult.isValidFormat 
-                    ? "border-green-500/30 bg-green-500/5" 
+                    ? "border-accent/30 bg-accent/5" 
                     : "border-destructive/30 bg-destructive/5"
                 )}>
                   <CardContent className="pt-4 space-y-4">
                     {/* Status */}
                     <div className="flex items-center gap-2">
                       {singleResult.isValidFormat ? (
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                        <CheckCircle2 className="h-5 w-5 text-accent" />
                       ) : (
                         <XCircle className="h-5 w-5 text-destructive" />
                       )}
                       <span className={cn(
                         "font-medium",
-                        singleResult.isValidFormat ? "text-green-600 dark:text-green-400" : "text-destructive"
+                        singleResult.isValidFormat ? "text-accent" : "text-destructive"
                       )}>
                         {singleResult.statusMessage}
                       </span>
@@ -1283,7 +1283,7 @@ export default function UrlValidator() {
                   <div className="flex items-center gap-3">
                     <CardTitle className="text-lg">{t('urlval.results')}</CardTitle>
                     <div className="flex gap-2">
-                      <Badge variant="default" className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30">
+                      <Badge variant="default" className="bg-accent/10 text-accent border-accent/30">
                         <CheckCircle2 className="h-3 w-3 mr-1" />
                         {validCount} {t('common.valid')}
                       </Badge>
@@ -1346,7 +1346,7 @@ export default function UrlValidator() {
                             </td>
                             <td className="p-3 text-center">
                               {result.isValidFormat ? (
-                                <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                                <CheckCircle2 className="h-5 w-5 text-accent mx-auto" />
                               ) : (
                                 <XCircle className="h-5 w-5 text-destructive mx-auto" />
                               )}
@@ -1358,8 +1358,8 @@ export default function UrlValidator() {
                                   className={cn(
                                     "text-xs",
                                     result.isSecure 
-                                      ? "border-green-500/30 text-green-600 dark:text-green-400" 
-                                      : "border-yellow-500/30 text-yellow-600 dark:text-yellow-400"
+                                      ? "border-accent/30 text-accent" 
+                                      : "border-warning/30 text-warning"
                                   )}
                                 >
                                   {result.protocol.toUpperCase()}
@@ -2042,19 +2042,19 @@ export default function UrlValidator() {
                 <div className={cn(
                   "p-4 rounded-lg border-2 space-y-3",
                   checksumResult.match 
-                    ? "border-green-500/50 bg-green-500/10" 
-                    : "border-red-500/50 bg-red-500/10"
+                    ? "border-accent/50 bg-accent/10" 
+                    : "border-destructive/50 bg-destructive/10"
                 )}>
                   <div className="flex items-center gap-2">
                     {checksumResult.match ? (
                       <>
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                        <span className="font-medium text-green-600 dark:text-green-400">{t('urlval.checksumMatch')}</span>
+                        <CheckCircle2 className="h-5 w-5 text-accent" />
+                        <span className="font-medium text-accent">{t('urlval.checksumMatch')}</span>
                       </>
                     ) : (
                       <>
-                        <XCircle className="h-5 w-5 text-red-500" />
-                        <span className="font-medium text-red-600 dark:text-red-400">{t('urlval.checksumMismatch')}</span>
+                        <XCircle className="h-5 w-5 text-destructive" />
+                        <span className="font-medium text-destructive">{t('urlval.checksumMismatch')}</span>
                       </>
                     )}
                   </div>
@@ -2167,15 +2167,15 @@ export default function UrlValidator() {
                           key={idx} 
                           className={cn(
                             "flex items-center gap-2 p-2 rounded text-sm",
-                            entry.status === 'verified' && "bg-green-500/10",
-                            entry.status === 'failed' && "bg-red-500/10",
-                            entry.status === 'missing' && "bg-yellow-500/10",
+                            entry.status === 'verified' && "bg-accent/10",
+                            entry.status === 'failed' && "bg-destructive/10",
+                            entry.status === 'missing' && "bg-warning/10",
                             entry.status === 'pending' && "bg-muted/50"
                           )}
                         >
-                          {entry.status === 'verified' && <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />}
-                          {entry.status === 'failed' && <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />}
-                          {entry.status === 'missing' && <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0" />}
+                          {entry.status === 'verified' && <CheckCircle2 className="h-4 w-4 text-accent flex-shrink-0" />}
+                          {entry.status === 'failed' && <XCircle className="h-4 w-4 text-destructive flex-shrink-0" />}
+                          {entry.status === 'missing' && <AlertTriangle className="h-4 w-4 text-warning flex-shrink-0" />}
                           {entry.status === 'pending' && <FileDigit className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
                           <span className="font-mono text-xs truncate flex-1">{entry.filename}</span>
                           {entry.file && (
@@ -2264,20 +2264,20 @@ export default function UrlValidator() {
               {/* Results Summary */}
               {batchChecksumList.some(e => e.status !== 'pending') && (
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/30">
-                    <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                  <div className="p-2 rounded-lg bg-accent/10 border border-accent/30">
+                    <div className="text-lg font-bold text-accent">
                       {batchChecksumList.filter(e => e.status === 'verified').length}
                     </div>
                     <div className="text-xs text-muted-foreground">{t('urlval.verified')}</div>
                   </div>
-                  <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/30">
-                    <div className="text-lg font-bold text-red-600 dark:text-red-400">
+                  <div className="p-2 rounded-lg bg-destructive/10 border border-destructive/30">
+                    <div className="text-lg font-bold text-destructive">
                       {batchChecksumList.filter(e => e.status === 'failed').length}
                     </div>
                     <div className="text-xs text-muted-foreground">{t('urlval.failed')}</div>
                   </div>
-                  <div className="p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
-                    <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
+                  <div className="p-2 rounded-lg bg-warning/10 border border-warning/30">
+                    <div className="text-lg font-bold text-warning">
                       {batchChecksumList.filter(e => e.status === 'missing').length}
                     </div>
                     <div className="text-xs text-muted-foreground">{t('urlval.missing')}</div>
@@ -2484,7 +2484,7 @@ export default function UrlValidator() {
               
               {/* HMAC Info */}
               <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 text-sm">
-                <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="h-4 w-4 text-warning flex-shrink-0 mt-0.5" />
                 <p className="text-muted-foreground">
                   {t('urlval.hmacInfo')}
                 </p>
@@ -2513,7 +2513,7 @@ export default function UrlValidator() {
       <Card className="bg-muted/30">
         <CardContent className="pt-4">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
             <div className="space-y-1 text-sm">
               <p className="font-medium">{t('urlval.aboutUrlValidation')}</p>
               <p className="text-muted-foreground">

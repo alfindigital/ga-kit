@@ -27,7 +27,7 @@ const TOOL_ICONS: Record<ToolType, typeof Link2> = { 'utm': Link2, 'qr': QrCode,
 const TOOL_LABELS: Record<ToolType, string> = { 'utm': 'UTM Builder', 'qr': 'QR Generator', 'yt-finder': 'YT Finder' };
 const TOOL_COLORS: Record<ToolType, string> = {
   'utm': 'bg-primary/10 text-primary',
-  'qr': 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
+  'qr': 'bg-accent/10 dark:bg-accent/10 text-accent',
   'yt-finder': 'bg-destructive/10 text-destructive',
 };
 
@@ -302,7 +302,7 @@ export function UrlHistoryPanel({ onLoadUrl, toolFilter, compact = false, maxHei
                       ) : (
                         <span className="text-sm font-medium truncate cursor-pointer hover:text-primary" onClick={() => handleStartEdit(item)}>{item.name}</span>
                       )}
-                      {item.starred && <Star className="h-3 w-3 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                      {item.starred && <Star className="h-3 w-3 text-warning fill-warning flex-shrink-0" />}
                     </div>
                     <p className="text-xs text-muted-foreground truncate font-mono">{item.url.length > 60 ? item.url.slice(0, 60) + '...' : item.url}</p>
                     <div className="flex items-center gap-2 flex-wrap">
@@ -311,7 +311,7 @@ export function UrlHistoryPanel({ onLoadUrl, toolFilter, compact = false, maxHei
                     </div>
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => toggleStar(item.id)}><Star className={cn("h-3.5 w-3.5", item.starred && "text-yellow-500 fill-yellow-500")} /></Button></TooltipTrigger><TooltipContent>{item.starred ? t('histPanel.unstar') : t('histPanel.star')}</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => toggleStar(item.id)}><Star className={cn("h-3.5 w-3.5", item.starred && "text-warning fill-warning")} /></Button></TooltipTrigger><TooltipContent>{item.starred ? t('histPanel.unstar') : t('histPanel.star')}</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copy(item.url, t('histPanel.copyUrl'))}><Copy className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>{t('histPanel.copyUrl')}</TooltipContent></Tooltip>
                     {onLoadUrl && (<Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onLoadUrl(item)}><ExternalLink className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>{t('histPanel.load')}</TooltipContent></Tooltip>)}
                     <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => { removeFromHistory(item.id); toast({ title: t('histPanel.removed'), description: t('histPanel.removedDesc') }); }}><Trash2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>{t('histPanel.delete')}</TooltipContent></Tooltip>

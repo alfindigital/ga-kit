@@ -825,7 +825,7 @@ export default function AdCopyValidator() {
     // Escape CSV values
     const escapeCSV = (value: string) => {
       if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-        return `"${value.replace(/"/g, '""')}"`;
+ return `"${value.replace(/"/g, '""')}"`;
       }
       return value;
     };
@@ -1929,7 +1929,7 @@ export default function AdCopyValidator() {
                     {headlineValidation.slice(0, 5).map((h, i) => (
                       <li key={h.id} className="flex items-center gap-2">
                         {h.isValid ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-accent flex-shrink-0" />
                         ) : h.isEmpty ? (
                           <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
                         ) : (
@@ -1958,7 +1958,7 @@ export default function AdCopyValidator() {
                     {descriptionValidation.map((d, i) => (
                       <li key={d.id} className="flex items-center gap-2">
                         {d.isValid ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-accent flex-shrink-0" />
                         ) : d.isEmpty ? (
                           <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
                         ) : (
@@ -1988,7 +1988,7 @@ export default function AdCopyValidator() {
                     {sitelinkValidation.map((s, i) => (
                       <li key={s.id} className="flex items-center gap-2">
                         {s.isComplete ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-accent flex-shrink-0" />
                         ) : s.isTitleEmpty ? (
                           <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
                         ) : (
@@ -2017,7 +2017,7 @@ export default function AdCopyValidator() {
                         key={c.id}
                         className={cn(
                           "text-xs px-2 py-0.5 rounded-full",
-                          c.isValid ? "bg-green-500/10 text-green-700 dark:text-green-400" :
+                          c.isValid ? "bg-accent/10 text-accent" :
                           c.isEmpty ? "bg-muted text-muted-foreground" :
                           "bg-destructive/10 text-destructive"
                         )}
@@ -2043,7 +2043,7 @@ export default function AdCopyValidator() {
                     {snippetValidation.map((s) => (
                       <li key={s.id} className="flex items-center gap-2">
                         {s.isComplete ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-accent flex-shrink-0" />
                         ) : (
                           <AlertCircle className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
                         )}
@@ -2070,7 +2070,7 @@ export default function AdCopyValidator() {
                     {priceValidation.slice(0, 4).map((p, i) => (
                       <li key={p.id} className="flex items-center gap-2">
                         {p.isComplete ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-accent flex-shrink-0" />
                         ) : p.isHeaderEmpty ? (
                           <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
                         ) : (
