@@ -31,7 +31,8 @@ export function Layout({ children }: LayoutProps) {
   // Global "?" shortcut to toggle keyboard shortcuts dialog
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key !== '?') return;
+      const isQuestion = e.key === '?' || (e.key === '/' && e.shiftKey);
+      if (!isQuestion) return;
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
       e.preventDefault();
