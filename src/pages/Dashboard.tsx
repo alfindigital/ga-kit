@@ -33,18 +33,18 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { toast } from 'sonner';
 
 const toolColors: Record<string, { border: string; shadow: string; gradient: string; dot: string }> = {
-  'utm-builder':       { border: 'border-l-primary',       shadow: 'hover:shadow-glow-primary',      gradient: 'from-primary to-primary/70',      dot: 'bg-primary' },
-  'keyword-combiner':  { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'keyword-mixer':     { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'keyword-tools':     { border: 'border-l-warning',       shadow: '',                                gradient: 'from-warning to-warning/70',      dot: 'bg-warning' },
-  'yt-finder':         { border: 'border-l-destructive',   shadow: 'hover:shadow-glow-destructive',  gradient: 'from-destructive to-destructive/70', dot: 'bg-destructive' },
-  'qr-generator':      { border: 'border-l-tool-qr',      shadow: 'hover:shadow-glow-purple',       gradient: 'from-tool-qr to-tool-qr/70',     dot: 'bg-tool-qr' },
-  'url-validator':     { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'negative-keywords': { border: 'border-l-destructive',   shadow: 'hover:shadow-glow-destructive',  gradient: 'from-destructive to-destructive/70', dot: 'bg-destructive' },
-  'ad-copy-validator': { border: 'border-l-primary',       shadow: 'hover:shadow-glow-primary',      gradient: 'from-primary to-primary/70',      dot: 'bg-primary' },
-  'roas-calculator':   { border: 'border-l-accent',        shadow: 'hover:shadow-glow-accent',       gradient: 'from-accent to-accent/70',        dot: 'bg-accent' },
-  'headline-analyzer': { border: 'border-l-warning',       shadow: '',                                gradient: 'from-warning to-warning/70',      dot: 'bg-warning' },
-  'url-history':       { border: 'border-l-muted-foreground', shadow: '',                             gradient: 'from-muted-foreground to-muted-foreground/70', dot: 'bg-muted-foreground' },
+  'utm-builder':       { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'keyword-combiner':  { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'keyword-mixer':     { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'keyword-tools':     { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'yt-finder':         { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'qr-generator':      { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'url-validator':     { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'negative-keywords': { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'ad-copy-validator': { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'roas-calculator':   { border: 'border-l-accent',  shadow: 'hover:shadow-glow-accent',  gradient: 'from-accent to-accent/70',   dot: 'bg-accent' },
+  'headline-analyzer': { border: 'border-l-primary', shadow: 'hover:shadow-glow-primary', gradient: 'from-primary to-primary/70', dot: 'bg-primary' },
+  'url-history':       { border: 'border-l-muted-foreground', shadow: '', gradient: 'from-muted-foreground to-muted-foreground/70', dot: 'bg-muted-foreground' },
 };
 
 // Tool definitions with i18n keys
