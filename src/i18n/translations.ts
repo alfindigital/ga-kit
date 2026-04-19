@@ -1103,6 +1103,12 @@ const en = {
   'kbd.generateHashes': 'Generate hashes (URL Validator)',
   'kbd.fetchData': 'Fetch data (YT Finder)',
   'kbd.cancelRequest': 'Cancel request (YT Finder)',
+  'kbd.editShortcut': 'Edit shortcut',
+  'kbd.pressKeys': 'Press keys…',
+  'kbd.conflict': 'Already used by "{{action}}"',
+  'kbd.updated': 'Shortcut updated',
+  'kbd.resetAll': 'Reset all',
+  'kbd.resetAllDone': 'All shortcuts reset to defaults',
 
   // ── Settings ──
   'settings.title': 'Settings',
