@@ -290,7 +290,7 @@ export default function NegativeKeywords() {
       
       {/* Processing Options */}
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader>
           <CardTitle>{t('neg.processingOptions')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -346,7 +346,7 @@ export default function NegativeKeywords() {
       {/* Input Areas */}
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Ban className="h-4 w-4 text-destructive" />
               {t('neg.negativeKeywords')}
@@ -367,7 +367,7 @@ export default function NegativeKeywords() {
         </Card>
         
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
               {t('neg.positiveKeywords')}
@@ -391,7 +391,7 @@ export default function NegativeKeywords() {
       
       {/* Results */}
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <CardTitle>{t('common.results')}</CardTitle>

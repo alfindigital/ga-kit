@@ -479,7 +479,7 @@ export default function YTFinder() {
       {/* Channel Analytics Summary */}
       {successResults.length > 0 && (
         <Card className="bg-muted/30">
-          <CardContent className="p-4">
+          <CardContent>
             <div className="flex items-center justify-center gap-2 mb-3">
               <BarChart3 className="h-4 w-4 text-primary" />
               <h3 className="text-sm font-medium">{t('yt.channelAnalytics')}</h3>
@@ -582,7 +582,7 @@ export default function YTFinder() {
 
       <div className="grid gap-4">
         <Card>
-          <CardHeader className="p-3">
+          <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>
                 {t('yt.youtubeUrls')}
@@ -600,7 +600,7 @@ export default function YTFinder() {
               )}
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-3 pt-0 space-y-3">
+          <CardContent className="space-y-3">
             {/* Bulk Import Option */}
             <div className="flex items-center gap-2 pb-2 border-b">
               <BulkUrlImport 
@@ -691,7 +691,7 @@ export default function YTFinder() {
         </Card>
 
         <Card className="border-2 border-primary/20">
-          <CardHeader className="p-3 flex-row items-center justify-between gap-2">
+          <CardHeader className="flex-row items-center justify-between gap-2">
             <CardTitle>
               {t('yt.results')} ({showUniqueOnly ? displayResults.length : successResults.length})
               {showUniqueOnly && successResults.length !== displayResults.length && (
@@ -762,7 +762,7 @@ export default function YTFinder() {
               </DropdownMenu>
             </div>
           </CardHeader>
-          <CardContent className="p-3 pt-0">
+          <CardContent>
             {displayResults.length === 0 && results.filter(r => r.status === 'error').length === 0 ? (
               <EmptyState
                 icon={Search}
