@@ -101,7 +101,7 @@ export default function KeywordTools() {
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader className="p-3">
-                <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
+                <CardTitle className="flex items-center justify-between">
                   {t('common.input')}
                   {dupeInputCount > 0 && (
                     <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
@@ -116,7 +116,7 @@ export default function KeywordTools() {
             </Card>
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   {t('common.result')}
                   {dupeResult.length > 0 && (
                     <>
@@ -169,7 +169,7 @@ export default function KeywordTools() {
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader className="p-3">
-                <CardTitle className="text-xs sm:text-sm">{t('common.input')}</CardTitle>
+                <CardTitle>{t('common.input')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0">
                 <Textarea placeholder={t('ktools.enterTextToConvert')} value={caseInput} onChange={(e) => setCaseInput(e.target.value)} rows={8} className="text-sm" />
@@ -177,7 +177,7 @@ export default function KeywordTools() {
             </Card>
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm">{t('common.result')}</CardTitle>
+                <CardTitle>{t('common.result')}</CardTitle>
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -236,7 +236,7 @@ export default function KeywordTools() {
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader className="p-3">
-                <CardTitle className="text-xs sm:text-sm">{t('common.input')}</CardTitle>
+                <CardTitle>{t('common.input')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0">
                 <Textarea placeholder={t('ktools.enterText')} value={replaceInput} onChange={(e) => setReplaceInput(e.target.value)} rows={8} className="text-sm" />
@@ -244,7 +244,7 @@ export default function KeywordTools() {
             </Card>
             <Card className="border-2 border-primary/20">
               <CardHeader className="p-3 flex-row items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm">{t('common.result')}</CardTitle>
+                <CardTitle>{t('common.result')}</CardTitle>
                 <Button 
                   variant="outline" 
                   size="sm" 

@@ -120,7 +120,7 @@ export default function KeywordMixer() {
             !prefixCount && (hasBaseKeywords || suffixCount > 0) && "border-dashed border-muted-foreground/30"
           )}>
             <CardHeader className="p-3">
-              <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
+              <CardTitle className="flex items-center justify-between">
                 {t('mixer.prefixes')}
                 {prefixCount > 0 && (
                   <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
@@ -149,7 +149,7 @@ export default function KeywordMixer() {
             !hasBaseKeywords && (prefixCount > 0 || suffixCount > 0) && "border-destructive/50"
           )}>
             <CardHeader className="p-3">
-              <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
+              <CardTitle className="flex items-center justify-between">
                 <span>
                   {t('mixer.baseKeywords')}
                   <span className="text-destructive ml-1">*</span>
@@ -187,7 +187,7 @@ export default function KeywordMixer() {
             !suffixCount && (hasBaseKeywords || prefixCount > 0) && "border-dashed border-muted-foreground/30"
           )}>
             <CardHeader className="p-3">
-              <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
+              <CardTitle className="flex items-center justify-between">
                 {t('mixer.suffixes')}
                 {suffixCount > 0 && (
                   <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
@@ -214,7 +214,7 @@ export default function KeywordMixer() {
         {/* Results */}
         <Card className="border-2 border-primary/20">
           <CardHeader className="p-3 flex-row items-center justify-between gap-2">
-            <CardTitle className="text-xs sm:text-sm">{t('common.results')} ({results.length})</CardTitle>
+            <CardTitle>{t('common.results')} ({results.length})</CardTitle>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 

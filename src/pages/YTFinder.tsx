@@ -583,7 +583,7 @@ export default function YTFinder() {
       <div className="grid gap-4">
         <Card>
           <CardHeader className="p-3">
-            <CardTitle className="text-xs sm:text-sm flex items-center justify-between">
+            <CardTitle className="flex items-center justify-between">
               <span>
                 {t('yt.youtubeUrls')}
                 <span className="text-destructive ml-1">*</span>
@@ -692,7 +692,7 @@ export default function YTFinder() {
 
         <Card className="border-2 border-primary/20">
           <CardHeader className="p-3 flex-row items-center justify-between gap-2">
-            <CardTitle className="text-xs sm:text-sm">
+            <CardTitle>
               {t('yt.results')} ({showUniqueOnly ? displayResults.length : successResults.length})
               {showUniqueOnly && successResults.length !== displayResults.length && (
                 <span className="ml-2 text-muted-foreground text-xs font-normal">

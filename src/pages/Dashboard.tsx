@@ -220,7 +220,7 @@ export default function Dashboard() {
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <CardTitle className="text-sm sm:text-base lg:text-lg">{t(tool.titleKey)}</CardTitle>
+                <CardTitle>{t(tool.titleKey)}</CardTitle>
                 <CardDescription className="text-xs sm:text-sm line-clamp-2">
                   {t(tool.descKey)}
                 </CardDescription>

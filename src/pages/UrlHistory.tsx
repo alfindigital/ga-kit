@@ -149,7 +149,7 @@ export default function UrlHistory() {
         <TabsContent value="history" className="mt-4">
           <Card className="overflow-hidden">
             <CardHeader className="p-3 sm:p-4 border-b">
-              <CardTitle className="text-sm sm:text-base">{t('urlHistory.allHistory')}</CardTitle>
+              <CardTitle>{t('urlHistory.allHistory')}</CardTitle>
             </CardHeader>
             <UrlHistoryPanel 
               onLoadUrl={handleLoadUrl}

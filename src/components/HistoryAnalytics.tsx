@@ -167,7 +167,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
 
       <Card>
         <CardHeader className="p-3 sm:p-4 pb-2">
-          <CardTitle className="text-sm sm:text-base">{t('analytics.urlsGenerated')}</CardTitle>
+          <CardTitle>{t('analytics.urlsGenerated')}</CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-4 pt-0">
           <div className="h-[200px] sm:h-[250px]">
@@ -192,7 +192,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
           {topSources.length > 0 && (
             <Card>
               <CardHeader className="p-3 sm:p-4 pb-2">
-                <CardTitle className="text-sm sm:text-base">{t('analytics.topSources')}</CardTitle>
+                <CardTitle>{t('analytics.topSources')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 sm:p-4 pt-0">
                 <div className="h-[200px]">
@@ -211,7 +211,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
           {topMediums.length > 0 && (
             <Card>
               <CardHeader className="p-3 sm:p-4 pb-2">
-                <CardTitle className="text-sm sm:text-base">{t('analytics.topMediums')}</CardTitle>
+                <CardTitle>{t('analytics.topMediums')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 sm:p-4 pt-0">
                 <div className="h-[200px]">
@@ -232,7 +232,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
 
       <Card>
         <CardHeader className="p-3 sm:p-4 pb-2">
-          <CardTitle className="text-sm sm:text-base">{t('analytics.peakHours')}</CardTitle>
+          <CardTitle>{t('analytics.peakHours')}</CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-4 pt-0">
           <div className="h-[150px] sm:h-[180px]">
@@ -252,7 +252,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
       {topCampaigns.length > 0 && (
         <Card>
           <CardHeader className="p-3 sm:p-4 pb-2">
-            <CardTitle className="text-sm sm:text-base">{t('analytics.topCampaigns')}</CardTitle>
+            <CardTitle>{t('analytics.topCampaigns')}</CardTitle>
           </CardHeader>
           <CardContent className="p-3 sm:p-4 pt-0">
             <div className="space-y-2">

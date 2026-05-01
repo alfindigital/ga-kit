@@ -46,7 +46,7 @@ export default function Install() {
       {!isInstalled && (
         <Card>
           <CardHeader className="text-center pb-3">
-            <CardTitle className="text-lg">{t('install.ctaTitle')}</CardTitle>
+            <CardTitle>{t('install.ctaTitle')}</CardTitle>
             <CardDescription>{t('install.ctaDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

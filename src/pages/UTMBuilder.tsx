@@ -576,7 +576,7 @@ export default function UTMBuilder() {
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   {t('utm.targetUrl')}{!bulkMode && <span className="text-destructive">*</span>}
                 </CardTitle>
                 <Tabs value={bulkMode ? 'bulk' : 'single'} onValueChange={(v) => setBulkMode(v === 'bulk')}>
@@ -659,7 +659,7 @@ export default function UTMBuilder() {
           {/* UTM Parameters */}
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <CardTitle className="text-sm">{t('utm.utmParams')}</CardTitle>
+              <CardTitle>{t('utm.utmParams')}</CardTitle>
               <CardDescription className="text-xs">{t('utm.autoFormat')}</CardDescription>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
@@ -729,7 +729,7 @@ export default function UTMBuilder() {
           {/* ValueTrack Macros */}
           <Card>
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <CardTitle className="text-sm">{t('utm.valueTrack')}</CardTitle>
+              <CardTitle>{t('utm.valueTrack')}</CardTitle>
               <CardDescription className="text-xs">{t('utm.selectMacros')}</CardDescription>
             </CardHeader>
             <CardContent className="p-3 sm:p-4 pt-0">
@@ -755,7 +755,7 @@ export default function UTMBuilder() {
         <div className="lg:col-span-2">
           <Card className="lg:sticky lg:top-20 border-2 border-primary/20">
             <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 {bulkMode ? t('utm.generatedUrls') : t('utm.livePreview')}
                 {bulkMode && bulkGeneratedUrls.length > 0 && (
                   <span className="text-xs font-normal text-muted-foreground">({bulkGeneratedUrls.length})</span>

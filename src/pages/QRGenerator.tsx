@@ -229,7 +229,7 @@ export default function QRGenerator() {
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4">
           <Card>
-            <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">{t('qr.content')}</CardTitle></CardHeader>
+            <CardHeader className="p-3"><CardTitle>{t('qr.content')}</CardTitle></CardHeader>
             <CardContent className="p-3 pt-0 space-y-4">
               <div>
                 <Label className="text-xs sm:text-sm">
@@ -344,7 +344,7 @@ export default function QRGenerator() {
         </div>
 
         <Card className="border-2 border-primary/20">
-          <CardHeader className="p-3"><CardTitle className="text-xs sm:text-sm">{t('common.preview')}</CardTitle></CardHeader>
+          <CardHeader className="p-3"><CardTitle>{t('common.preview')}</CardTitle></CardHeader>
           <CardContent className="p-3 pt-0 flex flex-col items-center gap-4">
             <canvas ref={canvasRef} className="hidden" />
             
