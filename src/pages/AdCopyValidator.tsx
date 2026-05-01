@@ -1020,7 +1020,7 @@ export default function AdCopyValidator() {
 
       {/* Stats Bar */}
       <Card className="bg-muted/30">
-        <CardContent className="p-4">
+        <CardContent>
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2">
               <Badge variant={stats.isRSAReady ? 'default' : 'secondary'} className="text-xs">
@@ -1133,7 +1133,7 @@ export default function AdCopyValidator() {
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Headlines */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>{t('adcopy.headlines')}</CardTitle>
@@ -1191,7 +1191,7 @@ export default function AdCopyValidator() {
 
             {/* Descriptions */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>{t('adcopy.descriptions')}</CardTitle>
@@ -1250,7 +1250,7 @@ export default function AdCopyValidator() {
 
           {/* Sitelink Extensions */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
@@ -1374,7 +1374,7 @@ export default function AdCopyValidator() {
 
           {/* Callout Extensions */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
@@ -1437,7 +1437,7 @@ export default function AdCopyValidator() {
 
           {/* Structured Snippet Extensions */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
@@ -1548,7 +1548,7 @@ export default function AdCopyValidator() {
 
           {/* Price Extensions */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
@@ -1878,7 +1878,7 @@ export default function AdCopyValidator() {
           {/* Price Extensions Preview */}
           {priceValidation.filter(p => p.isComplete).length >= 3 && (
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <DollarSign className="h-5 w-5" />
                   {t('adcopy.priceExtensionsPreview')}
@@ -1911,7 +1911,7 @@ export default function AdCopyValidator() {
 
           {/* All Extensions Summary */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle>{t('adcopy.extensionsSummary')}</CardTitle>
               <CardDescription>{t('adcopy.extensionsSummaryDesc')}</CardDescription>
             </CardHeader>

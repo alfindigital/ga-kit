@@ -100,7 +100,7 @@ export default function KeywordTools() {
         <TabsContent value="duplicates" className="mt-4">
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader className="p-3">
+              <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   {t('common.input')}
                   {dupeInputCount > 0 && (
@@ -110,12 +110,12 @@ export default function KeywordTools() {
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
+              <CardContent>
                 <Textarea placeholder={t('ktools.pasteKeywords')} value={dupeInput} onChange={(e) => setDupeInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
             </Card>
             <Card className="border-2 border-primary/20">
-              <CardHeader className="p-3 flex-row items-center justify-between">
+              <CardHeader className="flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   {t('common.result')}
                   {dupeResult.length > 0 && (
@@ -141,7 +141,7 @@ export default function KeywordTools() {
                   <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
                 </Button>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
+              <CardContent>
                 {dupeResult.length === 0 ? (
                   <EmptyState
                     icon={FileText}
@@ -168,15 +168,15 @@ export default function KeywordTools() {
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader className="p-3">
+              <CardHeader>
                 <CardTitle>{t('common.input')}</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
+              <CardContent>
                 <Textarea placeholder={t('ktools.enterTextToConvert')} value={caseInput} onChange={(e) => setCaseInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
             </Card>
             <Card className="border-2 border-primary/20">
-              <CardHeader className="p-3 flex-row items-center justify-between">
+              <CardHeader className="flex-row items-center justify-between">
                 <CardTitle>{t('common.result')}</CardTitle>
                 <Button 
                   variant="outline" 
@@ -188,7 +188,7 @@ export default function KeywordTools() {
                   <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
                 </Button>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
+              <CardContent>
                 {!caseInput.trim() ? (
                   <EmptyState
                     icon={CaseSensitive}
@@ -235,15 +235,15 @@ export default function KeywordTools() {
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader className="p-3">
+              <CardHeader>
                 <CardTitle>{t('common.input')}</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
+              <CardContent>
                 <Textarea placeholder={t('ktools.enterText')} value={replaceInput} onChange={(e) => setReplaceInput(e.target.value)} rows={8} className="text-sm" />
               </CardContent>
             </Card>
             <Card className="border-2 border-primary/20">
-              <CardHeader className="p-3 flex-row items-center justify-between">
+              <CardHeader className="flex-row items-center justify-between">
                 <CardTitle>{t('common.result')}</CardTitle>
                 <Button 
                   variant="outline" 
@@ -255,7 +255,7 @@ export default function KeywordTools() {
                   <Copy className="h-3 w-3 mr-1" /> {t('common.copy')}
                 </Button>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
+              <CardContent>
                 {!replaceInput.trim() ? (
                   <EmptyState
                     icon={ArrowRightLeft}

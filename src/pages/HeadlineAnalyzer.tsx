@@ -284,7 +284,7 @@ export default function HeadlineAnalyzer() {
 
     return (
       <Card className={cn('border-l-4', colorClass)}>
-        <CardHeader className="pb-3">
+        <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>{label}</CardTitle>
             {!isEmpty && (
@@ -357,7 +357,7 @@ export default function HeadlineAnalyzer() {
         <TabsContent value="ab" className="space-y-4">
           {/* Input area */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle>{t('headline.inputTitle')}</CardTitle>
               <CardDescription>{t('headline.inputDesc')}</CardDescription>
             </CardHeader>
@@ -421,7 +421,7 @@ export default function HeadlineAnalyzer() {
           {/* Winner banner */}
           {winner && winner !== 'tie' && (
             <Card className="border-primary/30 bg-primary/5">
-              <CardContent className="flex items-center gap-3 pt-6">
+              <CardContent className="flex items-center gap-3">
                 <Trophy className="h-6 w-6 text-primary shrink-0" />
                 <div>
                   <p className="font-medium">
@@ -441,7 +441,7 @@ export default function HeadlineAnalyzer() {
 
           {winner === 'tie' && (
             <Card className="border-warning/30 bg-warning/5">
-              <CardContent className="flex items-center gap-3 pt-6">
+              <CardContent className="flex items-center gap-3">
                 <ArrowRightLeft className="h-6 w-6 text-warning shrink-0" />
                 <div>
                   <p className="font-medium">{t('headline.tie')}</p>

@@ -574,7 +574,7 @@ export default function UTMBuilder() {
         <div className="lg:col-span-3 space-y-4">
           {/* Mode Toggle and Target URL */}
           <Card>
-            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+            <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   {t('utm.targetUrl')}{!bulkMode && <span className="text-destructive">*</span>}
@@ -587,7 +587,7 @@ export default function UTMBuilder() {
                 </Tabs>
               </div>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4 pt-0">
+            <CardContent>
               {bulkMode ? (
                 <div className="space-y-3">
                   <BulkUrlImport onImport={handleBulkImport} />
@@ -658,11 +658,11 @@ export default function UTMBuilder() {
 
           {/* UTM Parameters */}
           <Card>
-            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+            <CardHeader>
               <CardTitle>{t('utm.utmParams')}</CardTitle>
               <CardDescription className="text-xs">{t('utm.autoFormat')}</CardDescription>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
+            <CardContent className="space-y-3">
               {[
                 { key: 'source', label: 'Source', placeholder: 'google, facebook' },
                 { key: 'medium', label: 'Medium', placeholder: 'cpc, email' },
@@ -728,11 +728,11 @@ export default function UTMBuilder() {
 
           {/* ValueTrack Macros */}
           <Card>
-            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+            <CardHeader>
               <CardTitle>{t('utm.valueTrack')}</CardTitle>
               <CardDescription className="text-xs">{t('utm.selectMacros')}</CardDescription>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4 pt-0">
+            <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                 {VALUE_TRACK_MACROS.map((macro) => (
                   <label
@@ -754,7 +754,7 @@ export default function UTMBuilder() {
         {/* Preview Section - 40% */}
         <div className="lg:col-span-2">
           <Card className="lg:sticky lg:top-20 border-2 border-primary/20">
-            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 {bulkMode ? t('utm.generatedUrls') : t('utm.livePreview')}
                 {bulkMode && bulkGeneratedUrls.length > 0 && (
@@ -763,7 +763,7 @@ export default function UTMBuilder() {
                 {!bulkMode && generatedUrl && <Check className="h-4 w-4 text-accent" />}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
+            <CardContent className="space-y-3">
               {bulkMode ? (
                 bulkGeneratedUrls.length === 0 ? (
                   <EmptyState

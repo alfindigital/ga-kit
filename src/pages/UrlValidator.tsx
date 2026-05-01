@@ -1086,7 +1086,7 @@ export default function UrlValidator() {
         {/* Single URL Mode */}
         <TabsContent value="single" className="space-y-4">
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle>{t('urlval.validateUrl')}</CardTitle>
               <CardDescription>{t('urlval.validateUrlDesc')}</CardDescription>
             </CardHeader>
@@ -1128,7 +1128,7 @@ export default function UrlValidator() {
                     ? "border-accent/30 bg-accent/5" 
                     : "border-destructive/30 bg-destructive/5"
                 )}>
-                  <CardContent className="pt-4 space-y-4">
+                  <CardContent className="space-y-4">
                     {/* Status */}
                     <div className="flex items-center gap-2">
                       {singleResult.isValidFormat ? (
@@ -1223,7 +1223,7 @@ export default function UrlValidator() {
         {/* Bulk Mode */}
         <TabsContent value="bulk" className="space-y-4">
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle>{t('urlval.bulkUrlValidation')}</CardTitle>
               <CardDescription>{t('urlval.bulkUrlValidationDesc')}</CardDescription>
             </CardHeader>
@@ -1278,7 +1278,7 @@ export default function UrlValidator() {
           {/* Bulk Results */}
           {bulkResults.length > 0 && (
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <CardTitle>{t('urlval.results')}</CardTitle>
@@ -1391,7 +1391,7 @@ export default function UrlValidator() {
           <div className="grid gap-4 md:grid-cols-2">
             {/* Encode Card */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.urlEncode')}
@@ -1450,7 +1450,7 @@ export default function UrlValidator() {
             
             {/* Decode Card */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.urlDecode')}
@@ -1510,7 +1510,7 @@ export default function UrlValidator() {
           
           {/* Encoding Info */}
           <Card className="bg-muted/30">
-            <CardContent className="pt-4">
+            <CardContent>
               <div className="flex items-start gap-3">
                 <Code className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div className="space-y-1 text-sm">
@@ -1527,7 +1527,7 @@ export default function UrlValidator() {
           <div className="grid gap-4 md:grid-cols-2">
             {/* Base64 Encode Card */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.base64Encode')}
@@ -1586,7 +1586,7 @@ export default function UrlValidator() {
             
             {/* Base64 Decode Card */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.base64Decode')}
@@ -1646,7 +1646,7 @@ export default function UrlValidator() {
           
           {/* Base64 Info */}
           <Card className="bg-muted/30">
-            <CardContent className="pt-4">
+            <CardContent>
               <div className="flex items-start gap-3">
                 <Code className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div className="space-y-1 text-sm">
@@ -1661,7 +1661,7 @@ export default function UrlValidator() {
           
           {/* Hash Generator Section */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Hash className="h-4 w-4" />
                 {t('urlval.hashGenerator')}
@@ -1773,7 +1773,7 @@ export default function UrlValidator() {
           
           {/* File Hash Generator Section */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Upload className="h-4 w-4" />
                 {t('urlval.fileHashGenerator')}
@@ -1932,7 +1932,7 @@ export default function UrlValidator() {
           
           {/* Checksum Comparison Section */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4" />
                 {t('urlval.checksumVerification')}
@@ -2084,7 +2084,7 @@ export default function UrlValidator() {
           
           {/* Batch Checksum Verification Section */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Files className="h-4 w-4" />
                 {t('urlval.batchChecksumVerification')}
@@ -2289,7 +2289,7 @@ export default function UrlValidator() {
           
           {/* HMAC Generator Section */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Key className="h-4 w-4" />
                 {t('urlval.hmacGenerator')}
@@ -2494,7 +2494,7 @@ export default function UrlValidator() {
           
           {/* Hash Info */}
           <Card className="bg-muted/30">
-            <CardContent className="pt-4">
+            <CardContent>
               <div className="flex items-start gap-3">
                 <Hash className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <div className="space-y-1 text-sm">
@@ -2511,7 +2511,7 @@ export default function UrlValidator() {
       
       {/* Info Card */}
       <Card className="bg-muted/30">
-        <CardContent className="pt-4">
+        <CardContent>
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
             <div className="space-y-1 text-sm">

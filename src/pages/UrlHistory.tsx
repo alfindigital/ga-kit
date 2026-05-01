@@ -69,7 +69,7 @@ export default function UrlHistory() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <Card className="border-primary/20">
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-primary" />
               <div>
@@ -81,7 +81,7 @@ export default function UrlHistory() {
         </Card>
 
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <Link2 className="h-4 w-4 text-primary" />
               <div>
@@ -93,7 +93,7 @@ export default function UrlHistory() {
         </Card>
 
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <QrCode className="h-4 w-4 text-accent" />
               <div>
@@ -105,7 +105,7 @@ export default function UrlHistory() {
         </Card>
 
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <Youtube className="h-4 w-4 text-destructive" />
               <div>
@@ -117,7 +117,7 @@ export default function UrlHistory() {
         </Card>
 
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4 text-warning" />
               <div>
@@ -148,7 +148,7 @@ export default function UrlHistory() {
 
         <TabsContent value="history" className="mt-4">
           <Card className="overflow-hidden">
-            <CardHeader className="p-3 sm:p-4 border-b">
+            <CardHeader className="border-b">
               <CardTitle>{t('urlHistory.allHistory')}</CardTitle>
             </CardHeader>
             <UrlHistoryPanel 

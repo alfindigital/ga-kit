@@ -119,7 +119,7 @@ export default function KeywordMixer() {
             "transition-colors",
             !prefixCount && (hasBaseKeywords || suffixCount > 0) && "border-dashed border-muted-foreground/30"
           )}>
-            <CardHeader className="p-3">
+            <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 {t('mixer.prefixes')}
                 {prefixCount > 0 && (
@@ -129,7 +129,7 @@ export default function KeywordMixer() {
                 )}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 pt-0">
+            <CardContent>
               <Textarea 
                 placeholder="best&#10;cheap&#10;top" 
                 value={prefixes} 
@@ -148,7 +148,7 @@ export default function KeywordMixer() {
             "transition-colors",
             !hasBaseKeywords && (prefixCount > 0 || suffixCount > 0) && "border-destructive/50"
           )}>
-            <CardHeader className="p-3">
+            <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>
                   {t('mixer.baseKeywords')}
@@ -161,7 +161,7 @@ export default function KeywordMixer() {
                 )}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 pt-0">
+            <CardContent>
               <Textarea 
                 placeholder="shoes&#10;bags&#10;watches" 
                 value={base} 
@@ -186,7 +186,7 @@ export default function KeywordMixer() {
             "transition-colors",
             !suffixCount && (hasBaseKeywords || prefixCount > 0) && "border-dashed border-muted-foreground/30"
           )}>
-            <CardHeader className="p-3">
+            <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 {t('mixer.suffixes')}
                 {suffixCount > 0 && (
@@ -196,7 +196,7 @@ export default function KeywordMixer() {
                 )}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 pt-0">
+            <CardContent>
               <Textarea 
                 placeholder="online&#10;near me&#10;2024" 
                 value={suffixes} 
@@ -213,7 +213,7 @@ export default function KeywordMixer() {
 
         {/* Results */}
         <Card className="border-2 border-primary/20">
-          <CardHeader className="p-3 flex-row items-center justify-between gap-2">
+          <CardHeader className="flex-row items-center justify-between gap-2">
             <CardTitle>{t('common.results')} ({results.length})</CardTitle>
             <div className="flex gap-2">
               <Button 
@@ -238,7 +238,7 @@ export default function KeywordMixer() {
               </DropdownMenu>
             </div>
           </CardHeader>
-          <CardContent className="p-3 pt-0">
+          <CardContent>
             {results.length === 0 ? (
               <EmptyState
                 icon={Sparkles}

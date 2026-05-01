@@ -193,7 +193,7 @@ export default function Dashboard() {
               )}
               style={{ animationDelay: `${index * 70}ms` }}
             >
-              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className={cn("tool-icon p-1.5 sm:p-2 rounded-xl w-fit", tool.color)}>
                     <tool.icon className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -225,7 +225,7 @@ export default function Dashboard() {
                   {t(tool.descKey)}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
+              <CardContent>
                 <ul className="hidden sm:block text-xs text-muted-foreground space-y-1 mb-3 sm:mb-4">
                   {tool.features.map((feature) => (
                     <li key={feature} className="flex items-center gap-1.5">

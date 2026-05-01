@@ -100,7 +100,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
   if (!hasData) {
     return (
       <Card>
-        <CardContent className="p-6 text-center text-muted-foreground">
+        <CardContent className="text-center text-muted-foreground">
           <TrendingUp className="h-10 w-10 mx-auto mb-3 opacity-50" />
           <p>{t('analytics.noData')}</p>
           <p className="text-sm mt-1">{t('analytics.noDataDesc')}</p>
@@ -120,7 +120,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <TrendingUp className={`h-4 w-4 ${weekOverWeekChange >= 0 ? 'text-accent' : 'text-destructive'}`} />
               <div>
@@ -131,7 +131,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-primary" />
               <div>
@@ -142,7 +142,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-chart-2" />
               <div>
@@ -153,7 +153,7 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-3 sm:p-4">
+          <CardContent>
             <div className="flex items-center gap-2">
               <Megaphone className="h-4 w-4 text-chart-3" />
               <div>
@@ -166,10 +166,10 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
       </div>
 
       <Card>
-        <CardHeader className="p-3 sm:p-4 pb-2">
+        <CardHeader>
           <CardTitle>{t('analytics.urlsGenerated')}</CardTitle>
         </CardHeader>
-        <CardContent className="p-3 sm:p-4 pt-0">
+        <CardContent>
           <div className="h-[200px] sm:h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={urlsPerDay} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -191,10 +191,10 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
         <div className="grid gap-4 md:grid-cols-2">
           {topSources.length > 0 && (
             <Card>
-              <CardHeader className="p-3 sm:p-4 pb-2">
+              <CardHeader>
                 <CardTitle>{t('analytics.topSources')}</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
+              <CardContent>
                 <div className="h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -210,10 +210,10 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
           )}
           {topMediums.length > 0 && (
             <Card>
-              <CardHeader className="p-3 sm:p-4 pb-2">
+              <CardHeader>
                 <CardTitle>{t('analytics.topMediums')}</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
+              <CardContent>
                 <div className="h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={topMediums} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
@@ -231,10 +231,10 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
       )}
 
       <Card>
-        <CardHeader className="p-3 sm:p-4 pb-2">
+        <CardHeader>
           <CardTitle>{t('analytics.peakHours')}</CardTitle>
         </CardHeader>
-        <CardContent className="p-3 sm:p-4 pt-0">
+        <CardContent>
           <div className="h-[150px] sm:h-[180px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={hourlyUsage} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -251,10 +251,10 @@ export function HistoryAnalytics({ history }: HistoryAnalyticsProps) {
 
       {topCampaigns.length > 0 && (
         <Card>
-          <CardHeader className="p-3 sm:p-4 pb-2">
+          <CardHeader>
             <CardTitle>{t('analytics.topCampaigns')}</CardTitle>
           </CardHeader>
-          <CardContent className="p-3 sm:p-4 pt-0">
+          <CardContent>
             <div className="space-y-2">
               {topCampaigns.map((campaign, index) => (
                 <div key={campaign.name} className="flex items-center gap-3">

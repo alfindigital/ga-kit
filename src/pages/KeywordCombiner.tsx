@@ -145,7 +145,7 @@ export default function KeywordCombiner() {
                 "transition-colors",
                 isEmpty && hasAnyContent && "border-dashed border-muted-foreground/30"
               )}>
-                <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between">
+                <CardHeader className="flex-row items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     {t('combiner.list')} {i + 1}
                     {lineCount > 0 && (
@@ -160,7 +160,7 @@ export default function KeywordCombiner() {
                     </Button>
                   )}
                 </CardHeader>
-                <CardContent className="p-3 sm:p-4 pt-0">
+                <CardContent>
                   <Textarea
                     placeholder={t('combiner.enterKeywords')}
                     value={list}
@@ -182,7 +182,7 @@ export default function KeywordCombiner() {
 
         {/* Results */}
         <Card className="border-2 border-primary/20">
-          <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between gap-2">
+          <CardHeader className="flex-row items-center justify-between gap-2">
             <CardTitle>{t('common.results')} ({combinations.length})</CardTitle>
             <div className="flex gap-2">
               <Button 
@@ -207,7 +207,7 @@ export default function KeywordCombiner() {
               </DropdownMenu>
             </div>
           </CardHeader>
-          <CardContent className="p-3 sm:p-4 pt-0">
+          <CardContent>
             {combinations.length === 0 ? (
               <EmptyState
                 icon={Sparkles}
