@@ -1087,7 +1087,7 @@ export default function UrlValidator() {
         <TabsContent value="single" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{t('urlval.validateUrl')}</CardTitle>
+              <CardTitle>{t('urlval.validateUrl')}</CardTitle>
               <CardDescription>{t('urlval.validateUrlDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1224,7 +1224,7 @@ export default function UrlValidator() {
         <TabsContent value="bulk" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{t('urlval.bulkUrlValidation')}</CardTitle>
+              <CardTitle>{t('urlval.bulkUrlValidation')}</CardTitle>
               <CardDescription>{t('urlval.bulkUrlValidationDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1281,7 +1281,7 @@ export default function UrlValidator() {
               <CardHeader className="pb-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <CardTitle className="text-lg">{t('urlval.results')}</CardTitle>
+                    <CardTitle>{t('urlval.results')}</CardTitle>
                     <div className="flex gap-2">
                       <Badge variant="default" className="bg-accent/10 text-accent border-accent/30">
                         <CheckCircle2 className="h-3 w-3 mr-1" />
@@ -1392,7 +1392,7 @@ export default function UrlValidator() {
             {/* Encode Card */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.urlEncode')}
                 </CardTitle>
@@ -1451,7 +1451,7 @@ export default function UrlValidator() {
             {/* Decode Card */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.urlDecode')}
                 </CardTitle>
@@ -1528,7 +1528,7 @@ export default function UrlValidator() {
             {/* Base64 Encode Card */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.base64Encode')}
                 </CardTitle>
@@ -1587,7 +1587,7 @@ export default function UrlValidator() {
             {/* Base64 Decode Card */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <Code className="h-4 w-4" />
                   {t('urlval.base64Decode')}
                 </CardTitle>
@@ -1662,7 +1662,7 @@ export default function UrlValidator() {
           {/* Hash Generator Section */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 <Hash className="h-4 w-4" />
                 {t('urlval.hashGenerator')}
               </CardTitle>
@@ -1774,7 +1774,7 @@ export default function UrlValidator() {
           {/* File Hash Generator Section */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 <Upload className="h-4 w-4" />
                 {t('urlval.fileHashGenerator')}
               </CardTitle>
@@ -1933,7 +1933,7 @@ export default function UrlValidator() {
           {/* Checksum Comparison Section */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4" />
                 {t('urlval.checksumVerification')}
               </CardTitle>
@@ -2085,7 +2085,7 @@ export default function UrlValidator() {
           {/* Batch Checksum Verification Section */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 <Files className="h-4 w-4" />
                 {t('urlval.batchChecksumVerification')}
               </CardTitle>
@@ -2290,7 +2290,7 @@ export default function UrlValidator() {
           {/* HMAC Generator Section */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 <Key className="h-4 w-4" />
                 {t('urlval.hmacGenerator')}
               </CardTitle>

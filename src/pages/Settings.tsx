@@ -112,7 +112,7 @@ export default function Settings() {
 
   const SectionHeader = ({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) => (
     <CardHeader className="pb-3">
-      <CardTitle className="flex items-center gap-2 text-lg"><Icon className="h-5 w-5 text-primary" />{title}</CardTitle>
+      <CardTitle className="flex items-center gap-2"><Icon className="h-5 w-5 text-primary" />{title}</CardTitle>
       <CardDescription>{description}</CardDescription>
     </CardHeader>
   );
@@ -241,7 +241,7 @@ export default function Settings() {
       {/* Danger Zone */}
       <Card className="border-destructive/30">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg text-destructive"><AlertTriangle className="h-5 w-5" />{t('settings.dangerZone')}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-destructive"><AlertTriangle className="h-5 w-5" />{t('settings.dangerZone')}</CardTitle>
           <CardDescription>{t('settings.dangerZoneDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

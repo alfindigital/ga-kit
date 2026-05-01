@@ -1136,7 +1136,7 @@ export default function AdCopyValidator() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">{t('adcopy.headlines')}</CardTitle>
+                    <CardTitle>{t('adcopy.headlines')}</CardTitle>
                     <CardDescription>{t('adcopy.headlineMaxDesc', { max: MAX_HEADLINE_LENGTH, maxItems: MAX_HEADLINES })}</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" onClick={addHeadline} disabled={headlines.length >= MAX_HEADLINES}>
@@ -1194,7 +1194,7 @@ export default function AdCopyValidator() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">{t('adcopy.descriptions')}</CardTitle>
+                    <CardTitle>{t('adcopy.descriptions')}</CardTitle>
                     <CardDescription>{t('adcopy.descMaxDesc', { max: MAX_DESCRIPTION_LENGTH, maxItems: MAX_DESCRIPTIONS })}</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" onClick={addDescription} disabled={descriptions.length >= MAX_DESCRIPTIONS}>
@@ -1253,7 +1253,7 @@ export default function AdCopyValidator() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <Link className="h-5 w-5" />
                     {t('adcopy.sitelinkExtensions')}
                   </CardTitle>
@@ -1377,7 +1377,7 @@ export default function AdCopyValidator() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <MessageSquare className="h-5 w-5" />
                     {t('adcopy.calloutExtensions')}
                   </CardTitle>
@@ -1440,7 +1440,7 @@ export default function AdCopyValidator() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <List className="h-5 w-5" />
                     {t('adcopy.structuredSnippets')}
                   </CardTitle>
@@ -1551,7 +1551,7 @@ export default function AdCopyValidator() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <DollarSign className="h-5 w-5" />
                     {t('adcopy.priceExtensions')}
                   </CardTitle>
@@ -1680,7 +1680,7 @@ export default function AdCopyValidator() {
           <div className="grid lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">{t('adcopy.bulkHeadlines')}</CardTitle>
+                <CardTitle>{t('adcopy.bulkHeadlines')}</CardTitle>
                 <CardDescription>{t('adcopy.bulkHeadlinesDesc', { max: MAX_HEADLINES })}</CardDescription>
               </CardHeader>
               <CardContent>
@@ -1695,7 +1695,7 @@ export default function AdCopyValidator() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">{t('adcopy.bulkDescriptions')}</CardTitle>
+                <CardTitle>{t('adcopy.bulkDescriptions')}</CardTitle>
                 <CardDescription>{t('adcopy.bulkDescriptionsDesc', { max: MAX_DESCRIPTIONS })}</CardDescription>
               </CardHeader>
               <CardContent>
@@ -1721,7 +1721,7 @@ export default function AdCopyValidator() {
           {/* Main RSA Preview Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">{t('adcopy.googleSearchAdPreview')}</CardTitle>
+              <CardTitle>{t('adcopy.googleSearchAdPreview')}</CardTitle>
               <CardDescription>{t('adcopy.googleSearchAdPreviewDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
@@ -1879,7 +1879,7 @@ export default function AdCopyValidator() {
           {priceValidation.filter(p => p.isComplete).length >= 3 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <DollarSign className="h-5 w-5" />
                   {t('adcopy.priceExtensionsPreview')}
                 </CardTitle>
@@ -1912,7 +1912,7 @@ export default function AdCopyValidator() {
           {/* All Extensions Summary */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{t('adcopy.extensionsSummary')}</CardTitle>
+              <CardTitle>{t('adcopy.extensionsSummary')}</CardTitle>
               <CardDescription>{t('adcopy.extensionsSummaryDesc')}</CardDescription>
             </CardHeader>
             <CardContent>

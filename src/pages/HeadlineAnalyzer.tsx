@@ -286,7 +286,7 @@ export default function HeadlineAnalyzer() {
       <Card className={cn('border-l-4', colorClass)}>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">{label}</CardTitle>
+            <CardTitle>{label}</CardTitle>
             {!isEmpty && (
               <div className="flex items-center gap-2">
                 <span className={cn('text-2xl font-bold', getScoreColor(score.overall))}>{score.overall}</span>
@@ -358,7 +358,7 @@ export default function HeadlineAnalyzer() {
           {/* Input area */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{t('headline.inputTitle')}</CardTitle>
+              <CardTitle>{t('headline.inputTitle')}</CardTitle>
               <CardDescription>{t('headline.inputDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -490,7 +490,7 @@ export default function HeadlineAnalyzer() {
           {/* Power words reference */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">{t('headline.powerWordsRef')}</CardTitle>
+              <CardTitle>{t('headline.powerWordsRef')}</CardTitle>
               <CardDescription>{t('headline.powerWordsRefDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">

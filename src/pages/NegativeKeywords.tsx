@@ -291,7 +291,7 @@ export default function NegativeKeywords() {
       {/* Processing Options */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">{t('neg.processingOptions')}</CardTitle>
+          <CardTitle>{t('neg.processingOptions')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -347,7 +347,7 @@ export default function NegativeKeywords() {
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2">
               <Ban className="h-4 w-4 text-destructive" />
               {t('neg.negativeKeywords')}
             </CardTitle>
@@ -368,7 +368,7 @@ export default function NegativeKeywords() {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
               {t('neg.positiveKeywords')}
               <Badge variant="secondary" className="ml-1 text-xs">{t('neg.optional')}</Badge>
@@ -394,7 +394,7 @@ export default function NegativeKeywords() {
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <CardTitle className="text-base">{t('common.results')}</CardTitle>
+              <CardTitle>{t('common.results')}</CardTitle>
               <CardDescription className="mt-1">
                 {stats.unique} {t('neg.uniqueKeywords')}
                 {stats.duplicatesRemoved > 0 && (

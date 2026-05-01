@@ -146,7 +146,7 @@ export default function KeywordCombiner() {
                 isEmpty && hasAnyContent && "border-dashed border-muted-foreground/30"
               )}>
                 <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between">
-                  <CardTitle className="text-xs sm:text-sm flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     {t('combiner.list')} {i + 1}
                     {lineCount > 0 && (
                       <span className="text-xs font-normal text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
@@ -183,7 +183,7 @@ export default function KeywordCombiner() {
         {/* Results */}
         <Card className="border-2 border-primary/20">
           <CardHeader className="p-3 sm:py-3 flex-row items-center justify-between gap-2">
-            <CardTitle className="text-xs sm:text-sm">{t('common.results')} ({combinations.length})</CardTitle>
+            <CardTitle>{t('common.results')} ({combinations.length})</CardTitle>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
