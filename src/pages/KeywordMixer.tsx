@@ -71,7 +71,12 @@ export default function KeywordMixer() {
     toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
   };
 
-  const handleReset = () => { setBase(''); setPrefixes(''); setSuffixes(''); };
+  const handleReset = () => {
+    setBase('');
+    setPrefixes('');
+    setSuffixes('');
+    toast({ title: t('common.resetComplete') });
+  };
 
   useShortcutAction('page.copy', () => { if (results.length > 0) copy(results.join('\n')); });
   useShortcutAction('page.reset', handleReset);
