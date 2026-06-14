@@ -6,6 +6,7 @@ export type TranslationKey = keyof typeof en;
 const en = {
   // ── Common / Shared ──
   'common.sample': 'Sample',
+  'common.useSample': 'Use sample',
   'common.reset': 'Reset',
   'common.copy': 'Copy',
   'common.copied': 'Copied!',
@@ -1211,6 +1212,7 @@ const en = {
 const id: Record<string, string> = {
   // ── Umum ──
   'common.sample': 'Contoh',
+  'common.useSample': 'Pakai contoh',
   'common.reset': 'Atur Ulang',
   'common.copy': 'Salin',
   'common.copied': 'Tersalin!',
