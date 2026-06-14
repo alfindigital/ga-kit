@@ -91,7 +91,10 @@ export default function KeywordCombiner() {
   };
 
   // Reset function
-  const handleReset = () => setLists(['', '', '']);
+  const handleReset = () => {
+    setLists(['', '', '']);
+    toast({ title: t('common.resetComplete') });
+  };
 
   // Keyboard shortcuts (editable via Settings → Keyboard Shortcuts dialog)
   useShortcutAction('page.copy', () => { if (combinations.length > 0) copy(combinations.join('\n')); });
