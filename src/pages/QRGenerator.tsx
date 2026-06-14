@@ -383,7 +383,7 @@ export default function QRGenerator() {
               <Button onClick={downloadSVG} disabled={!text || hasColorError} variant="outline" className="flex-1 text-xs sm:text-sm">
                 <Download className="h-3.5 w-3.5 mr-1" /> SVG
               </Button>
-              <Button onClick={() => copy(qrDataUrl, 'Data URL copied')} disabled={!qrDataUrl || hasColorError} variant="outline" size="icon" className="h-9 w-9 flex-shrink-0">
+              <Button onClick={() => copy(qrDataUrl, t('toast.dataUrlCopied'))} disabled={!qrDataUrl || hasColorError} variant="outline" size="icon" className="h-9 w-9 flex-shrink-0">
                 <Copy className="h-4 w-4" />
               </Button>
             </div>
