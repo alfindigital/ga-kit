@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageLoading } from '@/hooks/usePageLoading';
+import { useToast } from '@/hooks/use-toast';
 import { ROASCalculatorSkeleton } from '@/components/skeletons';
 import { useROASScenarios, ROASScenarioData } from '@/hooks/useROASScenarios';
 import { ScenarioManager } from '@/components/roas/ScenarioManager';
@@ -32,6 +33,7 @@ export default function ROASCalculator() {
   const isLoading = usePageLoading(400);
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { toast } = useToast();
   
   // Scenario management
   const {
@@ -374,6 +376,7 @@ export default function ROASCalculator() {
     setAvgOrderValue('');
     clearCurrentScenario();
     localStorage.removeItem(DRAFT_KEY);
+    toast({ title: t('common.resetComplete') });
   };
 
   const formatCurrency = (value: number) => {
