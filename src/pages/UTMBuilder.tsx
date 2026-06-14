@@ -263,7 +263,7 @@ export default function UTMBuilder() {
   const handleCopyBulkUrls = useCallback(() => {
     if (bulkGeneratedUrls.length === 0) return;
     const allUrls = bulkGeneratedUrls.map(item => item.generated).join('\n');
-    copy(allUrls, `${bulkGeneratedUrls.length} URLs copied to clipboard`);
+    copy(allUrls, t('toast.bulkUrlsCopied', { count: bulkGeneratedUrls.length }));
     incrementStat('utmsCreated', bulkGeneratedUrls.length);
     
     // Add all to unified URL history with extracted UTM params as tags
@@ -323,8 +323,8 @@ export default function UTMBuilder() {
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
 
-    toast({ title: 'Exported!', description: `${bulkGeneratedUrls.length} URLs exported to ${filename}` });
-  }, [bulkGeneratedUrls, params, toast]);
+    toast({ title: t('toast.exported'), description: t('toast.bulkUrlsExported', { count: bulkGeneratedUrls.length, filename }) });
+  }, [bulkGeneratedUrls, params, toast, t]);
 
   // Extract query string only
   const queryStringOnly = useMemo(() => {
@@ -339,7 +339,7 @@ export default function UTMBuilder() {
 
   const handleCopy = () => {
     if (generatedUrl) {
-      copy(generatedUrl, 'URL copied to clipboard');
+      copy(generatedUrl, t('toast.urlCopied'));
       incrementStat('utmsCreated');
       
       // Extract UTM params as searchable tags
@@ -395,14 +395,14 @@ export default function UTMBuilder() {
     
     setPresets(prev => [...prev, newPreset]);
     setPresetName('');
-    toast({ title: t('toast.saved'), description: `Preset "${presetName}" saved` });
+    toast({ title: t('toast.saved'), description: t('toast.presetSavedDesc', { name: presetName }) });
   };
 
   const loadPreset = (preset: Preset) => {
     setParams(preset.params);
     setSelectedValueTrack(preset.valueTrack);
     clearErrors();
-    toast({ title: t('toast.loaded'), description: `Preset "${preset.name}" loaded` });
+    toast({ title: t('toast.loaded'), description: t('toast.presetLoadedDesc', { name: preset.name }) });
   };
 
   const deletePreset = (id: string) => {
@@ -438,6 +438,7 @@ export default function UTMBuilder() {
     setBulkUrls([]);
     setBulkMode(false);
     clearErrors();
+    toast({ title: t('common.resetComplete') });
   };
 
   const toggleValueTrack = (id: string) => {
