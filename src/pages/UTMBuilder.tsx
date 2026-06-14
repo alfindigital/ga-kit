@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useClipboard } from '@/hooks/useClipboard';
@@ -108,6 +109,16 @@ const formatUtmValue = (value: string): string => {
     .replace(/[^a-z0-9-_]/g, '');
 };
 
+const SAMPLE_PARAMS: UTMParams = {
+  url: 'https://example.com/landing-page',
+  source: 'google',
+  medium: 'cpc',
+  campaign: 'summer-sale-2024',
+  term: 'running-shoes',
+  content: 'hero-banner',
+  customParams: [],
+};
+
 export default function UTMBuilder() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -119,6 +130,7 @@ export default function UTMBuilder() {
   const [copiedQuery, setCopiedQuery] = useState(false);
   const [bulkMode, setBulkMode] = useState(false);
   const [bulkUrls, setBulkUrls] = useState<string[]>([]);
+  const [useSample, setUseSample] = useLocalStorage<boolean>('utm-use-sample', false);
   
   const { copy, copied } = useClipboard();
   const { toast } = useToast();
@@ -454,17 +466,31 @@ export default function UTMBuilder() {
 
   // Load sample data for demo
   const loadSampleData = () => {
-    setParams({
-      url: 'https://example.com/landing-page',
-      source: 'google',
-      medium: 'cpc',
-      campaign: 'summer-sale-2024',
-      term: 'running-shoes',
-      content: 'hero-banner',
-      customParams: [],
-    });
+    setParams(SAMPLE_PARAMS);
     toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
   };
+
+  // Toggle "Use sample" — fills fields when ON, clears when OFF
+  const handleToggleSample = (checked: boolean) => {
+    setUseSample(checked);
+    if (checked) {
+      setParams(SAMPLE_PARAMS);
+      clearErrors();
+      toast({ title: t('common.sampleLoaded'), description: t('common.sampleLoadedDesc') });
+    } else {
+      setParams(DEFAULT_PARAMS);
+      clearErrors();
+      toast({ title: t('common.resetComplete') });
+    }
+  };
+
+  // Apply persisted sample preference on first mount
+  useEffect(() => {
+    if (useSample) {
+      setParams(SAMPLE_PARAMS);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Keyboard shortcuts
   useShortcutAction('page.copy', handleCopy);
@@ -484,10 +510,19 @@ export default function UTMBuilder() {
         accentGradient="from-primary to-primary/40"
       >
         <div className="flex items-center gap-2 flex-wrap">
-          <Button variant="ghost" size="sm" onClick={loadSampleData} className="h-8 text-xs">
-            <Beaker className="h-3.5 w-3.5 mr-1" />
-            {t('common.sample')}
-          </Button>
+          <label
+            htmlFor="utm-use-sample"
+            className="flex items-center gap-2 h-8 px-2 text-xs rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+          >
+            <Beaker className="h-3.5 w-3.5" />
+            <span>{t('common.useSample')}</span>
+            <Switch
+              id="utm-use-sample"
+              checked={useSample}
+              onCheckedChange={handleToggleSample}
+              aria-label={t('common.useSample')}
+            />
+          </label>
           <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
             <RotateCcw className="h-3.5 w-3.5 mr-1" />
             {t('common.reset')}
