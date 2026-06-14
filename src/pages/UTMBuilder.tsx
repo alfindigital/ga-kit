@@ -450,6 +450,7 @@ export default function UTMBuilder() {
     setBulkUrls([]);
     setBulkMode(false);
     clearErrors();
+    setUseSample(false);
     toast({ title: t('common.resetComplete') });
   };
 
