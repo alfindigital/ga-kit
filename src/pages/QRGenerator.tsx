@@ -42,6 +42,10 @@ export default function QRGenerator() {
   // Clear URL param after reading it
   useEffect(() => {
     if (searchParams.has('content')) {
+      toast({
+        title: t('qr.loadedFromUtm'),
+        description: t('qr.loadedFromUtmDesc'),
+      });
       setSearchParams({}, { replace: true });
     }
   }, []);
