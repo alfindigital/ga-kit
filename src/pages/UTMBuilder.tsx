@@ -867,7 +867,17 @@ export default function UTMBuilder() {
                     
                     <Button
                       variant="outline"
-                      onClick={() => navigate(`/qr-generator?content=${encodeURIComponent(generatedUrl)}`)}
+                      onClick={() => {
+                        if (!generatedUrl) {
+                          toast({
+                            title: t('qr.utmEmpty'),
+                            description: t('qr.utmEmptyDesc'),
+                            variant: 'destructive',
+                          });
+                          return;
+                        }
+                        navigate(`/qr-generator?content=${encodeURIComponent(generatedUrl)}`);
+                      }}
                       disabled={!generatedUrl}
                       className="text-sm"
                       title="Generate QR code"
