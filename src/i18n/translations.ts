@@ -375,6 +375,10 @@ const en = {
   'qr.generating': 'Generating...',
   'qr.savedPng': 'QR code saved as PNG',
   'qr.savedSvg': 'QR code saved as SVG',
+  'qr.loadedFromUtm': 'Loaded from UTM Builder',
+  'qr.loadedFromUtmDesc': 'Content prefilled — your QR is ready below',
+  'qr.utmEmpty': 'No URL to generate',
+  'qr.utmEmptyDesc': 'Fill in the UTM fields first, then try again',
 
   // ── URL Validator ──
   'urlval.singleUrl': 'Single URL',
@@ -1569,6 +1573,10 @@ const id: Record<string, string> = {
   'qr.generating': 'Membuat...',
   'qr.savedPng': 'Kode QR disimpan sebagai PNG',
   'qr.savedSvg': 'Kode QR disimpan sebagai SVG',
+  'qr.loadedFromUtm': 'Dimuat dari UTM Builder',
+  'qr.loadedFromUtmDesc': 'Konten otomatis terisi — QR Anda siap di bawah',
+  'qr.utmEmpty': 'Tidak ada URL untuk dibuat',
+  'qr.utmEmptyDesc': 'Isi field UTM terlebih dahulu, lalu coba lagi',
 
   // ── URL Validator ──
   'urlval.singleUrl': 'URL Tunggal',
