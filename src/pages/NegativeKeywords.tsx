@@ -229,13 +229,12 @@ export default function NegativeKeywords() {
   const handleReset = () => {
     setNegativeInput('');
     setPositiveInput('');
-    toast({ title: t('neg.resetComplete') });
+    toast({ title: t('common.resetComplete') });
   };
   
   const handleCopyResults = async () => {
     const text = processedKeywords.join('\n');
-    await copy(text);
-    toast({ title: t('neg.copiedToClipboard'), description: t('neg.keywordsCopied', { count: processedKeywords.length }) });
+    await copy(text, t('neg.keywordsCopied', { count: processedKeywords.length }));
   };
   
   const handleExportTxt = () => {
