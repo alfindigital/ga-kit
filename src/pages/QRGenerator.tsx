@@ -186,7 +186,7 @@ export default function QRGenerator() {
       incrementStat('qrCodesGenerated');
       toast({ title: t('toast.downloaded'), description: t('qr.savedSvg') });
     } catch (error) {
-      toast({ title: t('toast.error'), description: 'Failed to generate SVG', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: t('toast.svgGenFailed'), variant: 'destructive' });
     }
   };
 
@@ -196,6 +196,7 @@ export default function QRGenerator() {
     setFgColor('#000000');
     setBgColor('#ffffff');
     clearErrors();
+    toast({ title: t('common.resetComplete') });
   };
 
   // Load sample data for demo
@@ -205,7 +206,7 @@ export default function QRGenerator() {
   };
 
   // Keyboard shortcuts
-  useShortcutAction('page.copy', () => { if (qrDataUrl) copy(qrDataUrl, 'Data URL copied'); });
+  useShortcutAction('page.copy', () => { if (qrDataUrl) copy(qrDataUrl, t('toast.dataUrlCopied')); });
   useShortcutAction('page.reset', handleReset);
   useShortcutAction('page.sample', loadSampleData);
 
