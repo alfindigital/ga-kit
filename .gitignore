@@ -12,7 +12,19 @@ dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# Environment files
+.env
+.env.*
+.env.local
+.env.*.local
+!.env.example
+
+# Secrets & keys
+*.key
+*.pem
+secrets/
+
+# IDE / tool dirs
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,3 +34,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# AI/tool-specific dirs
+.agents/
+.gemini/
+.lovable/
+.cursor/
